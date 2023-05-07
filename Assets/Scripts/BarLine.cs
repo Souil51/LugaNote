@@ -21,6 +21,9 @@ public class BarLine : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Instantiate a note on the line starting position to the line ending position
+    /// </summary>
     public void SpawnNote()
     {
         GameObject go = (GameObject)Instantiate(Resources.Load("Note"));
