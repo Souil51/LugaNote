@@ -8,6 +8,8 @@ public class Note : MonoBehaviour
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;
 
+    private SpriteRenderer _sprtRenderer;
+
     private void Awake()
     {
         

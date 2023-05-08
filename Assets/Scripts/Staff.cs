@@ -50,12 +50,15 @@ public class Staff : MonoBehaviour
         // Instantiating 23 lines
         for(int i = 0; i < 23; i++)
         {
-            var goLine = Instantiate(Resources.Load("Line")) as GameObject;
+            var goLine = Instantiate(Resources.Load(StaticResource.PREFAB_LINE)) as GameObject;
             goLine.transform.position = new Vector3(0, currentY, 0);
 
-            Lines.Add(goLine.GetComponent<StaffLine>());
+            var staffLine = goLine.GetComponent<StaffLine>();
+            staffLine.InitializeLine(i, i >= 7 && i <= 15, i % 2 == 0); 
 
-            currentY += yDistance;
+            Lines.Add(staffLine);
+
+            currentY += yHalfDistance;
         }
     }
 
