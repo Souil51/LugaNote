@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BarLine : MonoBehaviour
+public class StaffLine : MonoBehaviour
 {
     [SerializeField] private GameObject StartingPoint;
     [SerializeField] private GameObject EndingPoint;
 
     private List<Note> _notes;
+    private bool _isSpaceLine;
+    private bool _isVisible;
 
     // Start is called before the first frame update
     void Start()

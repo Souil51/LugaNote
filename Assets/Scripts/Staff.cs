@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Bar : MonoBehaviour
+public class Staff : MonoBehaviour
 {
     [SerializeField] private List<LinePositionIndicator> Indicators = new List<LinePositionIndicator>();
 
-    private List<BarLine> Lines = new List<BarLine>();
+    private List<StaffLine> Lines = new List<StaffLine>();
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class Bar : MonoBehaviour
     }
 
     /// <summary>
-    /// Generate all the lines for this bar using position indicators the calculate the starting position and the distance bewteen 2 lines
+    /// Generate all the lines for this staff using position indicators the calculate the starting position and the distance bewteen 2 lines
     /// </summary>
     public void InitializeClef()
     {
@@ -42,17 +42,18 @@ public class Bar : MonoBehaviour
         int positionDifference = maxPosition - minPosition;
 
         float yDistance = (firstIndicator.transform.position.y - lastIndicator.transform.position.y) / positionDifference;
+        float yHalfDistance = yDistance / 2;
 
         // Starting at the top line
-        float currentY = firstIndicator.transform.position.y - (minPosition * yDistance);
+        float currentY = firstIndicator.transform.position.y - (((minPosition * 2) + 7) * yHalfDistance);
 
-        // Draw 5 lines at loading
-        for(int i = 0; i < 5; i++)
+        // Instantiating 23 lines
+        for(int i = 0; i < 23; i++)
         {
             var goLine = Instantiate(Resources.Load("Line")) as GameObject;
             goLine.transform.position = new Vector3(0, currentY, 0);
 
-            Lines.Add(goLine.GetComponent<BarLine>());
+            Lines.Add(goLine.GetComponent<StaffLine>());
 
             currentY += yDistance;
         }

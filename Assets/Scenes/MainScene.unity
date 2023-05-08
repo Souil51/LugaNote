@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b70bf7031e07ce4281f895d960e71d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bar: {fileID: 379582241}
+  Staff: {fileID: 379582241}
 --- !u!4 &767779332
 Transform:
   m_ObjectHideFlags: 0

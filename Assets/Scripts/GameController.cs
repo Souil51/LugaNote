@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private Bar Bar;
+    [SerializeField] private Staff Staff;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Bar.SpawnNote();
+            Staff.SpawnNote();
         }
     }
 }
