@@ -1,13 +1,13 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StaffLine : MonoBehaviour
 {
-    [SerializeField] private GameObject StartingPoint;
-    [SerializeField] private GameObject EndingPoint;
-
-    private List<Note> _notes;
+    private List<Note> _notes = new List<Note>();
+    public List<Note> Notes => _notes;
     private bool _isSpaceLine;
     private bool _isVisible;
     private int _id;
@@ -46,14 +46,16 @@ public class StaffLine : MonoBehaviour
     /// <summary>
     /// Instantiate a note on the line starting position to the line ending position
     /// </summary>
-    public void SpawnNote()
+    public void SpawnNote(Vector3 from, Vector3 to)
     {
         string resourceToLoad = !_isVisible && !_isSpaceLine ? StaticResource.PREFAB_NOTE_LINE : StaticResource.PREFAB_NOTE_NO_LINE;
 
         GameObject go = (GameObject)Instantiate(Resources.Load(resourceToLoad));
-        go.transform.position = StartingPoint.transform.position;
+        go.transform.position = new Vector3(from.x, transform.position.y, transform.position.z);
 
         var note = go.GetComponent<Note>();
-        note.MoveTo(EndingPoint.transform.position);
+        note.MoveTo(new Vector3(to.x, transform.position.y, transform.position.z));
+
+        _notes.Add(note);
     }
 }

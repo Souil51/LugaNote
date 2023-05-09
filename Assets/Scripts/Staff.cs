@@ -6,7 +6,20 @@ using UnityEngine;
 public class Staff : MonoBehaviour
 {
     [SerializeField] private List<LinePositionIndicator> Indicators = new List<LinePositionIndicator>();
+    [SerializeField] private GameObject StartingPoint;
+    [SerializeField] private GameObject EndingPoint;
 
+    public Vector3 StartingPointPosition => StartingPoint.transform.position;
+    public Vector3 EndingPointPosition => EndingPoint.transform.position;
+
+    public List<Note> Notes 
+    {
+        get
+        {
+            var allNotes = Lines.SelectMany(x => x.Notes);
+            return allNotes.OrderBy(x => x.transform.position.x).ToList();
+        }    
+    }
     private List<StaffLine> Lines = new List<StaffLine>();
 
     private void Awake()
@@ -69,7 +82,7 @@ public class Staff : MonoBehaviour
     public int SpawnNote()
     {
         int index = Random.Range(0, Lines.Count);
-        Lines[index].SpawnNote();
+        Lines[index].SpawnNote(StartingPoint.transform.position, EndingPoint.transform.position);
 
         return index;
     }

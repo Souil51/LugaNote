@@ -33,7 +33,7 @@ public class Note : MonoBehaviour
     /// <param name="position">end position</param>
     /// <param name="duration">duration of the move, default 2 seconds</param>
     /// /// <param name="ease">ease of the move, default OutSine</param>
-    public void MoveTo(Vector2 position, float duration = 2f, Ease ease = Ease.OutSine)
+    public void MoveTo(Vector2 position, float duration = 2f, Ease ease = Ease.Linear)
     {
         transform.DOMove(position, duration)
             .SetEase(ease)
