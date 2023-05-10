@@ -35,8 +35,8 @@ public class GameController : MonoBehaviour
                 }*/
             }
 
-            var totalDistance = Staff.StartingPointPosition.x - Staff.EndingPointPosition.x;
-            var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition.x;
+            var totalDistance = Staff.StartingPointPosition - Staff.EndingPointPosition;
+            var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition;
 
             float newTimeScale = distanceToEnd / totalDistance;
             if (newTimeScale > 0.05f)
@@ -45,7 +45,7 @@ public class GameController : MonoBehaviour
                 Time.timeScale = 0f;
         }
 
-        Debug.Log("Timescale : " + Time.timeScale);
+        // Debug.Log("Timescale : " + Time.timeScale);
     }
 
     public IEnumerator Co_SpawnNotes()
