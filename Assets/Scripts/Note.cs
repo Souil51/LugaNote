@@ -8,6 +8,9 @@ public class Note : MonoBehaviour
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;
 
+    private int _id = -1;
+    public int Id => _id;
+
     private SpriteRenderer _sprtRenderer;
 
     private void Awake()

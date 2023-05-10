@@ -9,6 +9,11 @@ public class GameController : MonoBehaviour
 
     public bool IsStopped => Time.timeScale != 0f;
 
+    private void Awake()
+    {
+        StartCoroutine(Co_SpawnNotes());
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,14 +23,18 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Staff.SpawnNote();
-        }
-
         var firstNote = Staff.Notes.FirstOrDefault();
+
         if (firstNote != null)
         {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                /*if (true || 0 == firstNote)
+                {
+
+                }*/
+            }
+
             var totalDistance = Staff.StartingPointPosition.x - Staff.EndingPointPosition.x;
             var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition.x;
 
@@ -37,5 +46,15 @@ public class GameController : MonoBehaviour
         }
 
         Debug.Log("Timescale : " + Time.timeScale);
+    }
+
+    public IEnumerator Co_SpawnNotes()
+    {
+        while (true)
+        {
+            Staff.SpawnNote();
+
+            yield return new WaitForSeconds(1f);
+        }
     }
 }
