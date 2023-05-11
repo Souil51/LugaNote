@@ -11,8 +11,6 @@ public class GameController : MonoBehaviour
 
     private int _points = 0;
 
-    private bool _manualSpawn = false;
-
     private void Awake()
     {
         StartCoroutine(Co_SpawnNotes());
@@ -27,22 +25,16 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var firstNote = Staff.Notes.FirstOrDefault();
+        var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
 
         if (firstNote != null)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                firstNote.Parent.DestroyNote(firstNote);
+                firstNote.SetInactive();
                 _points++;
 
-                if(Staff.Notes.Count == 0)
-                {
-                    Staff.SpawnNote();
-                    _manualSpawn = true;
-                }
-
-                firstNote = Staff.Notes.FirstOrDefault();
+                firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
             }
 
             if (firstNote != null)
@@ -65,14 +57,8 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            if (_manualSpawn)
-            {
-                yield return new WaitForSeconds(1f);
-                _manualSpawn = false;
-            }
-
             Staff.SpawnNote();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }

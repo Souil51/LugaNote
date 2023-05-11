@@ -6,6 +6,7 @@ using UnityEngine;
 public class Staff : MonoBehaviour
 {
     [SerializeField] private List<LinePositionIndicator> Indicators = new List<LinePositionIndicator>();
+    [SerializeField] private StaffKey Key;
 
     private SpriteRenderer spriteRenderer;
     public float SpriteWidth => spriteRenderer.size.x * transform.localScale.x;
@@ -15,6 +16,9 @@ public class Staff : MonoBehaviour
 
     private float _endingPointPosition = 0f;
     public float EndingPointPosition => _endingPointPosition;
+
+    private float _disappearPointPosition = 0f;
+    public float DisappearPointPosition => _disappearPointPosition;
 
     public List<Note> Notes 
     {
@@ -34,7 +38,8 @@ public class Staff : MonoBehaviour
 
         var firstLine = Lines[0];
         _startingPointPosition = firstLine.Width / 2;
-        _endingPointPosition = -(firstLine.Width / 2f) + SpriteWidth;
+        _disappearPointPosition = -(firstLine.Width / 2f);
+        _endingPointPosition = _disappearPointPosition + SpriteWidth;
     }
 
     // Start is called before the first frame update
@@ -92,7 +97,7 @@ public class Staff : MonoBehaviour
     public int SpawnNote()
     {
         int index = Random.Range(0, Lines.Count);
-        Lines[index].SpawnNote(transform.localScale.x, StartingPointPosition, EndingPointPosition);
+        Lines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
 
         return index;
     }

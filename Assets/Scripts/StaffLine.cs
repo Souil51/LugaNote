@@ -60,12 +60,13 @@ public class StaffLine : MonoBehaviour
         note.InitializeNote(this);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
+        note.DestroyEvent += Note_DestroyEvent;
+
         _notes.Add(note);
     }
 
-    public void DestroyNote(Note note)
+    private void Note_DestroyEvent(object sender, System.EventArgs args)
     {
-        _notes.Remove(note);
-        note.Destroy();
+        _notes.Remove(sender as Note);
     }
 }

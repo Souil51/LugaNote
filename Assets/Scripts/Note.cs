@@ -1,6 +1,8 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 public class Note : MonoBehaviour
@@ -11,9 +13,15 @@ public class Note : MonoBehaviour
     private StaffLine _parent;
     public StaffLine Parent => _parent;
 
+    private bool _isActive = true;
+    public bool IsActive => _isActive;
+
     private SpriteRenderer _sprtRenderer;
 
     private Tween _movement;
+
+    public delegate void DestroyEventHandler(object sender, EventArgs args);
+    public event DestroyEventHandler DestroyEvent;
 
     private void Awake()
     {
@@ -48,12 +56,22 @@ public class Note : MonoBehaviour
         _movement = transform.DOMove(position, duration)
             .SetEase(ease)
             .OnStart(() => _isMoving = true)
-            .OnComplete(() => _isMoving = false);
+            .OnComplete(() =>
+            {
+                _isMoving = false;
+                Destroy();
+            });
     }
 
     public void Destroy()
     {
         _movement.Kill();
+        DestroyEvent?.Invoke(this, EventArgs.Empty);
         Destroy(gameObject);
+    }
+
+    public void SetInactive()
+    {
+        _isActive = false;
     }
 }
