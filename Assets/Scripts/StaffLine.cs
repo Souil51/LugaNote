@@ -57,8 +57,15 @@ public class StaffLine : MonoBehaviour
         go.transform.localScale *= scale;
 
         var note = go.GetComponent<Note>();
+        note.InitializeNote(this);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         _notes.Add(note);
+    }
+
+    public void DestroyNote(Note note)
+    {
+        _notes.Remove(note);
+        note.Destroy();
     }
 }

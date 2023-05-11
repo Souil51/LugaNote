@@ -9,6 +9,10 @@ public class GameController : MonoBehaviour
 
     public bool IsStopped => Time.timeScale != 0f;
 
+    private int _points = 0;
+
+    private bool _manualSpawn = false;
+
     private void Awake()
     {
         StartCoroutine(Co_SpawnNotes());
@@ -29,20 +33,29 @@ public class GameController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                /*if (true || 0 == firstNote)
-                {
+                firstNote.Parent.DestroyNote(firstNote);
+                _points++;
 
-                }*/
+                if(Staff.Notes.Count == 0)
+                {
+                    Staff.SpawnNote();
+                    _manualSpawn = true;
+                }
+
+                firstNote = Staff.Notes.FirstOrDefault();
             }
 
-            var totalDistance = Staff.StartingPointPosition - Staff.EndingPointPosition;
-            var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition;
+            if (firstNote != null)
+            {
+                var totalDistance = Staff.StartingPointPosition - Staff.EndingPointPosition;
+                var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition;
 
-            float newTimeScale = distanceToEnd / totalDistance;
-            if (newTimeScale > 0.05f)
-                Time.timeScale = distanceToEnd / totalDistance;
-            else
-                Time.timeScale = 0f;
+                float newTimeScale = distanceToEnd / totalDistance;
+                if (newTimeScale > 0.05f)
+                    Time.timeScale = distanceToEnd / totalDistance;
+                else
+                    Time.timeScale = 0f;
+            }
         }
 
         // Debug.Log("Timescale : " + Time.timeScale);
@@ -52,8 +65,13 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            Staff.SpawnNote();
+            if (_manualSpawn)
+            {
+                yield return new WaitForSeconds(1f);
+                _manualSpawn = false;
+            }
 
+            Staff.SpawnNote();
             yield return new WaitForSeconds(1f);
         }
     }

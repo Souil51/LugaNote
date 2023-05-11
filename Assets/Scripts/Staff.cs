@@ -33,7 +33,7 @@ public class Staff : MonoBehaviour
         InitializeClef();
 
         var firstLine = Lines[0];
-        _startingPointPosition = firstLine.Width;
+        _startingPointPosition = firstLine.Width / 2;
         _endingPointPosition = -(firstLine.Width / 2f) + SpriteWidth;
     }
 

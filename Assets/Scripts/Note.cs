@@ -8,10 +8,12 @@ public class Note : MonoBehaviour
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;
 
-    private int _id = -1;
-    public int Id => _id;
+    private StaffLine _parent;
+    public StaffLine Parent => _parent;
 
     private SpriteRenderer _sprtRenderer;
+
+    private Tween _movement;
 
     private void Awake()
     {
@@ -30,6 +32,11 @@ public class Note : MonoBehaviour
         
     }
 
+    public void InitializeNote(StaffLine parent)
+    {
+        _parent = parent;
+    }
+
     /// <summary>
     /// Move the note from the current position to the parameter position
     /// </summary>
@@ -38,9 +45,15 @@ public class Note : MonoBehaviour
     /// /// <param name="ease">ease of the move, default OutSine</param>
     public void MoveTo(Vector2 position, float duration = 2f, Ease ease = Ease.Linear)
     {
-        transform.DOMove(position, duration)
+        _movement = transform.DOMove(position, duration)
             .SetEase(ease)
             .OnStart(() => _isMoving = true)
             .OnComplete(() => _isMoving = false);
+    }
+
+    public void Destroy()
+    {
+        _movement.Kill();
+        Destroy(gameObject);
     }
 }
