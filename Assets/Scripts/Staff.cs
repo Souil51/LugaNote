@@ -6,7 +6,7 @@ using UnityEngine;
 public class Staff : MonoBehaviour
 {
     [SerializeField] private List<LinePositionIndicator> Indicators = new List<LinePositionIndicator>();
-    [SerializeField] private StaffKey Key;
+    [SerializeField] private Clef Clef;
 
     private SpriteRenderer spriteRenderer;
     public float SpriteWidth => spriteRenderer.size.x * transform.localScale.x;
@@ -75,6 +75,8 @@ public class Staff : MonoBehaviour
         // Starting at the top line
         float currentY = firstIndicator.transform.position.y - (((minPosition * 2) + 7) * yHalfDistance);
 
+        PianoNote currentNote = StaticResource.GetFirstPianoNoteForClef(Clef);
+
         // Instantiating 23 lines
         for(int i = 0; i < 23; i++)
         {
@@ -82,11 +84,15 @@ public class Staff : MonoBehaviour
             goLine.transform.position = new Vector3(0, currentY, 0);
 
             var staffLine = goLine.GetComponent<StaffLine>();
-            staffLine.InitializeLine(i, i >= 7 && i <= 15, i % 2 == 0); 
+            staffLine.InitializeLine(i, currentNote, i >= 7 && i <= 15, i % 2 == 0); 
 
             Lines.Add(staffLine);
 
             currentY += yHalfDistance;
+
+            currentNote++;
+            if (StaticResource.SharpNotes.Contains(currentNote))
+                currentNote++;
         }
     }
 

@@ -12,6 +12,9 @@ public class StaffLine : MonoBehaviour
     private bool _isVisible;
     private int _id;
 
+    private PianoNote _note;
+    public PianoNote Note => _note;
+
     private SpriteRenderer _sprtRenderer;
 
     public float Width => _sprtRenderer.size.x * transform.localScale.x;
@@ -33,11 +36,12 @@ public class StaffLine : MonoBehaviour
         
     }
 
-    public void InitializeLine(int id, bool visible, bool spaceLine)
+    public void InitializeLine(int id, PianoNote note, bool visible, bool spaceLine)
     {
         this._isSpaceLine = spaceLine;
         this._isVisible = visible;
         this._id = id;
+        this._note = note;
 
         if(!_isVisible || _isSpaceLine)
         {

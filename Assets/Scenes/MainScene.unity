@@ -263,6 +263,7 @@ MonoBehaviour:
   Indicators:
   - {fileID: 2047911281}
   - {fileID: 146162500}
+  Clef: 0
 --- !u!212 &379582242
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -595,6 +596,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Staff: {fileID: 379582241}
+  ControllerType: 0
+  ReplacementMode: 1
 --- !u!4 &767779332
 Transform:
   m_ObjectHideFlags: 0

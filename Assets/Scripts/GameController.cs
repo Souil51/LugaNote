@@ -6,6 +6,10 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private Staff Staff;
+    [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
+    [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
+
+    private IController Controller;
 
     public bool IsStopped => Time.timeScale != 0f;
 
@@ -19,7 +23,13 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        switch (ControllerType)
+        {
+            case ControllerType.Keyboard:
+            default:
+                Controller = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -29,6 +39,28 @@ public class GameController : MonoBehaviour
 
         if (firstNote != null)
         {
+            if(Controller.NotesDown.Count > 0)
+            {
+                if (
+                        Controller.NotesDown.Count == 1 
+                        && 
+                        (
+                            (!ReplacementMode && Controller.NotesDown[0] == firstNote.Parent.Note)
+                            ||
+                            ((int)(Controller.NotesDown[0]) % 12 == (int)(firstNote.Parent.Note) % 12)
+                        )
+                    )
+                {
+                    // Good guess
+                    Debug.Log("Good guess");
+                }
+                else
+                {
+                    // Bad guess
+                    Debug.Log("Bad guess");
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 firstNote.SetInactive();
