@@ -7,6 +7,7 @@ public static class StaticResource
     public static string PREFAB_NOTE_LINE => "note_line";
     public static string PREFAB_NOTE_NO_LINE => "note_no_line";
     public static string PREFAB_LINE => "line";
+    public static string PREFAB_EMPTY_NOTE_LINE => "empty_note_line";
 
     /// <summary>
     /// Return the A-G notation for each Clef
@@ -27,7 +28,7 @@ public static class StaticResource
     /// </summary>
     /// <param name="key">The clef</param>
     /// <returns></returns>
-    public static PianoNote GetFirstPianoNoteForClef(Clef key)
+    public static PianoNote GetLastPianoNoteForClef(Clef key)
     {
         if (key == Clef.Trebble)
             return PianoNote.F6;
@@ -41,7 +42,7 @@ public static class StaticResource
     /// <param name="key">The clef</param>
     /// <returns></returns>
 
-    public static PianoNote GetLastPianoNoteForClef(Clef key)
+    public static PianoNote GetFirstPianoNoteForClef(Clef key)
     {
         if (key == Clef.Trebble)
             return PianoNote.E3;
@@ -146,6 +147,92 @@ public static class StaticResource
         PianoNote.C8
     };
     public static List<PianoNote> FlatNotes => _flatNotes;
+
+    /// <summary>
+    /// Convert a sharp note to a flat note or return this same note if already flat
+    /// </summary>
+    /// <param name="sharp"></param>
+    /// <returns>Flat note</returns>
+    public static PianoNote ConvertToFlatNote(PianoNote sharp)
+    {
+        if (FlatNotes.Contains(sharp))
+        {
+            return sharp;
+        }
+        else
+        {
+            return sharp - 1;
+        }
+    }
+
+    /// <summary>
+    /// Convert a flat note to a sharp note or return this same note if already sharp
+    /// </summary>
+    /// <param name="flat"></param>
+    /// <returns>Sharp note</returns>
+    public static PianoNote ConvertToSharpNote(PianoNote flat)
+    {
+        if (SharpNotes.Contains(flat) || flat == PianoNote.C8)
+        {
+            return flat;
+        }
+        else
+        {
+            return flat + 1;
+        }
+    }
+
+    /// <summary>
+    /// For notes that are not on a displayed line, return the number of empty line to draw below a note
+    /// </summary>
+    /// <param name="clef"></param>
+    /// <param name="pianoNote"></param>
+    /// <returns></returns>
+    public static int GetAdditionnalEmptyLineBelow(Clef clef, PianoNote pianoNote) 
+    {
+        var flatNote = ConvertToFlatNote(pianoNote);
+        var firstNote = GetFirstPianoNoteForClef(clef);
+
+        int idxFirstNote = FlatNotes.IndexOf(firstNote);
+        int idxFlatNote = FlatNotes.IndexOf(flatNote);
+
+        int difference = idxFlatNote - idxFirstNote;
+
+        if (difference > 21)
+            return 3;
+        else if (difference > 19)
+            return 2;
+        else if (difference > 17)
+            return 1;
+
+        return 0;
+    }
+
+    /// <summary>
+    /// For notes that are not on a displayed line, return the number of empty line to draw above a note
+    /// </summary>
+    /// <param name="clef"></param>
+    /// <param name="pianoNote"></param>
+    /// <returns></returns>
+    public static int GetAdditionnalEmptyLineAbove(Clef clef, PianoNote pianoNote)
+    {
+        var flatNote = ConvertToFlatNote(pianoNote);
+        var firstNote = GetFirstPianoNoteForClef(clef);
+
+        int idxFirstNote = FlatNotes.IndexOf(firstNote);
+        int idxFlatNote = FlatNotes.IndexOf(flatNote);
+
+        int difference = idxFlatNote - idxFirstNote;
+
+        if (difference < 1)
+            return 3;
+        else if (difference < 3)
+            return 2;
+        else if (difference < 5)
+            return 1;
+
+        return 0;
+    }
 }
 
 public enum ControllerType { Keyboard = 0 }

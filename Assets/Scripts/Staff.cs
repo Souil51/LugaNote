@@ -20,6 +20,9 @@ public class Staff : MonoBehaviour
     private float _disappearPointPosition = 0f;
     public float DisappearPointPosition => _disappearPointPosition;
 
+    private float _lineDistance = 0f;
+    public float LineDistance => _lineDistance;
+
     public List<Note> Notes 
     {
         get
@@ -71,6 +74,7 @@ public class Staff : MonoBehaviour
 
         float yDistance = (firstIndicator.transform.position.y - lastIndicator.transform.position.y) / positionDifference;
         float yHalfDistance = yDistance / 2;
+        _lineDistance = yHalfDistance;
 
         // Starting at the top line
         float currentY = firstIndicator.transform.position.y - (((minPosition * 2) + 7) * yHalfDistance);
@@ -84,7 +88,7 @@ public class Staff : MonoBehaviour
             goLine.transform.position = new Vector3(0, currentY, 0);
 
             var staffLine = goLine.GetComponent<StaffLine>();
-            staffLine.InitializeLine(i, currentNote, i >= 7 && i <= 15, i % 2 == 0); 
+            staffLine.InitializeLine(this, i, currentNote, i >= 7 && i <= 15, i % 2 == 0); 
 
             Lines.Add(staffLine);
 

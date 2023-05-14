@@ -40,9 +40,26 @@ public class Note : MonoBehaviour
         
     }
 
-    public void InitializeNote(StaffLine parent)
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
     {
         _parent = parent;
+
+        // The staff display only 5 lines.
+        // For lower or higher notes than that empty lines have to be displayed for better accuracy
+        if(emptyLinesAbove > 0 || emptyLinesBelow > 0)
+        {
+            float distance = Parent.Parent.LineDistance / transform.localScale.x;
+            if (emptyLinesBelow > 0)
+                distance *= -1;
+
+            for (int i = 1; i < (emptyLinesAbove > 0 ? emptyLinesAbove : emptyLinesBelow) + 1; i++)
+            {
+                var goLine = Instantiate(Resources.Load(StaticResource.PREFAB_EMPTY_NOTE_LINE)) as GameObject;
+                goLine.transform.SetParent(transform);
+                goLine.transform.localPosition = new Vector3(0, i * distance * 2, 0); // * 2 because the distance is for every line, visible or note
+                goLine.transform.localScale *= transform.localScale.x;
+            }
+        }
     }
 
     /// <summary>

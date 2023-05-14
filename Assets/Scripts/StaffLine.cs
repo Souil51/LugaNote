@@ -17,6 +17,9 @@ public class StaffLine : MonoBehaviour
 
     private SpriteRenderer _sprtRenderer;
 
+    private Staff _parent;
+    public Staff Parent => _parent;
+
     public float Width => _sprtRenderer.size.x * transform.localScale.x;
 
     private void Awake()
@@ -36,8 +39,9 @@ public class StaffLine : MonoBehaviour
         
     }
 
-    public void InitializeLine(int id, PianoNote note, bool visible, bool spaceLine)
+    public void InitializeLine(Staff parent, int id, PianoNote note, bool visible, bool spaceLine)
     {
+        this._parent = parent;
         this._isSpaceLine = spaceLine;
         this._isVisible = visible;
         this._id = id;
@@ -60,8 +64,11 @@ public class StaffLine : MonoBehaviour
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
         go.transform.localScale *= scale;
 
+        int numberOfEmptyLineAbove = StaticResource.GetAdditionnalEmptyLineAbove(Clef.Trebble, this.Note);
+        int numberOfEmptyLineBelow = StaticResource.GetAdditionnalEmptyLineBelow(Clef.Trebble, this.Note);
+
         var note = go.GetComponent<Note>();
-        note.InitializeNote(this);
+        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         note.DestroyEvent += Note_DestroyEvent;
