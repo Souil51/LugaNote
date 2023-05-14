@@ -2,12 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Main utility static class
+/// This class contains many helping and static datas like note enum, first note displayed for every clef...
+/// </summary>
 public static class StaticResource
 {
+    /// <summary>
+    /// Below, every string for prefabs, used to not use magics strings for instantiating prefabs
+    /// </summary>
     public static string PREFAB_NOTE_LINE => "note_line";
     public static string PREFAB_NOTE_NO_LINE => "note_no_line";
     public static string PREFAB_LINE => "line";
     public static string PREFAB_EMPTY_NOTE_LINE => "empty_note_line";
+
+    /// <summary>
+    /// Useful values
+    /// </summary>
+    public static Color COLOR_GOOD_GUESS = Color.green;
+    public static Color COLOR_BAD_GUESS = Color.red;
 
     /// <summary>
     /// Return the A-G notation for each Clef
@@ -50,6 +63,7 @@ public static class StaticResource
             return PianoNote.G1;
     }
 
+
     private static List<PianoNote> _sharpNotes = new List<PianoNote>
     {
         PianoNote.ASharp0,
@@ -89,6 +103,9 @@ public static class StaticResource
         PianoNote.GSharp7,
         PianoNote.ASharp7
     };
+    /// <summary>
+    /// All sharp notes
+    /// </summary>
     public static List<PianoNote> SharpNotes => _sharpNotes;
 
     private static List<PianoNote> _flatNotes = new List<PianoNote>
@@ -146,6 +163,9 @@ public static class StaticResource
         PianoNote.B7,
         PianoNote.C8
     };
+    /// <summary>
+    /// All flat notes
+    /// </summary>
     public static List<PianoNote> FlatNotes => _flatNotes;
 
     /// <summary>
@@ -239,6 +259,9 @@ public enum ControllerType { Keyboard = 0 }
 
 public enum Clef { Trebble = 0, Bass = 1}
 
+/// <summary>
+/// All the notes, flat and sharp
+/// </summary>
 public enum PianoNote
 {
     A0 = 0,

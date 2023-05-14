@@ -8,9 +8,11 @@ public class StaffLine : MonoBehaviour
 {
     private List<Note> _notes = new List<Note>();
     public List<Note> Notes => _notes;
-    private bool _isSpaceLine;
     private bool _isVisible;
     private int _id;
+
+    private bool _isSpaceLine;
+    public bool IsSpaceLine => _isSpaceLine;
 
     private PianoNote _note;
     public PianoNote Note => _note;

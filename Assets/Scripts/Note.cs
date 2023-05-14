@@ -25,7 +25,7 @@ public class Note : MonoBehaviour
 
     private void Awake()
     {
-        
+        _sprtRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Start is called before the first frame update
@@ -49,14 +49,19 @@ public class Note : MonoBehaviour
         if(emptyLinesAbove > 0 || emptyLinesBelow > 0)
         {
             float distance = Parent.Parent.LineDistance / transform.localScale.x;
+            float offset = Parent.IsSpaceLine ? distance : 0f;
+
             if (emptyLinesBelow > 0)
+            {
                 distance *= -1;
+                offset *= -1;
+            }
 
             for (int i = 1; i < (emptyLinesAbove > 0 ? emptyLinesAbove : emptyLinesBelow) + 1; i++)
             {
                 var goLine = Instantiate(Resources.Load(StaticResource.PREFAB_EMPTY_NOTE_LINE)) as GameObject;
                 goLine.transform.SetParent(transform);
-                goLine.transform.localPosition = new Vector3(0, i * distance * 2, 0); // * 2 because the distance is for every line, visible or note
+                goLine.transform.localPosition = new Vector3(0, i * distance * 2 + offset, 0); // * 2 because the distance is for every line, visible or note
                 goLine.transform.localScale *= transform.localScale.x;
             }
         }
@@ -78,6 +83,11 @@ public class Note : MonoBehaviour
                 _isMoving = false;
                 Destroy();
             });
+    }
+
+    public void ChangeColor(Color color)
+    {
+        _sprtRenderer.color = color;
     }
 
     public void Destroy()

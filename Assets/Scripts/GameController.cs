@@ -41,6 +41,7 @@ public class GameController : MonoBehaviour
         {
             if(Controller.NotesDown.Count > 0)
             {
+                bool guessDone = false;
                 if (
                         Controller.NotesDown.Count == 1 
                         && 
@@ -53,11 +54,23 @@ public class GameController : MonoBehaviour
                 {
                     // Good guess
                     Debug.Log("Good guess");
+                    firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
+                    guessDone = true;
                 }
                 else
                 {
                     // Bad guess
                     Debug.Log("Bad guess");
+                    firstNote.ChangeColor(StaticResource.COLOR_BAD_GUESS);
+                    guessDone = true;
+                }
+
+                if (guessDone)
+                {
+                    firstNote.SetInactive();
+                    _points++;
+
+                    firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
                 }
             }
 
