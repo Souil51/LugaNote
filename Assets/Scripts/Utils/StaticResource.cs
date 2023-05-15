@@ -19,8 +19,10 @@ public static class StaticResource
     /// <summary>
     /// Useful values
     /// </summary>
-    public static Color COLOR_GOOD_GUESS = Color.green;
-    public static Color COLOR_BAD_GUESS = Color.red;
+    public static Color COLOR_GOOD_GUESS => Color.green;
+    public static Color COLOR_BAD_GUESS => Color.red;
+
+    public static int PIANO_KEY_COUNT => 88;
 
     /// <summary>
     /// Return the A-G notation for each Clef
@@ -255,7 +257,7 @@ public static class StaticResource
     }
 }
 
-public enum ControllerType { Keyboard = 0 }
+public enum ControllerType { Keyboard = 0, MIDI = 1 }
 
 public enum Clef { Trebble = 0, Bass = 1}
 

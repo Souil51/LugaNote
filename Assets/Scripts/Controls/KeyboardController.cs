@@ -6,22 +6,13 @@ using UnityEngine;
 public class KeyboardController : MonoBehaviour, IController
 {
     private List<PianoNote> _notesDown = new List<PianoNote>();
-    public List<PianoNote> NotesDown
-    { 
-        get => _notesDown;
-    }
+    public List<PianoNote> NotesDown => _notesDown;
 
     private List<PianoNote> _notesUp = new List<PianoNote>();
-    public List<PianoNote> NotesUp
-    {
-        get => _notesUp;
-    }
+    public List<PianoNote> NotesUp => _notesUp;
 
     private List<PianoNote> _notes = new List<PianoNote>();
-    public List<PianoNote> Notes
-    { 
-        get => _notes;
-    }
+    public List<PianoNote> Notes => _notes;
 
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()
     {

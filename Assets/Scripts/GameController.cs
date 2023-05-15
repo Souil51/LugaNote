@@ -25,6 +25,9 @@ public class GameController : MonoBehaviour
     {
         switch (ControllerType)
         {
+            case ControllerType.MIDI:
+                Controller = gameObject.AddComponent(typeof(MidiController)) as MidiController;
+                break;
             case ControllerType.Keyboard:
             default:
                 Controller = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
@@ -35,6 +38,9 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Controller.Notes.Count > 0)
+            Debug.Log(Controller.Notes[0]);
+
         var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
 
         if (firstNote != null)
