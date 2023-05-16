@@ -15,46 +15,66 @@ public class GameController : MonoBehaviour
 
     private int _points = 0;
 
-    private void Awake()
-    {
-        StartCoroutine(Co_SpawnNotes());
-    }
+    private int _C4Offset = 0;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         switch (ControllerType)
         {
             case ControllerType.MIDI:
-                Controller = gameObject.AddComponent(typeof(MidiController)) as MidiController;
+                {
+                    Controller = gameObject.AddComponent(typeof(MidiController)) as MidiController;
+
+                    // For MIDI keyboard with reduced note count, keyboard will be centered on C4
+                    var middleC = StaticResource.GetMiddleCBetweenTwoNotes(Controller.HigherNote, Controller.LowerNote);
+                    _C4Offset = PianoNote.C4 - middleC;
+                }
                 break;
             case ControllerType.Keyboard:
             default:
                 Controller = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
                 break;
         }
+
+        Staff.InitializeStaff(Controller.HigherNote, Controller.LowerNote);
+
+        StartCoroutine(Co_SpawnNotes());
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Controller.Notes.Count > 0)
-            Debug.Log(Controller.Notes[0]);
+        // Applying offset to center keyboard on C4
+        var notesOffset = Controller.Notes;
+        var notesDownOffset = Controller.NotesDown;
 
+        if(_C4Offset != 0)
+        {
+            notesOffset = notesOffset.Select(x => x + _C4Offset).ToList();
+            notesDownOffset = notesDownOffset.Select(x => x + _C4Offset).ToList();
+        }
+
+        // Guessing system
         var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
 
         if (firstNote != null)
         {
-            if(Controller.NotesDown.Count > 0)
+            if(notesDownOffset.Count > 0)
             {
                 bool guessDone = false;
                 if (
-                        Controller.NotesDown.Count == 1 
+                        notesDownOffset.Count == 1 
                         && 
                         (
-                            (!ReplacementMode && Controller.NotesDown[0] == firstNote.Parent.Note)
+                            (!ReplacementMode && notesDownOffset[0] == firstNote.Parent.Note)
                             ||
-                            ((int)(Controller.NotesDown[0]) % 12 == (int)(firstNote.Parent.Note) % 12)
+                            ((int)(notesDownOffset[0]) % 12 == (int)(firstNote.Parent.Note) % 12)
                         )
                     )
                 {

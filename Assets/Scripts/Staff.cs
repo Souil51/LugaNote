@@ -23,6 +23,12 @@ public class Staff : MonoBehaviour
     private float _lineDistance = 0f;
     public float LineDistance => _lineDistance;
 
+    private PianoNote _higherNote;
+    public PianoNote HigherNote => _higherNote;
+
+    private PianoNote _lowerNote;
+    public PianoNote LowerNote => LowerNote;
+
     public List<Note> Notes 
     {
         get
@@ -33,16 +39,11 @@ public class Staff : MonoBehaviour
     }
     private List<StaffLine> Lines = new List<StaffLine>();
 
+    private List<StaffLine> AvailableLines = new List<StaffLine>();
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        InitializeClef();
-
-        var firstLine = Lines[0];
-        _startingPointPosition = firstLine.Width / 2;
-        _disappearPointPosition = -(firstLine.Width / 2f);
-        _endingPointPosition = _disappearPointPosition + SpriteWidth;
     }
 
     // Start is called before the first frame update
@@ -55,6 +56,19 @@ public class Staff : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void InitializeStaff(PianoNote higherNote, PianoNote lowerNote)
+    {
+        _higherNote = higherNote;
+        _lowerNote = lowerNote;
+
+        InitializeClef();
+
+        var firstLine = Lines[0];
+        _startingPointPosition = firstLine.Width / 2;
+        _disappearPointPosition = -(firstLine.Width / 2f);
+        _endingPointPosition = _disappearPointPosition + SpriteWidth;
     }
 
     /// <summary>
@@ -88,7 +102,7 @@ public class Staff : MonoBehaviour
             goLine.transform.position = new Vector3(0, currentY, 0);
 
             var staffLine = goLine.GetComponent<StaffLine>();
-            staffLine.InitializeLine(this, i, currentNote, i >= 7 && i <= 15, i % 2 == 0); 
+            staffLine.InitializeLine(this, i, currentNote, i >= 7 && i <= 15, i % 2 == 0);
 
             Lines.Add(staffLine);
 
@@ -98,6 +112,8 @@ public class Staff : MonoBehaviour
             if (StaticResource.SharpNotes.Contains(currentNote))
                 currentNote++;
         }
+
+        AvailableLines = Lines.Where(x => x.Note >= _lowerNote && x.Note <= _higherNote).ToList();
     }
 
     /// <summary>
@@ -106,8 +122,8 @@ public class Staff : MonoBehaviour
     /// <returns>The line position from top to bottom, starting at 0</returns>
     public int SpawnNote()
     {
-        int index = Random.Range(0, Lines.Count);
-        Lines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+        int index = Random.Range(0, AvailableLines.Count);
+        AvailableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
 
         return index;
     }

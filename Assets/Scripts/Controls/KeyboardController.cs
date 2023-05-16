@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,6 +14,13 @@ public class KeyboardController : MonoBehaviour, IController
 
     private List<PianoNote> _notes = new List<PianoNote>();
     public List<PianoNote> Notes => _notes;
+
+    private PianoNote _higherNote;
+    public PianoNote HigherNote => _higherNote;
+
+    private PianoNote _lowerNote;
+    public PianoNote LowerNote => _lowerNote;
+
 
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()
     {
@@ -34,6 +42,15 @@ public class KeyboardController : MonoBehaviour, IController
         { KeyCode.Alpha0, PianoNote.DSharp5 },
         { KeyCode.P, PianoNote.E5 }
     };
+
+    public KeyboardController()
+    {
+        _higherNote = keys.Last().Value;
+        _lowerNote = keys.First().Value;
+
+        _higherNote = PianoNote.C8;
+        _lowerNote = PianoNote.A0;
+    }
 
     // Start is called before the first frame upd-ate
     void Start()

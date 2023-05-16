@@ -49,7 +49,7 @@ public class Note : MonoBehaviour
         if(emptyLinesAbove > 0 || emptyLinesBelow > 0)
         {
             float distance = Parent.Parent.LineDistance / transform.localScale.x;
-            float offset = Parent.IsSpaceLine ? distance : 0f;
+            float offset = Parent.IsSpaceLine || Parent.IsVisible ? distance : 2f * distance;
 
             if (emptyLinesBelow > 0)
             {
@@ -57,7 +57,7 @@ public class Note : MonoBehaviour
                 offset *= -1;
             }
 
-            for (int i = 1; i < (emptyLinesAbove > 0 ? emptyLinesAbove : emptyLinesBelow) + 1; i++)
+            for (int i = 0; i < (emptyLinesAbove > 0 ? emptyLinesAbove : emptyLinesBelow); i++)
             {
                 var goLine = Instantiate(Resources.Load(StaticResource.PREFAB_EMPTY_NOTE_LINE)) as GameObject;
                 goLine.transform.SetParent(transform);

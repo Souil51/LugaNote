@@ -16,6 +16,18 @@ public class MidiController : MonoBehaviour, IController
     private List<PianoNote> _notes = new List<PianoNote>();
     public List<PianoNote> Notes => _notes;
 
+    private PianoNote _higherNote;
+    public PianoNote HigherNote => _higherNote;
+
+    private PianoNote _lowerNote;
+    public PianoNote LowerNote => _lowerNote;
+
+    public MidiController()
+    {
+        _higherNote = PianoNote.C8;
+        _lowerNote = PianoNote.A0;
+    }
+
     // Update is called once per frame
     void Update()
     {

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7115178152514221395}
   - component: {fileID: 7598508983494060278}
   m_Layer: 0
-  m_Name: line
+  m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,5 +97,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b53b327663dfe5479945d72082f6a36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingPoint: {fileID: 0}
-  EndingPoint: {fileID: 0}

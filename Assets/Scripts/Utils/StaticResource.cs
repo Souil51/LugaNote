@@ -24,6 +24,9 @@ public static class StaticResource
 
     public static int PIANO_KEY_COUNT => 88;
 
+    public static PianoNote HigherNote => PianoNote.C8;
+    public static PianoNote LowerNote => PianoNote.A0;
+
     /// <summary>
     /// Return the A-G notation for each Clef
     /// </summary>
@@ -254,6 +257,37 @@ public static class StaticResource
             return 1;
 
         return 0;
+    }
+
+    /// <summary>
+    /// Return the C note in between 2 others notes
+    /// The octave of the C have to be complete
+    /// </summary>
+    /// <param name="noteMin"></param>
+    /// <param name="noteMax"></param>
+    /// <returns>Closest C note in the middle of noteMin and noteMax</returns>
+    public static PianoNote GetMiddleCBetweenTwoNotes(PianoNote higherNote, PianoNote lowerNote)
+    {
+        int middleOffset = (higherNote - lowerNote) / 2;
+        PianoNote middleNote = lowerNote + middleOffset;
+
+        PianoNote firstC = PianoNote.C1;
+        PianoNote minNote = PianoNote.C8;
+        int differenceFound = PianoNote.C8 - PianoNote.A0;
+
+        for(int i = 0; i < 8; i++)
+        {
+            PianoNote currentC = firstC + (i * 12);
+            int currentDifference = Mathf.Abs(currentC - middleNote);
+
+            if(currentDifference < differenceFound)
+            {
+                differenceFound = currentDifference;
+                minNote = currentC;
+            }
+        }
+
+        return minNote;
     }
 }
 
