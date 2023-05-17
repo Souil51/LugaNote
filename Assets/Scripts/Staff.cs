@@ -23,12 +23,6 @@ public class Staff : MonoBehaviour
     private float _lineDistance = 0f;
     public float LineDistance => _lineDistance;
 
-    private PianoNote _higherNote;
-    public PianoNote HigherNote => _higherNote;
-
-    private PianoNote _lowerNote;
-    public PianoNote LowerNote => LowerNote;
-
     public List<Note> Notes 
     {
         get
@@ -38,8 +32,6 @@ public class Staff : MonoBehaviour
         }    
     }
     private List<StaffLine> Lines = new List<StaffLine>();
-
-    private List<StaffLine> AvailableLines = new List<StaffLine>();
 
     private void Awake()
     {
@@ -58,11 +50,8 @@ public class Staff : MonoBehaviour
         
     }
 
-    public void InitializeStaff(PianoNote higherNote, PianoNote lowerNote)
+    public void InitializeStaff()
     {
-        _higherNote = higherNote;
-        _lowerNote = lowerNote;
-
         InitializeClef();
 
         var firstLine = Lines[0];
@@ -113,17 +102,19 @@ public class Staff : MonoBehaviour
                 currentNote++;
         }
 
-        AvailableLines = Lines.Where(x => x.Note >= _lowerNote && x.Note <= _higherNote).ToList();
+        
     }
 
     /// <summary>
     /// Instantiate a note on a random line
     /// </summary>
     /// <returns>The line position from top to bottom, starting at 0</returns>
-    public int SpawnNote()
+    public int SpawnNote(PianoNote higherNote = PianoNote.C8, PianoNote lowerNote = PianoNote.A0)
     {
-        int index = Random.Range(0, AvailableLines.Count);
-        AvailableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+        var _availableLines = Lines.Where(x => x.Note >= lowerNote && x.Note <= higherNote).ToList();
+
+        int index = Random.Range(0, _availableLines.Count);
+        _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
 
         return index;
     }

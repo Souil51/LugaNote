@@ -596,7 +596,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Staff: {fileID: 379582241}
-  ControllerType: 0
+  ControllerType: 1
   ReplacementMode: 1
 --- !u!4 &767779332
 Transform:

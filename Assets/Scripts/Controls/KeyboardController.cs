@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,8 @@ public class KeyboardController : MonoBehaviour, IController
         { KeyCode.P, PianoNote.E5 }
     };
 
+    public event NoteDownEventHandler NoteDown;
+
     public KeyboardController()
     {
         _higherNote = keys.Last().Value;
@@ -82,5 +85,8 @@ public class KeyboardController : MonoBehaviour, IController
                 _notes.Add(kvp.Value);
             }
         }
+
+        if (_notesDown.Count > 0)
+            NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
     }
 }

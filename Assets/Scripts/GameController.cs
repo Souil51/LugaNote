@@ -17,6 +17,18 @@ public class GameController : MonoBehaviour
 
     private int _C4Offset = 0;
 
+    private PianoNote ControllerHigherNoteWithOffset => Controller.HigherNote + _C4Offset;
+    private PianoNote ControllerLowerNoteWithOffset => Controller.LowerNote + _C4Offset;
+
+    private List<PianoNote> _controllerNotesWithOffset = new List<PianoNote>();
+    public List<PianoNote> ControllerNotesWithOffset => ControllerNotesWithOffset;
+
+    private List<PianoNote> _controllerNotesDownWithOffset = new List<PianoNote>();
+    public List<PianoNote> ControllerNotesDownWithOffset => _controllerNotesDownWithOffset;
+
+    private List<PianoNote> _controllerNotesUpWithOffset = new List<PianoNote>();
+    public List<PianoNote> ControllerNotesUpWithOffset => _controllerNotesUpWithOffset;
+
     private void Awake()
     {
         switch (ControllerType)
@@ -36,9 +48,30 @@ public class GameController : MonoBehaviour
                 break;
         }
 
-        Staff.InitializeStaff(Controller.HigherNote, Controller.LowerNote);
+        // Applying offset to center keyboard on C4
+        _controllerNotesWithOffset = Controller.Notes;
+        _controllerNotesDownWithOffset = Controller.NotesDown;
+        if (_C4Offset != 0)
+        {
+            _controllerNotesWithOffset = _controllerNotesWithOffset.Select(x => x + _C4Offset).ToList();
+            _controllerNotesDownWithOffset = _controllerNotesDownWithOffset.Select(x => x + _C4Offset).ToList();
+        }
+
+        Staff.InitializeStaff();
 
         StartCoroutine(Co_SpawnNotes());
+
+
+        GameObject test = new GameObject();
+        var go = Instantiate(test, Vector3.zero, Quaternion.identity) as GameObject;
+        var config = go.AddComponent<MidiConfigurationHelper>();
+        config.Controller = Controller;
+        config.ConfigurationEnded += Config_ConfigurationEnded;
+    }
+
+    private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
+    {
+        int i = 0;
     }
 
     // Start is called before the first frame update
@@ -50,31 +83,21 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Applying offset to center keyboard on C4
-        var notesOffset = Controller.Notes;
-        var notesDownOffset = Controller.NotesDown;
-
-        if(_C4Offset != 0)
-        {
-            notesOffset = notesOffset.Select(x => x + _C4Offset).ToList();
-            notesDownOffset = notesDownOffset.Select(x => x + _C4Offset).ToList();
-        }
-
         // Guessing system
         var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
 
         if (firstNote != null)
         {
-            if(notesDownOffset.Count > 0)
+            if(_controllerNotesDownWithOffset.Count > 0)
             {
                 bool guessDone = false;
                 if (
-                        notesDownOffset.Count == 1 
+                        _controllerNotesDownWithOffset.Count == 1 
                         && 
                         (
-                            (!ReplacementMode && notesDownOffset[0] == firstNote.Parent.Note)
+                            (!ReplacementMode && _controllerNotesDownWithOffset[0] == firstNote.Parent.Note)
                             ||
-                            ((int)(notesDownOffset[0]) % 12 == (int)(firstNote.Parent.Note) % 12)
+                            ((int)(_controllerNotesDownWithOffset[0]) % 12 == (int)(firstNote.Parent.Note) % 12)
                         )
                     )
                 {
@@ -128,7 +151,7 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            Staff.SpawnNote();
+            Staff.SpawnNote(ControllerHigherNoteWithOffset, ControllerLowerNoteWithOffset);
             yield return new WaitForSeconds(0.5f);
         }
     }

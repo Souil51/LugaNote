@@ -1,4 +1,5 @@
 using MidiJack;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +21,10 @@ public class MidiController : MonoBehaviour, IController
     public PianoNote HigherNote => _higherNote;
 
     private PianoNote _lowerNote;
+
     public PianoNote LowerNote => _lowerNote;
+
+    public event NoteDownEventHandler NoteDown;
 
     public MidiController()
     {
@@ -52,5 +56,8 @@ public class MidiController : MonoBehaviour, IController
                 _notes.Add((PianoNote)(i - A0StartingMidiNote));
             }
         }
+
+        if (_notesDown.Count > 0)
+            NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
     }
 }
