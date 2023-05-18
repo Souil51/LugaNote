@@ -5,10 +5,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public delegate void NoteDownEventHandler(object sender, NoteEventArgs e);
+public delegate void ConfigurationEventHandled(object sender, ConfigurationEventArgs e);
 
 public interface IController
 {
     event NoteDownEventHandler NoteDown;
+    event ConfigurationEventHandled Configuration;
 
     PianoNote HigherNote { get; }
     PianoNote LowerNote { get; }
@@ -16,6 +18,8 @@ public interface IController
     List<PianoNote> NotesDown { get; }
     List<PianoNote> NotesUp { get; }
     List<PianoNote> Notes { get; }
+
+    void Configure();
 }
 
 public class NoteEventArgs : EventArgs
@@ -26,5 +30,17 @@ public class NoteEventArgs : EventArgs
     public NoteEventArgs(PianoNote note)
     {
         _note = note;
+    }
+}
+
+public class ConfigurationEventArgs : EventArgs
+{
+    private bool _result;
+    public bool Result => _result;
+
+
+    public ConfigurationEventArgs(bool result)
+    {
+        this._result = result;
     }
 }

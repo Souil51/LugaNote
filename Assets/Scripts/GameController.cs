@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class GameController : MonoBehaviour
 {
@@ -29,6 +31,10 @@ public class GameController : MonoBehaviour
     private List<PianoNote> _controllerNotesUpWithOffset = new List<PianoNote>();
     public List<PianoNote> ControllerNotesUpWithOffset => _controllerNotesUpWithOffset;
 
+    private bool _isConfigurationRunning = false;
+    private float _lastTimeScale;
+    private float _pauseTimer;
+
     private void Awake()
     {
         switch (ControllerType)
@@ -36,6 +42,7 @@ public class GameController : MonoBehaviour
             case ControllerType.MIDI:
                 {
                     Controller = gameObject.AddComponent(typeof(MidiController)) as MidiController;
+                    Controller.Configuration += Controller_Configuration;
 
                     // For MIDI keyboard with reduced note count, keyboard will be centered on C4
                     var middleC = StaticResource.GetMiddleCBetweenTwoNotes(Controller.HigherNote, Controller.LowerNote);
@@ -61,17 +68,7 @@ public class GameController : MonoBehaviour
 
         StartCoroutine(Co_SpawnNotes());
 
-
-        GameObject test = new GameObject();
-        var go = Instantiate(test, Vector3.zero, Quaternion.identity) as GameObject;
-        var config = go.AddComponent<MidiConfigurationHelper>();
-        config.Controller = Controller;
-        config.ConfigurationEnded += Config_ConfigurationEnded;
-    }
-
-    private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
-    {
-        int i = 0;
+        StartConfiguringController();
     }
 
     // Start is called before the first frame update
@@ -83,6 +80,24 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Is configuring something ?
+        if (_isConfigurationRunning)
+        {
+            return;
+        }
+
+        if(_pauseTimer > 0)
+        {
+            _pauseTimer -= Time.unscaledDeltaTime;
+            if (_pauseTimer < 0)
+            {
+                _pauseTimer = 0f;
+                Time.timeScale = _lastTimeScale;
+            }
+
+            return;
+        }
+
         // Guessing system
         var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
 
@@ -143,8 +158,22 @@ public class GameController : MonoBehaviour
                     Time.timeScale = 0f;
             }
         }
+    }
 
-        // Debug.Log("Timescale : " + Time.timeScale);
+    private void StartConfiguringController()
+    {
+        _lastTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+
+        _isConfigurationRunning = true;
+        Controller.Configure();
+    }
+
+    private void Controller_Configuration(object sender, ConfigurationEventArgs e)
+    {
+        // Time.timeScale = _lastTimeScale;
+        _pauseTimer = 1f;
+        _isConfigurationRunning = false; // Stop waiting for configuration
     }
 
     public IEnumerator Co_SpawnNotes()

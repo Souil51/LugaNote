@@ -25,6 +25,9 @@ public class MidiController : MonoBehaviour, IController
     public PianoNote LowerNote => _lowerNote;
 
     public event NoteDownEventHandler NoteDown;
+    public event ConfigurationEventHandled Configuration;
+
+    private MidiConfigurationHelper _configurationHelper;
 
     public MidiController()
     {
@@ -59,5 +62,28 @@ public class MidiController : MonoBehaviour, IController
 
         if (_notesDown.Count > 0)
             NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
+    }
+
+    private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
+    {
+        _configurationHelper.ConfigurationEnded -= Config_ConfigurationEnded;
+
+        if (e.StatusCode)
+        {
+            this._lowerNote = e.LowerNote;
+            this._higherNote = e.HigherNote;
+        }
+
+        Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
+    }
+
+    public void Configure()
+    {
+        GameObject test = new GameObject();
+        var go = Instantiate(test, Vector3.zero, Quaternion.identity) as GameObject;
+        _configurationHelper = go.AddComponent<MidiConfigurationHelper>();
+        _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
+
+        _configurationHelper.Initialize(this);
     }
 }

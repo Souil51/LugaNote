@@ -45,6 +45,7 @@ public class KeyboardController : MonoBehaviour, IController
     };
 
     public event NoteDownEventHandler NoteDown;
+    public event ConfigurationEventHandled Configuration;
 
     public KeyboardController()
     {
@@ -88,5 +89,10 @@ public class KeyboardController : MonoBehaviour, IController
 
         if (_notesDown.Count > 0)
             NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
+    }
+
+    public void Configure()
+    {
+        Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no keyboard configuration yet
     }
 }
