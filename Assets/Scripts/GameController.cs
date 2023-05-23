@@ -31,12 +31,15 @@ public class GameController : MonoBehaviour
     private List<PianoNote> _controllerNotesUpWithOffset = new List<PianoNote>();
     public List<PianoNote> ControllerNotesUpWithOffset => _controllerNotesUpWithOffset;
 
-    private bool _isConfigurationRunning = false;
+    // Pause var
     private float _lastTimeScale;
     private float _pauseTimer;
+    public bool IsPaused => _pauseTimer != 0;
 
     private void Awake()
     {
+        // Instantiating the controller
+        // Replace this with dependancy injection later
         switch (ControllerType)
         {
             case ControllerType.MIDI:
@@ -64,10 +67,13 @@ public class GameController : MonoBehaviour
             _controllerNotesDownWithOffset = _controllerNotesDownWithOffset.Select(x => x + _C4Offset).ToList();
         }
 
+        // Generate the staff lines
         Staff.InitializeStaff();
 
+        // Starting spawn note
         StartCoroutine(Co_SpawnNotes());
 
+        // For testing
         StartConfiguringController();
     }
 
@@ -80,24 +86,9 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Is configuring something ?
-        if (_isConfigurationRunning)
-        {
-            return;
-        }
-
-        if(_pauseTimer > 0)
-        {
-            _pauseTimer -= Time.unscaledDeltaTime;
-            if (_pauseTimer < 0)
-            {
-                _pauseTimer = 0f;
-                Time.timeScale = _lastTimeScale;
-            }
-
-            return;
-        }
-
+        if (IsPaused)
+            UpdatePause();
+        
         // Guessing system
         var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
 
@@ -105,7 +96,9 @@ public class GameController : MonoBehaviour
         {
             if(_controllerNotesDownWithOffset.Count > 0)
             {
-                bool guessDone = false;
+                bool? guess = null;
+                // Normal mode : the note has to be the exact same note
+                // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
                 if (
                         _controllerNotesDownWithOffset.Count == 1 
                         && 
@@ -119,25 +112,27 @@ public class GameController : MonoBehaviour
                     // Good guess
                     Debug.Log("Good guess");
                     firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
-                    guessDone = true;
+                    guess = true;
                 }
                 else
                 {
                     // Bad guess
                     Debug.Log("Bad guess");
                     firstNote.ChangeColor(StaticResource.COLOR_BAD_GUESS);
-                    guessDone = true;
+                    guess = false;
                 }
 
-                if (guessDone)
+                if (guess.HasValue)
                 {
                     firstNote.SetInactive();
-                    _points++;
-
                     firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
+
+                    if (guess.Value)
+                        _points++;
                 }
             }
 
+            // For testing
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 firstNote.SetInactive();
@@ -146,13 +141,14 @@ public class GameController : MonoBehaviour
                 firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
             }
 
+            // Update the timescale to slow down notes while they are approching the start of the staff
             if (firstNote != null)
             {
                 var totalDistance = Staff.StartingPointPosition - Staff.EndingPointPosition;
                 var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition;
 
                 float newTimeScale = distanceToEnd / totalDistance;
-                if (newTimeScale > 0.05f)
+                if (newTimeScale > 0.05f) // deadzone
                     Time.timeScale = distanceToEnd / totalDistance;
                 else
                     Time.timeScale = 0f;
@@ -160,22 +156,68 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Controller configuration
+    /// Pause the game (unpause when receiving end configuration event)
+    /// </summary>
     private void StartConfiguringController()
     {
-        _lastTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
-
-        _isConfigurationRunning = true;
+        PauseGame(-1f);
         Controller.Configure();
     }
 
+    /// <summary>
+    /// End of configuration, unpause the game after 1 second (to not get keys immediatly)
+    /// </summary>
     private void Controller_Configuration(object sender, ConfigurationEventArgs e)
     {
-        // Time.timeScale = _lastTimeScale;
-        _pauseTimer = 1f;
-        _isConfigurationRunning = false; // Stop waiting for configuration
+        PauseGame(1f);
     }
 
+    /// <summary>
+    /// Pause the game, setting Timescale to 0f and saving timescale before the pause
+    /// </summary>
+    private void PauseGame(float duration)
+    {
+        _lastTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+        _pauseTimer = duration;
+    }
+
+    /// <summary>
+    /// Update the pause timer and unpause if the timer is ended
+    /// </summary>
+    private void UpdatePause()
+    {
+        if (_pauseTimer != 0) // Pause can be positive or negative (= unlimited pause)
+        {
+            if (_pauseTimer > 0)
+            {
+                _pauseTimer -= Time.unscaledDeltaTime;
+                if (_pauseTimer < 0)
+                {
+                    UnpauseGame();
+                }
+            }
+
+            return;
+        }
+    }
+
+
+    /// <summary>
+    /// Resume the game after a pause
+    /// </summary>
+    private void UnpauseGame()
+    {
+        _pauseTimer = 0f;
+        Time.timeScale = _lastTimeScale;
+    }
+
+    /// <summary>
+    /// Coroutine : Spawn notes every 0.5f (for timescale = 1f)
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator Co_SpawnNotes()
     {
         while (true)
