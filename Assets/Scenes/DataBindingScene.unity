@@ -424,7 +424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MemberName: text
   Paths:
-  - Name: Points
+  - Name: Player.Health
     LocalizeName: 
   localize: {fileID: 0}
 --- !u!114 &840325737

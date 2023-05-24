@@ -23,7 +23,13 @@ public class SimpleBinding : MonoBehaviour
 
     private void Awake()
     {
-        _canvasElement = GetComponent<ICanvasElement>();
+        InitComponent();
+    }
+
+    private void InitComponent()
+    {
+        if (_canvasElement == null)
+            _canvasElement = GetComponent<ICanvasElement>();
     }
 
     /// <summary>
@@ -33,6 +39,8 @@ public class SimpleBinding : MonoBehaviour
     /// <param name="propertyName">The ViewModel property name updated</param>
     public void ChangeValue(object value, string propertyName)
     {
+        InitComponent();
+
         /*string[] splitName = MemberName.Split('.');
         if (splitName.Length == 1)
         {

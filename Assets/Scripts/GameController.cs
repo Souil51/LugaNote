@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
-public class GameController : MonoBehaviour
+public class GameController : GameControllerBase
 {
     [SerializeField] private Staff Staff;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
@@ -16,6 +16,15 @@ public class GameController : MonoBehaviour
     public bool IsStopped => Time.timeScale != 0f;
 
     private int _points = 0;
+    public int Points
+    {
+        get => _points;
+        private set
+        {
+            _points = value;
+            OnPropertyChanged();
+        }
+    }
 
     private int _C4Offset = 0;
 
@@ -38,6 +47,8 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        InitialiserNotifyPropertyChanged();
+
         // Instantiating the controller
         // Replace this with dependancy injection later
         switch (ControllerType)
@@ -136,7 +147,7 @@ public class GameController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 firstNote.SetInactive();
-                _points++;
+                Points++;
 
                 firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
             }

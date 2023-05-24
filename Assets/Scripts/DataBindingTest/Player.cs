@@ -1,18 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : INotifyPropertyChanged
 {
-    // Start is called before the first frame update
-    void Start()
+    public Player(int maxHealth)
     {
-        
+        Health = maxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    private int _health;
+    public int Health
     {
-        
+        get => _health;
+        private set
+        {
+            if (value < 0)
+                _health = 0;
+            else
+                _health = value;
+
+            OnPropertyChanged();
+        }
+    }
+
+    public void GetDamaged(int amount)
+    {
+        Health -= amount;
+
+        if (Health == 0)
+        {
+            //Mort
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string name = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

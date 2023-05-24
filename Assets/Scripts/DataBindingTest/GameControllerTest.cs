@@ -15,6 +15,9 @@ public class GameControllerTest : GameControllerBase
         }
     }
 
+    private Player _player;
+    public Player Player => _player;
+
     public TMPro.TextMeshProUGUI test;
 
     // Start is called before the first frame update
@@ -31,8 +34,10 @@ public class GameControllerTest : GameControllerBase
 
     private void Awake()
     {
-        InitialiserNotifyPropertyChanged();
-
+        _player = new Player(5);
+        Player.GetDamaged(1);
         Points = 10;
+        
+        InitialiserNotifyPropertyChanged();
     }
 }
