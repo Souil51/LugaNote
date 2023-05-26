@@ -8,6 +8,8 @@ public class Staff : MonoBehaviour
     [SerializeField] private List<LinePositionIndicator> Indicators = new List<LinePositionIndicator>();
     [SerializeField] private Clef Clef;
 
+    public Clef StaffClef => Clef;
+
     private SpriteRenderer spriteRenderer;
     public float SpriteWidth => spriteRenderer.size.x * transform.localScale.x;
 

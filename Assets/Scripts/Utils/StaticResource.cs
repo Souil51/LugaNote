@@ -249,6 +249,8 @@ public static class StaticResource
 
         int difference = idxFlatNote - idxFirstNote;
 
+        Debug.Log(flatNote + " - " + firstNote + " - " + idxFirstNote + " - " + idxFlatNote + " - " + difference);
+
         if (difference < 1)
             return 3;
         else if (difference < 3)

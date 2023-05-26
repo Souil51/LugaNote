@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using UnityEngine.SocialPlatforms;
 
 public class GameController : GameControllerBase
 {
-    [SerializeField] private Staff Staff;
+    [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
     [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
 
@@ -47,6 +48,9 @@ public class GameController : GameControllerBase
 
     private void Awake()
     {
+        if (Staffs.Count == 0)
+            throw new Exception("Staffs list is empty");
+
         InitialiserNotifyPropertyChanged();
 
         // Instantiating the controller
@@ -79,13 +83,13 @@ public class GameController : GameControllerBase
         }
 
         // Generate the staff lines
-        Staff.InitializeStaff();
+        Staffs.ForEach(x => x.InitializeStaff());
 
         // Starting spawn note
         StartCoroutine(Co_SpawnNotes());
 
         // For testing
-        StartConfiguringController();
+        // StartConfiguringController();
     }
 
     // Start is called before the first frame update
@@ -101,7 +105,7 @@ public class GameController : GameControllerBase
             UpdatePause();
         
         // Guessing system
-        var firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
+        var firstNote = GetFirstNote();
 
         if (firstNote != null)
         {
@@ -135,8 +139,9 @@ public class GameController : GameControllerBase
 
                 if (guess.HasValue)
                 {
+                    Debug.Log("Guess " + firstNote.Parent.Note);
                     firstNote.SetInactive();
-                    firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
+                    firstNote = GetFirstNote();
 
                     if (guess.Value)
                         _points++;
@@ -146,17 +151,20 @@ public class GameController : GameControllerBase
             // For testing
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                Debug.Log("Guess " + firstNote.Parent.Note);
+                firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
                 firstNote.SetInactive();
                 Points++;
 
-                firstNote = Staff.Notes.Where(x => x.IsActive).FirstOrDefault();
+                firstNote = GetFirstNote();
             }
 
             // Update the timescale to slow down notes while they are approching the start of the staff
             if (firstNote != null)
             {
-                var totalDistance = Staff.StartingPointPosition - Staff.EndingPointPosition;
-                var distanceToEnd = firstNote.transform.position.x - Staff.EndingPointPosition;
+                // timescale based on the first Staff
+                var totalDistance = Staffs[0].StartingPointPosition - Staffs[0].EndingPointPosition;
+                var distanceToEnd = firstNote.transform.position.x - Staffs[0].EndingPointPosition;
 
                 float newTimeScale = distanceToEnd / totalDistance;
                 if (newTimeScale > 0.05f) // deadzone
@@ -225,16 +233,25 @@ public class GameController : GameControllerBase
         Time.timeScale = _lastTimeScale;
     }
 
+    private Note GetFirstNote()
+    {
+        var firstNote = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault();
+        return firstNote;
+    }
+
     /// <summary>
-    /// Coroutine : Spawn notes every 0.5f (for timescale = 1f)
+    /// Coroutine : Spawn notes on staff every 0.5f (for timescale = 1f)
     /// </summary>
     /// <returns></returns>
     public IEnumerator Co_SpawnNotes()
     {
         while (true)
         {
-            Staff.SpawnNote(ControllerHigherNoteWithOffset, ControllerLowerNoteWithOffset);
-            yield return new WaitForSeconds(0.5f);
+            for(int i = 0; i < Staffs.Count; i++)
+            {
+                Staffs[i].SpawnNote(ControllerHigherNoteWithOffset, ControllerLowerNoteWithOffset);
+                yield return new WaitForSeconds(0.5f / Staffs.Count);
+            }
         }
     }
 }

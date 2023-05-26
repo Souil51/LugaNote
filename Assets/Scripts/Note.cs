@@ -20,6 +20,9 @@ public class Note : MonoBehaviour
 
     private Tween _movement;
 
+    private long _creationTimestamp;
+    public long CreationTimestamp => _creationTimestamp;
+
     public delegate void DestroyEventHandler(object sender, EventArgs args);
     public event DestroyEventHandler DestroyEvent;
 
@@ -42,6 +45,7 @@ public class Note : MonoBehaviour
 
     public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
     {
+        _creationTimestamp = DateTime.Now.Ticks;
         _parent = parent;
 
         // The staff display only 5 lines.

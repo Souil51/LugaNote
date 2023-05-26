@@ -69,8 +69,8 @@ public class StaffLine : MonoBehaviour
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
         go.transform.localScale *= scale;
 
-        int numberOfEmptyLineAbove = StaticResource.GetAdditionnalEmptyLineAbove(Clef.Trebble, this.Note);
-        int numberOfEmptyLineBelow = StaticResource.GetAdditionnalEmptyLineBelow(Clef.Trebble, this.Note);
+        int numberOfEmptyLineAbove = StaticResource.GetAdditionnalEmptyLineAbove(Parent.StaffClef, this.Note);
+        int numberOfEmptyLineBelow = StaticResource.GetAdditionnalEmptyLineBelow(Parent.StaffClef, this.Note);
 
         var note = go.GetComponent<Note>();
         note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove);
