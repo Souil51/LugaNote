@@ -81,7 +81,11 @@ public class GameController : GameControllerBase
             _controllerNotesWithOffset = _controllerNotesWithOffset.Select(x => x + _C4Offset).ToList();
             _controllerNotesDownWithOffset = _controllerNotesDownWithOffset.Select(x => x + _C4Offset).ToList();
         }
+    }
 
+    // Start is called before the first frame update
+    void Start()
+    {
         // Generate the staff lines
         Staffs.ForEach(x => x.InitializeStaff());
 
@@ -90,12 +94,6 @@ public class GameController : GameControllerBase
 
         // For testing
         // StartConfiguringController();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -162,9 +160,10 @@ public class GameController : GameControllerBase
             // Update the timescale to slow down notes while they are approching the start of the staff
             if (firstNote != null)
             {
+                var firstNoteStaff = firstNote.Parent.Parent;
                 // timescale based on the first Staff
-                var totalDistance = Staffs[0].StartingPointPosition - Staffs[0].EndingPointPosition;
-                var distanceToEnd = firstNote.transform.position.x - Staffs[0].EndingPointPosition;
+                var totalDistance = firstNoteStaff.StartingPointPosition - firstNoteStaff.EndingPointPosition;
+                var distanceToEnd = firstNote.transform.localPosition.x - firstNoteStaff.EndingPointPosition;
 
                 float newTimeScale = distanceToEnd / totalDistance;
                 if (newTimeScale > 0.05f) // deadzone
