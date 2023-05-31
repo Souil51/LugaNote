@@ -249,7 +249,7 @@ public static class StaticResource
 
         int difference = idxFlatNote - idxFirstNote;
 
-        Debug.Log(flatNote + " - " + firstNote + " - " + idxFirstNote + " - " + idxFlatNote + " - " + difference);
+        // Debug.Log(flatNote + " - " + firstNote + " - " + idxFirstNote + " - " + idxFlatNote + " - " + difference);
 
         if (difference < 1)
             return 3;
@@ -293,7 +293,7 @@ public static class StaticResource
     }
 }
 
-public enum ControllerType { Keyboard = 0, MIDI = 1 }
+public enum ControllerType { Keyboard = 0, MIDI = 1, Visual = 2 }
 
 public enum Clef { Trebble = 0, Bass = 1}
 

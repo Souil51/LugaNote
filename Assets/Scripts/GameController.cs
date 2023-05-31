@@ -67,6 +67,9 @@ public class GameController : GameControllerBase
                     _C4Offset = PianoNote.C4 - middleC;
                 }
                 break;
+            case ControllerType.Visual:
+                Controller = gameObject.AddComponent(typeof(VisualController)) as VisualController;
+                break;
             case ControllerType.Keyboard:
             default:
                 Controller = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
