@@ -48,33 +48,43 @@ public class VisualController : MonoBehaviour, IController
         goCanvas.transform.localPosition = Vector3.zero;
         goCanvas.transform.SetParent(transform);
 
-        int noteCount = HigherNote - LowerNote;
+        float noteCount = HigherNote - LowerNote;
 
-        var goTmp = Instantiate(Resources.Load("NoteButton")) as GameObject;
-        var compTmp = goTmp.GetComponent<Image>();
+        var goTmpButton = Instantiate(Resources.Load("NoteButton")) as GameObject;
+        var rectTmpButton = goTmpButton.GetComponent<RectTransform>();
 
-        float width = compTmp.sprite.rect.width * 2;
-        float currentX = -1f * width * (noteCount / 2f);
+        var goTmpSharp = Instantiate(Resources.Load("NoteButtonSharp")) as GameObject;
+        var rectTmpSharp = goTmpSharp.GetComponent<RectTransform>();
+
+        float flatNoteWidth = rectTmpButton.sizeDelta.x;
+        float sharpNoteWidth = rectTmpSharp.sizeDelta.x;
+
+        float currentX = -1f * flatNoteWidth * (noteCount / 2f);
 
         for(int i = (int)LowerNote; i <= (int)HigherNote; i++)
         {
             var note = (PianoNote)i;
 
-            //if (StaticResource.SharpNotes.Contains(note))
-            //{
-            //    currentX += width;
-            //    continue;
-            //}
+            GameObject goButtonNote = null;
 
-            var go = Instantiate(Resources.Load("NoteButton")) as GameObject;
+            if (StaticResource.FlatNotes.Contains(note))
+            {
+                goButtonNote = Instantiate(Resources.Load(StaticResource.PREFAB_NOTE_BUTTON)) as GameObject;
+            }
+            else
+            {
+                goButtonNote = Instantiate(Resources.Load(StaticResource.PREFAB_NOTE_BUTTON_SHARP)) as GameObject;
+            }
 
-            go.transform.SetParent(goCanvas.transform);
-            go.transform.localPosition = new Vector3(currentX, 0f, 0f);
+            var currentWidth = goButtonNote.GetComponent<RectTransform>().sizeDelta.x;
 
-            var tmp = go.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            goButtonNote.transform.SetParent(goCanvas.transform);
+            goButtonNote.transform.localPosition = new Vector3(currentX, 0f, 0f);
+
+            var tmp = goButtonNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             tmp.text = note.ToString();
 
-            var btn = go.GetComponent<EventTrigger>();
+            var btn = goButtonNote.GetComponent<EventTrigger>();
 
             var pointerUp = btn.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
             pointerUp.callback.AddListener((data) =>
@@ -93,7 +103,7 @@ public class VisualController : MonoBehaviour, IController
                 Notes.Add(note);
             });
 
-            currentX += width;
+            currentX += currentWidth;
         }
     }
 }

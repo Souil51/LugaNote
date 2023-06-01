@@ -16,6 +16,9 @@ public static class StaticResource
     public static string PREFAB_LINE => "line";
     public static string PREFAB_EMPTY_NOTE_LINE => "empty_note_line";
 
+    public static string PREFAB_NOTE_BUTTON => "NoteButton";
+    public static string PREFAB_NOTE_BUTTON_SHARP => "NoteButtonSharp";
+
     /// <summary>
     /// Useful values
     /// </summary>
