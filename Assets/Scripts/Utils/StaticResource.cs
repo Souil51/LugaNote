@@ -1,5 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 /// <summary>
@@ -171,6 +175,7 @@ public static class StaticResource
         PianoNote.B7,
         PianoNote.C8
     };
+    
     /// <summary>
     /// All flat notes
     /// </summary>
@@ -294,6 +299,28 @@ public static class StaticResource
 
         return minNote;
     }
+
+    public static string GetNoteCommonName(PianoNote pianoNote, bool bemol = false)
+    {
+        if(!bemol)
+            return GetEnumDescription((NoteCommonNameSharp)((int)pianoNote % 12));
+        else
+            return GetEnumDescription((NoteCommonNameBemol)((int)pianoNote % 12));
+    }
+
+    public static string GetEnumDescription(Enum value)
+    {
+        FieldInfo fi = value.GetType().GetField(value.ToString());
+
+        DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+        if (attributes != null && attributes.Any())
+        {
+            return attributes.First().Description;
+        }
+
+        return value.ToString();
+    }
 }
 
 public enum ControllerType { Keyboard = 0, MIDI = 1, Visual = 2 }
@@ -393,4 +420,76 @@ public enum PianoNote
     ASharp7 = 85,
     B7 = 86,
     C8 = 87
+}
+
+public enum NoteCommonNameSharp
+{
+    [Description("La")]
+    La = 0,
+    [Description("La#")]
+    LaSharp,
+    [Description("Si")]
+    Si,
+    [Description("Do")]
+    Do,
+    [Description("Do#")]
+    DoSharp,
+    [Description("RÈ")]
+    RÈ,
+    [Description("RÈ#")]
+    RÈSharp,
+    [Description("Mi")]
+    Mi,
+    [Description("Fa")]
+    Fa,
+    [Description("Fa#")]
+    FaSharp,
+    [Description("Sol")]
+    Sol,
+    [Description("Sol#")]
+    SolSharp
+}
+
+public enum NoteCommonNameBemol
+{
+    [Description("La")]
+    La = 0,
+    [Description("Sib")]
+    LaSharp,
+    [Description("Si")]
+    Si,
+    [Description("Do")]
+    Do,
+    [Description("RÈb")]
+    DoSharp,
+    [Description("RÈ")]
+    RÈ,
+    [Description("Mib")]
+    RÈSharp,
+    [Description("Mi")]
+    Mi,
+    [Description("Fa")]
+    Fa,
+    [Description("Solb")]
+    FaSharp,
+    [Description("Sol")]
+    Sol,
+    [Description("Lab")]
+    SolSharp
+}
+
+public enum PianoScale
+{
+    A,
+    Am,
+    B,
+    Bm,
+    C,
+    Cm,
+    D,
+    Dm,
+    E,
+    Em,
+    F,
+    Fm
 }

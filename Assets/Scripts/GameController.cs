@@ -95,6 +95,8 @@ public class GameController : GameControllerBase
         // Starting spawn note
         StartCoroutine(Co_SpawnNotes());
 
+        Points = 0;
+
         // For testing
         // StartConfiguringController();
     }
@@ -145,7 +147,7 @@ public class GameController : GameControllerBase
                     firstNote = GetFirstNote();
 
                     if (guess.Value)
-                        _points++;
+                        Points++;
                 }
             }
 
