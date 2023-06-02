@@ -27,6 +27,24 @@ public class GameController : GameControllerBase
         }
     }
 
+    public string TimeLeftString => ((int)TimeLeft).ToString();
+
+    private float _timeLeft = 0;
+    public float TimeLeft
+    {
+        get => _timeLeft;
+        private set
+        {
+            bool updateString = (int)value != (int)_timeLeft;
+
+            _timeLeft = value;
+            OnPropertyChanged();
+
+            if(updateString)
+                OnPropertyChanged("TimeLeftString");
+        }
+    }
+
     private int _C4Offset = 0;
 
     private PianoNote ControllerHigherNoteWithOffset => Controller.HigherNote + _C4Offset;
@@ -96,6 +114,7 @@ public class GameController : GameControllerBase
         StartCoroutine(Co_SpawnNotes());
 
         Points = 0;
+        TimeLeft = 60f;
 
         // For testing
         // StartConfiguringController();
@@ -106,7 +125,9 @@ public class GameController : GameControllerBase
     {
         if (IsPaused)
             UpdatePause();
-        
+
+        TimeLeft -= Time.unscaledDeltaTime;
+
         // Guessing system
         var firstNote = GetFirstNote();
 
