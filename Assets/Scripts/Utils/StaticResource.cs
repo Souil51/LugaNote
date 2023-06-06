@@ -17,6 +17,12 @@ public static class StaticResource
     /// </summary>
     public static string PREFAB_NOTE_LINE => "note_line";
     public static string PREFAB_NOTE_NO_LINE => "note_no_line";
+    public static string PREFAB_NOTE_LINE_SHARP => "note_line_sharp";
+    public static string PREFAB_NOTE_NO_LINE_SHARP => "note_no_line_sharp";
+    public static string PREFAB_NOTE_LINE_FLAT => "note_line_flat";
+    public static string PREFAB_NOTE_NO_LINE_FLAT => "note_no_line_flat";
+    public static string PREFAB_NOTE_LINE_NATURAL => "note_line_natural";
+    public static string PREFAB_NOTE_NO_LINE_NATURAL => "note_no_line_natural";
     public static string PREFAB_LINE => "line";
     public static string PREFAB_EMPTY_NOTE_LINE => "empty_note_line";
 
@@ -120,7 +126,7 @@ public static class StaticResource
     /// </summary>
     public static List<PianoNote> SharpNotes => _sharpNotes;
 
-    private static List<PianoNote> _flatNotes = new List<PianoNote>
+    private static List<PianoNote> _naturalNotes = new List<PianoNote>
     {
         PianoNote.A0,
         PianoNote.B0,
@@ -177,18 +183,18 @@ public static class StaticResource
     };
     
     /// <summary>
-    /// All flat notes
+    /// All naturals notes
     /// </summary>
-    public static List<PianoNote> FlatNotes => _flatNotes;
+    public static List<PianoNote> NaturalNotes => _naturalNotes;
 
     /// <summary>
-    /// Convert a sharp note to a flat note or return this same note if already flat
+    /// Convert a sharp note to a natural note or return this same note if already natural
     /// </summary>
     /// <param name="sharp"></param>
-    /// <returns>Flat note</returns>
-    public static PianoNote ConvertToFlatNote(PianoNote sharp)
+    /// <returns>Natural note</returns>
+    public static PianoNote ConvertToNaturalNote(PianoNote sharp)
     {
-        if (FlatNotes.Contains(sharp))
+        if (NaturalNotes.Contains(sharp))
         {
             return sharp;
         }
@@ -199,19 +205,19 @@ public static class StaticResource
     }
 
     /// <summary>
-    /// Convert a flat note to a sharp note or return this same note if already sharp
+    /// Convert a natural note to a sharp note or return this same note if already sharp
     /// </summary>
-    /// <param name="flat"></param>
+    /// <param name="natural"></param>
     /// <returns>Sharp note</returns>
-    public static PianoNote ConvertToSharpNote(PianoNote flat)
+    public static PianoNote ConvertToSharpNote(PianoNote natural)
     {
-        if (SharpNotes.Contains(flat) || flat == PianoNote.C8)
+        if (SharpNotes.Contains(natural) || natural == PianoNote.C8)
         {
-            return flat;
+            return natural;
         }
         else
         {
-            return flat + 1;
+            return natural + 1;
         }
     }
 
@@ -223,13 +229,13 @@ public static class StaticResource
     /// <returns></returns>
     public static int GetAdditionnalEmptyLineBelow(Clef clef, PianoNote pianoNote) 
     {
-        var flatNote = ConvertToFlatNote(pianoNote);
+        var naturalNote = ConvertToNaturalNote(pianoNote);
         var firstNote = GetFirstPianoNoteForClef(clef);
 
-        int idxFirstNote = FlatNotes.IndexOf(firstNote);
-        int idxFlatNote = FlatNotes.IndexOf(flatNote);
+        int idxFirstNote = NaturalNotes.IndexOf(firstNote);
+        int idxNaturalNote = NaturalNotes.IndexOf(naturalNote);
 
-        int difference = idxFlatNote - idxFirstNote;
+        int difference = idxNaturalNote - idxFirstNote;
 
         if (difference > 21)
             return 3;
@@ -249,15 +255,15 @@ public static class StaticResource
     /// <returns></returns>
     public static int GetAdditionnalEmptyLineAbove(Clef clef, PianoNote pianoNote)
     {
-        var flatNote = ConvertToFlatNote(pianoNote);
+        var naturalNote = ConvertToNaturalNote(pianoNote);
         var firstNote = GetFirstPianoNoteForClef(clef);
 
-        int idxFirstNote = FlatNotes.IndexOf(firstNote);
-        int idxFlatNote = FlatNotes.IndexOf(flatNote);
+        int idxFirstNote = NaturalNotes.IndexOf(firstNote);
+        int idxNaturalNote = NaturalNotes.IndexOf(naturalNote);
 
-        int difference = idxFlatNote - idxFirstNote;
+        int difference = idxNaturalNote - idxFirstNote;
 
-        // Debug.Log(flatNote + " - " + firstNote + " - " + idxFirstNote + " - " + idxFlatNote + " - " + difference);
+        // Debug.Log(NaturalNote + " - " + firstNote + " - " + idxFirstNote + " - " + idxNaturalNote + " - " + difference);
 
         if (difference < 1)
             return 3;
@@ -328,7 +334,7 @@ public enum ControllerType { Keyboard = 0, MIDI = 1, Visual = 2 }
 public enum Clef { Trebble = 0, Bass = 1}
 
 /// <summary>
-/// All the notes, flat and sharp
+/// All the notes, natural and sharp
 /// </summary>
 public enum PianoNote
 {

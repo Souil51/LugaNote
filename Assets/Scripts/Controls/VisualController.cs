@@ -61,10 +61,10 @@ public class VisualController : MonoBehaviour, IController
         float yPosition = - (canvasHeight / 2f) + 25f;
 
         // Compute the X of the first note
-        var flatNotesCount = StaticResource.FlatNotes.Count(x => x >= LowerNote && x <= HigherNote);
+        var naturalNotesCount = StaticResource.NaturalNotes.Count(x => x >= LowerNote && x <= HigherNote);
         var sharpNotesCount = StaticResource.SharpNotes.Count(x => x >= LowerNote && x <= HigherNote);
 
-        float totalWidth = (rectTmpButton.sizeDelta.x * flatNotesCount) + (rectTmpSharp.sizeDelta.x * sharpNotesCount);
+        float totalWidth = (rectTmpButton.sizeDelta.x * naturalNotesCount) + (rectTmpSharp.sizeDelta.x * sharpNotesCount);
 
         float currentX = -(totalWidth / 2);
 
@@ -76,7 +76,7 @@ public class VisualController : MonoBehaviour, IController
         {
             var note = (PianoNote)i;
 
-            string prefabName = StaticResource.FlatNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
+            string prefabName = StaticResource.NaturalNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             goButtonNote.transform.SetParent(goCanvas.transform);
             goButtonNote.transform.localPosition = new Vector3(currentX, yPosition, 0f);
