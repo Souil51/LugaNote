@@ -84,7 +84,7 @@ public class Staff : MonoBehaviour
         // Starting at the top line
         float currentY = firstIndicator.transform.position.y - (((minPosition * 2) + 7) * yHalfDistance);
 
-        PianoNote currentNote = StaticResource.GetFirstPianoNoteForClef(Clef);
+        PianoNote currentNote = MusicHelper.GetFirstPianoNoteForClef(Clef);
 
         // Instantiating 23 lines
         for(int i = 0; i < 23; i++)
@@ -100,7 +100,7 @@ public class Staff : MonoBehaviour
             currentY += yHalfDistance;
 
             currentNote++;
-            if (StaticResource.SharpNotes.Contains(currentNote))
+            if (MusicHelper.SharpNotes.Contains(currentNote))
                 currentNote++;
         }
 

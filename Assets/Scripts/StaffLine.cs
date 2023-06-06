@@ -20,6 +20,9 @@ public class StaffLine : MonoBehaviour
     private PianoNote _note;
     public PianoNote Note => _note;
 
+    private Alteration _alteration;
+    public Alteration Alteration => _alteration;
+
     private SpriteRenderer _sprtRenderer;
 
     private Staff _parent;
@@ -50,12 +53,21 @@ public class StaffLine : MonoBehaviour
         this._isSpaceLine = spaceLine;
         this._isVisible = visible;
         this._id = id;
+
+        // A Staff line PianoNote CANNOT be sharp, this stuff have to be handle with the alteration
+        if (MusicHelper.SharpNotes.Contains(note))
+            note--;
         this._note = note;
 
         if(!_isVisible || _isSpaceLine)
         {
             _sprtRenderer.sprite = null;
         }
+    }
+
+    public void SetAlteration(Alteration alteration)
+    {
+        this._alteration = Alteration;
     }
 
     /// <summary>
@@ -69,11 +81,13 @@ public class StaffLine : MonoBehaviour
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
         go.transform.localScale *= scale;
 
-        int numberOfEmptyLineAbove = StaticResource.GetAdditionnalEmptyLineAbove(Parent.StaffClef, this.Note);
-        int numberOfEmptyLineBelow = StaticResource.GetAdditionnalEmptyLineBelow(Parent.StaffClef, this.Note);
+        int numberOfEmptyLineAbove = MusicHelper.GetAdditionnalEmptyLineAbove(Parent.StaffClef, this.Note);
+        int numberOfEmptyLineBelow = MusicHelper.GetAdditionnalEmptyLineBelow(Parent.StaffClef, this.Note);
 
         var note = go.GetComponent<Note>();
-        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove);
+
+        // Initialize note with this line alteration
+        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, this.Alteration);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         note.DestroyEvent += Note_DestroyEvent;

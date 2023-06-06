@@ -61,8 +61,8 @@ public class VisualController : MonoBehaviour, IController
         float yPosition = - (canvasHeight / 2f) + 25f;
 
         // Compute the X of the first note
-        var naturalNotesCount = StaticResource.NaturalNotes.Count(x => x >= LowerNote && x <= HigherNote);
-        var sharpNotesCount = StaticResource.SharpNotes.Count(x => x >= LowerNote && x <= HigherNote);
+        var naturalNotesCount = MusicHelper.NaturalNotes.Count(x => x >= LowerNote && x <= HigherNote);
+        var sharpNotesCount = MusicHelper.SharpNotes.Count(x => x >= LowerNote && x <= HigherNote);
 
         float totalWidth = (rectTmpButton.sizeDelta.x * naturalNotesCount) + (rectTmpSharp.sizeDelta.x * sharpNotesCount);
 
@@ -76,7 +76,7 @@ public class VisualController : MonoBehaviour, IController
         {
             var note = (PianoNote)i;
 
-            string prefabName = StaticResource.NaturalNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
+            string prefabName = MusicHelper.NaturalNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             goButtonNote.transform.SetParent(goCanvas.transform);
             goButtonNote.transform.localPosition = new Vector3(currentX, yPosition, 0f);
@@ -86,7 +86,7 @@ public class VisualController : MonoBehaviour, IController
 
             // Update the text of the button
             var buttonTMP = goButtonNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            buttonTMP.text = StaticResource.GetNoteCommonName(note);
+            buttonTMP.text = MusicHelper.GetNoteCommonName(note);
 
             // Add the button down and button up event here because UI Button only have Click event
             // But we want to know when button is up or held

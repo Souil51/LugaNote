@@ -81,7 +81,7 @@ public class GameController : GameControllerBase
                     Controller.Configuration += Controller_Configuration;
 
                     // For MIDI keyboard with reduced note count, keyboard will be centered on C4
-                    var middleC = StaticResource.GetMiddleCBetweenTwoNotes(Controller.HigherNote, Controller.LowerNote);
+                    var middleC = MusicHelper.GetMiddleCBetweenTwoNotes(Controller.HigherNote, Controller.LowerNote);
                     _C4Offset = PianoNote.C4 - middleC;
                 }
                 break;

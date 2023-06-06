@@ -16,6 +16,24 @@ public class Note : MonoBehaviour
     private bool _isActive = true;
     public bool IsActive => _isActive;
 
+    private Alteration _alteration;
+    public Alteration Alteration => _alteration;
+
+    // Get the real note with alteration
+    // The parent is always a natural note
+    private PianoNote AlteredNote
+    {
+        get
+        {
+            if (Alteration == Alteration.Sharp)
+                return Parent.Note < MusicHelper.HigherNote ? Parent.Note + 1 : MusicHelper.HigherNote;
+            else if(Alteration == Alteration.Flat)
+                return Parent.Note > MusicHelper.LowerNote ? Parent.Note - 1 : MusicHelper.LowerNote;
+            else
+                return Parent.Note;
+        }
+    }
+
     private SpriteRenderer _sprtRenderer;
 
     private Tween _movement;
@@ -43,14 +61,15 @@ public class Note : MonoBehaviour
         
     }
 
-    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration)
     {
         _creationTimestamp = DateTime.Now.Ticks;
         _parent = parent;
+        _alteration = alteration;
 
         // The staff display only 5 lines.
         // For lower or higher notes than that empty lines have to be displayed for better accuracy
-        if(emptyLinesAbove > 0 || emptyLinesBelow > 0)
+        if (emptyLinesAbove > 0 || emptyLinesBelow > 0)
         {
             float distance = Parent.Parent.LineDistance / transform.localScale.x;
             float offset = Parent.IsSpaceLine || Parent.IsVisible ? distance : 2f * distance;
@@ -69,6 +88,11 @@ public class Note : MonoBehaviour
                 goLine.transform.localScale *= transform.localScale.x;
             }
         }
+    }
+
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
+    {
+        InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, Alteration.Natural);
     }
 
     /// <summary>
