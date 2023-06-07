@@ -276,8 +276,8 @@ public class MusicHelper
     public static string GetNoteCommonName(PianoNote pianoNote, bool flat = false)
     {
         if (!flat)
-            return Enums.GetEnumDescription((NoteCommonNameSharp)((int)pianoNote % 12));
+            return ((NoteCommonNameSharp)((int)pianoNote % 12)).GetEnumDescription();
         else
-            return Enums.GetEnumDescription((NoteCommonNameFlat)((int)pianoNote % 12));
+            return ((NoteCommonNameFlat)((int)pianoNote % 12)).GetEnumDescription();
     }
 }

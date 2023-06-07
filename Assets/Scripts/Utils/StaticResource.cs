@@ -36,4 +36,30 @@ public static class StaticResource
     public static Color COLOR_BAD_GUESS => Color.red;
 
     public static int PIANO_KEY_COUNT => 88;
+
+    public static string GET_PREFAB_NOTE(bool withLine, Alteration alteration)
+    {
+        string result = "";
+
+        if (withLine)
+        {
+            if (alteration == Alteration.Natural)
+                result = StaticResource.PREFAB_NOTE_LINE;
+            else if (alteration == Alteration.Sharp)
+                result = StaticResource.PREFAB_NOTE_LINE_SHARP;
+            else
+                result = StaticResource.PREFAB_NOTE_LINE_FLAT;
+        }
+        else
+        {
+            if (alteration == Alteration.Natural)
+                result = StaticResource.PREFAB_NOTE_NO_LINE;
+            else if (alteration == Alteration.Sharp)
+                result = StaticResource.PREFAB_NOTE_NO_LINE_SHARP;
+            else
+                result = StaticResource.PREFAB_NOTE_NO_LINE_FLAT;
+        }
+
+        return result;
+    }
 }

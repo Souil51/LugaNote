@@ -70,12 +70,17 @@ public class StaffLine : MonoBehaviour
         this._alteration = Alteration;
     }
 
+    public void ResetAlteration()
+    {
+        this.SetAlteration(Alteration.Natural);
+    }
+
     /// <summary>
     /// Instantiate a note on the line starting position to the line ending position
     /// </summary>
     public void SpawnNote(float scale,  float fromX, float toX)
     {
-        string resourceToLoad = !_isVisible && !_isSpaceLine ? StaticResource.PREFAB_NOTE_LINE : StaticResource.PREFAB_NOTE_NO_LINE;
+        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Alteration);
 
         GameObject go = (GameObject)Instantiate(Resources.Load(resourceToLoad));
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);

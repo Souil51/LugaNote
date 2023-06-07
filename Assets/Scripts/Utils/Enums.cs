@@ -138,27 +138,27 @@ public enum NoteCommonNameFlat
     [Description("La")]
     La = 0,
     [Description("Sib")]
-    LaSharp,
+    LaFlat,
     [Description("Si")]
     Si,
     [Description("Do")]
     Do,
     [Description("RÈb")]
-    DoSharp,
+    DoFlat,
     [Description("RÈ")]
     RÈ,
     [Description("Mib")]
-    RÈSharp,
+    RÈFlat,
     [Description("Mi")]
     Mi,
     [Description("Fa")]
     Fa,
     [Description("Solb")]
-    FaSharp,
+    FaFlat,
     [Description("Sol")]
     Sol,
     [Description("Lab")]
-    SolSharp
+    SolFlat
 }
 
 public enum PianoScale
@@ -184,9 +184,9 @@ public enum Alteration
     Flat = 2
 }
 
-public class Enums
+public static class Enums
 {
-    public static string GetEnumDescription(Enum value)
+    public static string GetEnumDescription(this Enum value)
     {
         FieldInfo fi = value.GetType().GetField(value.ToString());
 
