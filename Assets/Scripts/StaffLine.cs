@@ -17,11 +17,26 @@ public class StaffLine : MonoBehaviour
     private bool _isSpaceLine;
     public bool IsSpaceLine => _isSpaceLine;
 
-    private PianoNote _note;
-    public PianoNote Note => _note;
+    private PianoNote _naturalNote;
+    public PianoNote Note
+    {
+        get
+        {
+            if (_alteration == Alteration.Natural)
+                return _naturalNote;
+            else if (_alteration == Alteration.Sharp)
+                return _naturalNote + 1 > MusicHelper.HigherNote ? MusicHelper.HigherNote : _naturalNote + 1;
+            else
+                return _naturalNote - 1 < MusicHelper.LowerNote ? MusicHelper.LowerNote : _naturalNote - 1;
+        }
+    }
+
+    public PianoNote NaturalNote => MusicHelper.ConvertToNaturalNote(Note);
 
     private Alteration _alteration;
     public Alteration Alteration => _alteration;
+
+    
 
     private SpriteRenderer _sprtRenderer;
 
@@ -54,10 +69,10 @@ public class StaffLine : MonoBehaviour
         this._isVisible = visible;
         this._id = id;
 
-        // A Staff line PianoNote CANNOT be sharp, this stuff have to be handle with the alteration
+        // A Staff line PianoNote CANNOT be altered, this stuff have to be handle with the alteration
         if (MusicHelper.SharpNotes.Contains(note))
             note--;
-        this._note = note;
+        this._naturalNote = note;
 
         if(!_isVisible || _isSpaceLine)
         {
@@ -80,7 +95,7 @@ public class StaffLine : MonoBehaviour
     /// </summary>
     public void SpawnNote(float scale,  float fromX, float toX)
     {
-        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Alteration);
+        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, Alteration.Sharp /*this.Alteration*/);
 
         GameObject go = (GameObject)Instantiate(Resources.Load(resourceToLoad));
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
@@ -92,8 +107,10 @@ public class StaffLine : MonoBehaviour
         var note = go.GetComponent<Note>();
 
         // Initialize note with this line alteration
-        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, this.Alteration);
+        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, Alteration.Sharp /*this.Alteration*/);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
+
+        // Debug.Log("Spawn note : " + note.AlteredNote);
 
         note.DestroyEvent += Note_DestroyEvent;
 

@@ -130,6 +130,7 @@ public class GameController : GameControllerBase
 
         // Guessing system
         var firstNote = GetFirstNote();
+        Debug.Log("First note : " + MusicHelper.GetNoteCommonName(firstNote.PianoNote));
 
         if (firstNote != null)
         {
@@ -142,28 +143,28 @@ public class GameController : GameControllerBase
                         _controllerNotesDownWithOffset.Count == 1 
                         && 
                         (
-                            (!ReplacementMode && _controllerNotesDownWithOffset[0] == firstNote.Parent.Note)
+                            (!ReplacementMode && _controllerNotesDownWithOffset[0] == firstNote.PianoNote)
                             ||
-                            ((int)(_controllerNotesDownWithOffset[0]) % 12 == (int)(firstNote.Parent.Note) % 12)
+                            ((int)(_controllerNotesDownWithOffset[0]) % 12 == (int)(firstNote.PianoNote) % 12)
                         )
                     )
                 {
                     // Good guess
-                    Debug.Log("Good guess");
+                    // Debug.Log("Good guess");
                     firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
                     guess = true;
                 }
                 else
                 {
                     // Bad guess
-                    Debug.Log("Bad guess");
+                    // Debug.Log("Bad guess");
                     firstNote.ChangeColor(StaticResource.COLOR_BAD_GUESS);
                     guess = false;
                 }
 
                 if (guess.HasValue)
                 {
-                    Debug.Log("Guess " + firstNote.Parent.Note);
+                    // Debug.Log("Guess " + firstNote.Parent.Note);
                     firstNote.SetInactive();
                     firstNote = GetFirstNote();
 
@@ -175,7 +176,7 @@ public class GameController : GameControllerBase
             // For testing
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("Guess " + firstNote.Parent.Note);
+                // Debug.Log("Guess " + firstNote.Parent.Note);
                 firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
                 firstNote.SetInactive();
                 Points++;

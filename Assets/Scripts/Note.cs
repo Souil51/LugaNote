@@ -21,7 +21,7 @@ public class Note : MonoBehaviour
 
     // Get the real note with alteration
     // The parent is always a natural note
-    private PianoNote AlteredNote
+    public PianoNote PianoNote
     {
         get
         {
@@ -33,6 +33,8 @@ public class Note : MonoBehaviour
                 return Parent.Note;
         }
     }
+
+    public PianoNote NaturalNote => MusicHelper.ConvertToNaturalNote(PianoNote);
 
     private SpriteRenderer _sprtRenderer;
 

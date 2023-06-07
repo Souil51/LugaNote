@@ -154,6 +154,49 @@ public class MusicHelper
     /// </summary>
     public static List<PianoNote> NaturalNotes => _naturalNotes;
 
+    // These not can be Sharp but will not be often Sharp (B to C or E to F)
+    private static List<PianoNote> _notNaturallySharpableNotes = new List<PianoNote>() 
+    { 
+        PianoNote.E1,
+        PianoNote.E2,
+        PianoNote.E3,
+        PianoNote.E4,
+        PianoNote.E5,
+        PianoNote.E6,
+        PianoNote.E7,
+        PianoNote.B0,
+        PianoNote.B1,
+        PianoNote.B2,
+        PianoNote.B3,
+        PianoNote.B4,
+        PianoNote.B5,
+        PianoNote.B6,
+        PianoNote.B7,
+    };
+
+    public static List<PianoNote> NotNaturallySharpableNotes => _notNaturallySharpableNotes;
+
+    // These not can be Sharp but will not be often Sharp (C to B or F to E)
+    private static List<PianoNote> _notNaturallyFlatbleNotes = new List<PianoNote>()
+    {
+        PianoNote.F1,
+        PianoNote.F2,
+        PianoNote.F3,
+        PianoNote.F4,
+        PianoNote.F5,
+        PianoNote.F6,
+        PianoNote.F7,
+        PianoNote.C1,
+        PianoNote.C2,
+        PianoNote.C3,
+        PianoNote.C4,
+        PianoNote.C5,
+        PianoNote.C6,
+        PianoNote.C7,
+    };
+
+    public static List<PianoNote> NotNaturallyFlatbleNotes => _notNaturallyFlatbleNotes;
+
     /// <summary>
     /// Convert a sharp note to a natural note or return this same note if already natural
     /// </summary>
@@ -279,5 +322,17 @@ public class MusicHelper
             return ((NoteCommonNameSharp)((int)pianoNote % 12)).GetEnumDescription();
         else
             return ((NoteCommonNameFlat)((int)pianoNote % 12)).GetEnumDescription();
+    }
+
+    public static bool IsNoteNaturralyAlterable(PianoNote note, Alteration alteration)
+    {
+        bool result = true;
+
+        if (alteration == Alteration.Sharp && NotNaturallySharpableNotes.Contains(note))
+            result = false;
+        else if (alteration == Alteration.Flat && NotNaturallyFlatbleNotes.Contains(note))
+            result = false;
+
+        return result;
     }
 }
