@@ -18,8 +18,11 @@ public class VisualController : MonoBehaviour, IController
     public List<PianoNote> Notes => _notes;
 
     // VIsual controller will show only one octave
-    public PianoNote HigherNote => PianoNote.B4;
-    public PianoNote LowerNote => PianoNote.C4;
+    public PianoNote HigherNote => PianoNote.C8;
+    public PianoNote LowerNote => PianoNote.A0;
+
+    private PianoNote HigherVisibleNote => PianoNote.C4;
+    private PianoNote LowerVisibleNote => PianoNote.C3;
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
@@ -61,8 +64,8 @@ public class VisualController : MonoBehaviour, IController
         float yPosition = - (canvasHeight / 2f) + 25f;
 
         // Compute the X of the first note
-        var naturalNotesCount = MusicHelper.NaturalNotes.Count(x => x >= LowerNote && x <= HigherNote);
-        var sharpNotesCount = MusicHelper.SharpNotes.Count(x => x >= LowerNote && x <= HigherNote);
+        var naturalNotesCount = MusicHelper.NaturalNotes.Count(x => x >= LowerVisibleNote && x <= HigherVisibleNote);
+        var sharpNotesCount = MusicHelper.SharpNotes.Count(x => x >= LowerVisibleNote && x <= HigherVisibleNote);
 
         float totalWidth = (rectTmpButton.sizeDelta.x * naturalNotesCount) + (rectTmpSharp.sizeDelta.x * sharpNotesCount);
 
@@ -72,14 +75,16 @@ public class VisualController : MonoBehaviour, IController
         Destroy(goTmpButton);
         Destroy(goTmpSharp);
 
-        for (int i = (int)LowerNote; i <= (int)HigherNote; i++)
+        for (int i = (int)LowerVisibleNote; i <= (int)HigherVisibleNote; i++)
         {
             var note = (PianoNote)i;
+
+            bool altered = MusicHelper.SharpNotes.Contains(note);
 
             string prefabName = MusicHelper.NaturalNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             goButtonNote.transform.SetParent(goCanvas.transform);
-            goButtonNote.transform.localPosition = new Vector3(currentX, yPosition, 0f);
+            goButtonNote.transform.localPosition = new Vector3(currentX, yPosition + (altered ? 20 : 0), 0f);
 
             // Get the size of the button
             var buttonWidth = goButtonNote.GetComponent<RectTransform>().sizeDelta.x;

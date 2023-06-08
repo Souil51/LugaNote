@@ -95,7 +95,7 @@ public class StaffLine : MonoBehaviour
     /// </summary>
     public void SpawnNote(float scale,  float fromX, float toX)
     {
-        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, Alteration.Sharp /*this.Alteration*/);
+        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Alteration);
 
         GameObject go = (GameObject)Instantiate(Resources.Load(resourceToLoad));
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
@@ -107,7 +107,7 @@ public class StaffLine : MonoBehaviour
         var note = go.GetComponent<Note>();
 
         // Initialize note with this line alteration
-        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, Alteration.Sharp /*this.Alteration*/);
+        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, this.Alteration);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         // Debug.Log("Spawn note : " + note.AlteredNote);
