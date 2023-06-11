@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// StaffLine script handle note spawning
+/// </summary>
 public class StaffLine : MonoBehaviour
 {
     private List<Note> _notes = new List<Note>();

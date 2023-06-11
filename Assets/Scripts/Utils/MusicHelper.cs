@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// All music stuff and calculation
+/// </summary>
 public class MusicHelper
 {
     public static PianoNote HigherNote => PianoNote.C8;

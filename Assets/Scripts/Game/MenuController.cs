@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Main menu script
+/// Handle main menu UI events and scene transition
+/// </summary>
 public class MenuController : MonoBehaviour
 {
     public Canvas Menu;

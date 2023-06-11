@@ -7,6 +7,9 @@ using UnityEngine;
 public delegate void NoteDownEventHandler(object sender, NoteEventArgs e);
 public delegate void ConfigurationEventHandled(object sender, ConfigurationEventArgs e);
 
+/// <summary>
+/// Used to manage Controllers of any types (midi, keyboard, UI...)
+/// </summary>
 public interface IController
 {
     event NoteDownEventHandler NoteDown;

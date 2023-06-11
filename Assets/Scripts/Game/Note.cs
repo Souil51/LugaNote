@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
 
+/// <summary>
+/// Note script
+/// Handle notes
+/// </summary>
 public class Note : MonoBehaviour
 {
     private bool _isMoving = false;

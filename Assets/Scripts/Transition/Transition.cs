@@ -4,6 +4,9 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
+/// <summary>
+/// Main transition script used in the game
+/// </summary>
 [ExecuteInEditMode]
 public class Transition : MonoBehaviour
 {

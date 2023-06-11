@@ -47,6 +47,14 @@ public class VisualController : MonoBehaviour, IController
 
     private void Awake()
     {
+        GenerateButtons();
+    }
+
+    /// <summary>
+    /// Generate all UI buttons and their events
+    /// </summary>
+    private void GenerateButtons()
+    {
         // UI Canvas that will contains all buttons
         var goCanvas = Instantiate(Resources.Load("UICanvas")) as GameObject;
         goCanvas.transform.localPosition = Vector3.zero;
@@ -61,7 +69,7 @@ public class VisualController : MonoBehaviour, IController
 
         // Compute Y note position
         float canvasHeight = goCanvas.GetComponent<RectTransform>().sizeDelta.y;
-        float yPosition = - (canvasHeight / 2f) + 25f;
+        float yPosition = -(canvasHeight / 2f) + 25f;
 
         // Compute the X of the first note
         var naturalNotesCount = MusicHelper.NaturalNotes.Count(x => x >= LowerVisibleNote && x <= HigherVisibleNote);
