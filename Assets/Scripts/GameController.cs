@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
 
 public class GameController : GameControllerBase
 {
+    [SerializeField] private Transition Transition;
     [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
     [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
@@ -64,8 +66,22 @@ public class GameController : GameControllerBase
     private float _pauseTimer;
     public bool IsPaused => _pauseTimer != 0;
 
+    private void OnEnable()
+    {
+        Debug.Log("OnEnable");
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+    }
+
+    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        Debug.Log("SceneManager_sceneLoaded");
+        Transition.Opened += Transition_Opened;
+        Transition.Open_2();
+    }
+
     private void Awake()
     {
+        Debug.Log("Awake");
         if (Staffs.Count == 0)
             throw new Exception("Staffs list is empty");
 
@@ -107,11 +123,9 @@ public class GameController : GameControllerBase
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Start");
         // Generate the staff lines
         Staffs.ForEach(x => x.InitializeStaff());
-
-        // Starting spawn note
-        StartCoroutine(Co_SpawnNotes());
 
         Points = 0;
         TimeLeft = 60f;
@@ -130,7 +144,7 @@ public class GameController : GameControllerBase
 
         // Guessing system
         var firstNote = GetFirstNote();
-        Debug.Log("First note : " + MusicHelper.GetNoteCommonName(firstNote.PianoNote));
+        // Debug.Log("First note : " + MusicHelper.GetNoteCommonName(firstNote.PianoNote));
 
         if (firstNote != null)
         {
@@ -199,6 +213,17 @@ public class GameController : GameControllerBase
                     Time.timeScale = 0f;
             }
         }
+    }
+
+    private void StartGame()
+    {
+        // Starting spawn note
+        StartCoroutine(Co_SpawnNotes());
+    }
+
+    private void Transition_Opened(object sender, EventArgs e)
+    {
+        StartGame();
     }
 
     /// <summary>

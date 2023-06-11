@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+public enum TransitionPosition { Open_1 = 0, Open_2 = 1, Close = 2 };
 public enum ControllerType { Keyboard = 0, MIDI = 1, Visual = 2 }
 
 public enum Clef { Trebble = 0, Bass = 1 }
