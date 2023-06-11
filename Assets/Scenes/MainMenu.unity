@@ -371,6 +371,10 @@ PrefabInstance:
       propertyPath: Duration
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1061772352347038572, guid: bc6996ab6267c0844a127e7723ba53a7, type: 3}
+      propertyPath: InitialPosition
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1061772352347038573, guid: bc6996ab6267c0844a127e7723ba53a7, type: 3}
       propertyPath: m_RootOrder
       value: 4
