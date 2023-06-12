@@ -17,6 +17,9 @@ public class GameController : GameControllerBase
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
     [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
 
+    public List<Staff> GameStaffs => Staffs;
+    public bool GameReplacementMode => ReplacementMode;
+
     private IController Controller;
 
     public bool IsStopped => Time.timeScale != 0f;
@@ -53,7 +56,7 @@ public class GameController : GameControllerBase
     private int _C4Offset = 0;
 
     private PianoNote ControllerHigherNoteWithOffset => Controller.HigherNote + _C4Offset;
-    private PianoNote ControllerLowerNoteWithOffset => Controller.LowerNote + _C4Offset;
+    public PianoNote ControllerLowerNoteWithOffset => Controller.LowerNote + _C4Offset;
 
     private List<PianoNote> _controllerNotesWithOffset = new List<PianoNote>();
     public List<PianoNote> ControllerNotesWithOffset => ControllerNotesWithOffset;
@@ -287,7 +290,7 @@ public class GameController : GameControllerBase
         Time.timeScale = _lastTimeScale;
     }
 
-    private Note GetFirstNote()
+    public Note GetFirstNote()
     {
         var firstNote = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault();
         return firstNote;
