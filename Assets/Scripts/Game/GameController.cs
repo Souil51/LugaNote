@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
@@ -16,6 +17,7 @@ public class GameController : GameControllerBase
     [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
     [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
+    [SerializeField] private GameInputHandler InputHandler;
 
     public List<Staff> GameStaffs => Staffs;
     public bool GameReplacementMode => ReplacementMode;
@@ -72,6 +74,9 @@ public class GameController : GameControllerBase
     private float _pauseTimer;
     public bool IsPaused => _pauseTimer != 0;
 
+    private static GameController _instance;
+    public static GameController Instance => _instance;
+
     private void OnEnable()
     {
         Debug.Log("OnEnable");
@@ -87,6 +92,11 @@ public class GameController : GameControllerBase
 
     private void Awake()
     {
+        if (GameController.Instance == null)
+            GameController._instance = this;
+
+        InputHandler.Guess += InputHandler_Guess;
+
         Debug.Log("Awake");
         if (Staffs.Count == 0)
             throw new Exception("Staffs list is empty");
@@ -126,6 +136,14 @@ public class GameController : GameControllerBase
         }
     }
 
+    private void InputHandler_Guess(object sender, GuessEventArgs e)
+    {
+        var firstnote = GetFirstNote();
+        firstnote.SetInactive();
+        firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
+        if (e.Result) Points++;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,7 +170,7 @@ public class GameController : GameControllerBase
         var firstNote = GetFirstNote();
         // Debug.Log("First note : " + MusicHelper.GetNoteCommonName(firstNote.PianoNote));
 
-        if (firstNote != null)
+        if (false && firstNote != null)
         {
             if(_controllerNotesDownWithOffset.Count > 0)
             {
