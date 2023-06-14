@@ -24,6 +24,9 @@ public class MidiController : MonoBehaviour, IController
 
     public PianoNote LowerNote => _lowerNote;
 
+    private int _c4Offset = 0;
+    public int C4Offset => _c4Offset;
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
@@ -33,6 +36,10 @@ public class MidiController : MonoBehaviour, IController
     {
         _higherNote = PianoNote.C8;
         _lowerNote = PianoNote.A0;
+
+        // For MIDI keyboard with reduced note count, keyboard will be centered on C4
+        var middleC = MusicHelper.GetMiddleCBetweenTwoNotes(HigherNote, LowerNote);
+        _c4Offset = PianoNote.C4 - middleC;
     }
 
     // Update is called once per frame

@@ -22,6 +22,8 @@ public class KeyboardController : MonoBehaviour, IController
     private PianoNote _lowerNote;
     public PianoNote LowerNote => _lowerNote;
 
+    public int C4Offset => 0;
+
     // Keyboard has only few notes
 
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()

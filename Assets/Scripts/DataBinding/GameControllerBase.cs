@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameControllerBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
@@ -17,6 +18,8 @@ public class GameControllerBase : MonoBehaviour, INotifyPropertyChanged, IViewMo
 
         foreach (PropertyInfo property in type.GetProperties()) // For each property in this
         {
+            if (property.IsStatic()) continue;
+
             if (typeof(INotifyPropertyChanged).IsAssignableFrom(property.PropertyType)) // if the property implements INotifyPropertyChange
             {
                 // Get the object that implements  INotifyPropertyChanged from the property

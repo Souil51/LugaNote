@@ -1173,6 +1173,7 @@ MonoBehaviour:
   ControllerType: 0
   ReplacementMode: 1
   InputHandler: {fileID: 767779333}
+  TimeScaleManager: {fileID: 767779334}
 --- !u!4 &767779332
 Transform:
   m_ObjectHideFlags: 0

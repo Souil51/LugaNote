@@ -22,6 +22,8 @@ public interface IController
     List<PianoNote> NotesUp { get; }
     List<PianoNote> Notes { get; }
 
+    int C4Offset { get; }
+
     void Configure();
 }
 

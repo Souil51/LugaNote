@@ -24,6 +24,8 @@ public class VisualController : MonoBehaviour, IController
     private PianoNote HigherVisibleNote => PianoNote.C4;
     private PianoNote LowerVisibleNote => PianoNote.C3;
 
+    public int C4Offset => 0;
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
