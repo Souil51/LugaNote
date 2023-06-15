@@ -13,6 +13,7 @@ public class StaffLine : MonoBehaviour
     public List<Note> Notes => _notes;
     private int _id;
 
+    public ScaleFactor ScaleFactor = ScaleFactor.Screen;
 
     private bool _isVisible;
     public bool IsVisible => _isVisible;
@@ -81,6 +82,14 @@ public class StaffLine : MonoBehaviour
         {
             _sprtRenderer.sprite = null;
         }
+
+        float xScale = 1f;
+        if (ScaleFactor == ScaleFactor.Screen)
+            xScale = 9.5f * ScreenManager.Ratio;
+        else if(ScaleFactor == ScaleFactor.Staff)
+            xScale = 19f * _parent.transform.localScale.x * ScreenManager.Ratio;
+
+        gameObject.transform.localScale = new Vector3(xScale, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
     }
 
     public void SetAlteration(Alteration alteration)

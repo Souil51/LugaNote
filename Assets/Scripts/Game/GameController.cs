@@ -92,7 +92,6 @@ public class GameController : GameControllerBase
 
         InputHandler.Guess += InputHandler_Guess;
 
-        Debug.Log("Awake");
         if (Staffs.Count == 0)
             throw new Exception("Staffs list is empty");
 
@@ -109,14 +108,6 @@ public class GameController : GameControllerBase
             _controllerNotesWithOffset = _controllerNotesWithOffset.Select(x => x + Controller.C4Offset).ToList();
             _controllerNotesDownWithOffset = _controllerNotesDownWithOffset.Select(x => x + Controller.C4Offset).ToList();
         }
-    }
-
-    private void InputHandler_Guess(object sender, GuessEventArgs e)
-    {
-        var firstnote = GetFirstNote();
-        firstnote.SetInactive();
-        firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
-        if (e.Result) Points++;
     }
 
     // Start is called before the first frame update
@@ -136,17 +127,30 @@ public class GameController : GameControllerBase
     void Update()
     {
         TimeLeft -= Time.unscaledDeltaTime;
+
+        if(TimeLeft <= 0) // Stop de game and show end screen
+        {
+            TimeScaleManager.PauseGame(0f);
+        }
+    }
+
+    private void InputHandler_Guess(object sender, GuessEventArgs e)
+    {
+        var firstnote = GetFirstNote();
+        firstnote.SetInactive();
+        firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
+        if (e.Result) Points++;
+    }
+
+    private void Transition_Opened(object sender, EventArgs e)
+    {
+        StartGame();
     }
 
     private void StartGame()
     {
         // Starting spawn note
         StartCoroutine(Co_SpawnNotes());
-    }
-
-    private void Transition_Opened(object sender, EventArgs e)
-    {
-        StartGame();
     }
 
     /// <summary>

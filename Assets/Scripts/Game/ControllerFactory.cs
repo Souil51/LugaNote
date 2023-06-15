@@ -16,9 +16,7 @@ namespace Assets.Scripts.Game
             switch (type)
             {
                 case ControllerType.MIDI:
-                    {
-                        controller = GameController.Instance.gameObject.AddComponent(typeof(MidiController)) as MidiController;
-                    }
+                    controller = GameController.Instance.gameObject.AddComponent(typeof(MidiController)) as MidiController;
                     break;
                 case ControllerType.Visual:
                     controller = GameController.Instance.gameObject.AddComponent(typeof(VisualController)) as VisualController;
