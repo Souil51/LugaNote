@@ -20,6 +20,17 @@ public class GameControllerTest : GameControllerBase
 
     public TMPro.TextMeshProUGUI test;
 
+    private bool _testIsActive = true;
+    public bool TestIsActive
+    {
+        get => _testIsActive;
+        set
+        {
+            _testIsActive = value;
+            OnPropertyChanged();
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +40,10 @@ public class GameControllerTest : GameControllerBase
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TestIsActive = !TestIsActive;
+        }
     }
 
     private void Awake()
