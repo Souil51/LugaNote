@@ -18,6 +18,7 @@ public class SimpleBinding : MonoBehaviour
     public List<BindingPath> Paths;
     // THe UI element
     private ICanvasElement _canvasElement;
+    private IUICustomElement _customElement;
     // Used for the localization
     public LocalizeStringEvent localize;
 
@@ -30,6 +31,9 @@ public class SimpleBinding : MonoBehaviour
     {
         if (_canvasElement == null)
             _canvasElement = GetComponent<ICanvasElement>();
+
+        if (_customElement == null)
+            _customElement = GetComponent<IUICustomElement>();
     }
 
     /// <summary>
@@ -100,5 +104,64 @@ public class SimpleBinding : MonoBehaviour
                 }
             }
         }
+        else if(_customElement != null)
+        {
+            ChangeValueOfType(_customElement, value, propertyName);
+        }
+    }
+
+    private void ChangeValueOfType(object obj, object value, string propertyName)
+    {
+        var propInfo = obj.GetType().GetProperty(MemberName);
+
+        if (propInfo != null)
+        {
+            // Find the path to update
+            BindingPath path = Paths.Find(x => x.Name == propertyName);
+
+            // Get the type of the property to update
+            Enum.TryParse(propInfo.PropertyType.Name, true, out TypeCode enumValue);
+            // Convert the new value to the same type of the UI element property
+            var convertedValue = Convert.ChangeType(value, enumValue);
+
+            path.LastValue = convertedValue;
+
+            // For all type but not string, update the value
+            if (propInfo.PropertyType != typeof(string))
+            {
+                SetValueOfType(propInfo, obj, convertedValue);
+            }
+            else // for the strings, perhaps it has to be localize or perhaps the value is a concatenation of multiples paths
+            {
+                if (localize == null)
+                {
+                    string concat = String.Join("", Paths.Where(x => x.LastValue != null).Select(x => x.LastValue));
+                    SetValueOfType(propInfo, obj, concat);
+                }
+                else
+                {
+                    LocalizedString localizedStrings = new LocalizedString(localize.StringReference.TableReference, localize.StringReference.TableEntryReference);
+
+                    foreach (BindingPath bindingPath in Paths)
+                    {
+                        if (bindingPath.LastValue != null)
+                        {
+                            localizedStrings.Add(bindingPath.LocalizeName, new StringVariable { Value = bindingPath.LastValue.ToString() });
+                        }
+                    }
+
+                    localize.StringReference = localizedStrings;
+                    localize.StringReference.RefreshString();
+                }
+            }
+        }
+    }
+
+    private void SetValueOfType(PropertyInfo propInfo, object obj, object value)
+    {
+        if (obj is ICanvasElement canvasElement)
+            propInfo.SetValue(canvasElement, value);
+        else if (obj is IUICustomElement customElement)
+            propInfo.SetValue(customElement, value);
     }
 }
