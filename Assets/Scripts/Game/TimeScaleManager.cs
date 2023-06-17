@@ -70,4 +70,9 @@ public class TimeScaleManager : MonoBehaviour
         _pauseTimer = 0f;
         Time.timeScale = _lastTimeScale;
     }
+
+    public void UnpauseGameAfterSeconds(float seconds)
+    {
+        _pauseTimer = seconds;
+    }
 }

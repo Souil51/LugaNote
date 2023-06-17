@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GameControllerBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
+public class ViewModelBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
 {
     private Dictionary<object, string> _properties = new Dictionary<object, string>();
 
@@ -56,6 +56,8 @@ public class GameControllerBase : MonoBehaviour, INotifyPropertyChanged, IViewMo
     // Property change handle
     private void BoundProperty_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
+        if (sender == null) return;
+
         string propertyName = "";
         _properties.TryGetValue(sender, out propertyName);
 

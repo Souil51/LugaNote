@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameControllerTest : GameControllerBase
+public class GameControllerTest : ViewModelBase
 {
     private int _points;
     public int Points

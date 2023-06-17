@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,14 +15,39 @@ public class MenuController : MonoBehaviour
 
     private void Awake()
     {
-        Transition.SetPositionOpen_1();
+        // Transition.SetPositionOpen_1();
+    }
 
+    private void OnEnable()
+    {
+        Debug.Log("OnEnable");
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
         Transition.Closed += Transition_Closed;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+        Transition.Closed -= Transition_Closed;
+    }
+
+    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        Debug.Log("SceneManager_sceneLoaded");
+
+        if (arg0.name == StaticResource.SCENE_MAIN_MENU)
+        {
+            StartCoroutine(Co_WaitForLoading());
+        }
+        else if (arg0.name == StaticResource.SCENE_MAIN_SCENE)
+        {
+            
+        }
     }
 
     private void Transition_Closed(object sender, System.EventArgs e)
     {
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene(StaticResource.SCENE_MAIN_SCENE);
     }
 
     // Start is called before the first frame update
@@ -39,5 +65,11 @@ public class MenuController : MonoBehaviour
     public void ChangeScene()
     {
         Transition.Close();
+    }
+
+    private IEnumerator Co_WaitForLoading()
+    {
+        yield return new WaitForSecondsRealtime(.25f);
+        Transition.Open_1();
     }
 }

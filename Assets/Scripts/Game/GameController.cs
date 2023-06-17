@@ -2,6 +2,7 @@ using Assets.Scripts.Game;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
@@ -12,7 +13,7 @@ using UnityEngine.SocialPlatforms;
 /// <summary>
 /// 
 /// </summary>
-public class GameController : GameControllerBase
+public class GameController : MonoBehaviour
 {
     [SerializeField] private Transition Transition;
     [SerializeField] private List<Staff> Staffs;
@@ -20,6 +21,7 @@ public class GameController : GameControllerBase
     [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
     [SerializeField] private GameInputHandler InputHandler;
     [SerializeField] private TimeScaleManager TimeScaleManager;
+    [SerializeField] private GameViewModel ViewModel;
 
     public List<Staff> GameStaffs => Staffs;
     public bool GameReplacementMode => ReplacementMode;
@@ -28,32 +30,30 @@ public class GameController : GameControllerBase
 
     public bool IsStopped => Time.timeScale != 0f;
 
-    private int _points = 0;
-    public int Points
-    {
-        get => _points;
-        private set
-        {
-            _points = value;
-            OnPropertyChanged();
-        }
-    }
+    public bool IsGameEnded => TimeLeft <= 0;
 
-    public string TimeLeftString => ((int)TimeLeft).ToString();
-
-    private float _timeLeft = 0;
+    private float _timeLeft;
     public float TimeLeft
     {
         get => _timeLeft;
         private set
         {
             bool updateString = (int)value != (int)_timeLeft;
-
             _timeLeft = value;
-            OnPropertyChanged();
 
             if(updateString)
-                OnPropertyChanged("TimeLeftString");
+                ViewModel.TimeLeft = ((int)_timeLeft).ToString();
+        }
+    }
+
+    private int _points = 0;
+    public int Points
+    {
+        get => _points;
+        set
+        {
+            _points = value;
+            ViewModel.Points = _points;
         }
     }
 
@@ -76,13 +76,51 @@ public class GameController : GameControllerBase
     {
         Debug.Log("OnEnable");
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
+        Transition.Opened += Transition_Opened;
+
+        InputHandler.Guess += InputHandler_Guess;
+
+        ViewModel.PlayAgain += ViewModel_PlayAgain;
+        ViewModel.BackToMenu += ViewModel_BackToMenu;
+
+        Transition.Closed += Transition_Closed;
+        Transition.Opened += Transition_Opened1;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+
+        Transition.Opened -= Transition_Opened;
+
+        InputHandler.Guess -= InputHandler_Guess;
+
+        ViewModel.PlayAgain -= ViewModel_PlayAgain;
+        ViewModel.BackToMenu -= ViewModel_BackToMenu;
+
+        Transition.Closed -= Transition_Closed;
+        Transition.Opened -= Transition_Opened1;
+
+        Controller.Configuration -= Controller_Configuration;
     }
 
     private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
         Debug.Log("SceneManager_sceneLoaded");
-        Transition.Opened += Transition_Opened;
-        Transition.Open_2();
+        
+        // Transition.Opened -= Transition_Opened;
+
+        if (arg0.name == StaticResource.SCENE_MAIN_MENU)
+        {
+            
+        }
+        else if (arg0.name == StaticResource.SCENE_MAIN_SCENE)
+        {
+            StartCoroutine(Co_WaitForLoading());
+            //Transition.Opened += Transition_Opened;
+            //Transition.Open_2();
+        }
     }
 
     private void Awake()
@@ -90,12 +128,8 @@ public class GameController : GameControllerBase
         if (GameController.Instance == null)
             GameController._instance = this;
 
-        InputHandler.Guess += InputHandler_Guess;
-
         if (Staffs.Count == 0)
             throw new Exception("Staffs list is empty");
-
-        InitialiserNotifyPropertyChanged();
 
         Controller = ControllerFactory.GetControllerForType(ControllerType);
         Controller.Configuration += Controller_Configuration;
@@ -120,6 +154,8 @@ public class GameController : GameControllerBase
         Points = 0;
         TimeLeft = 60f;
 
+        ViewModel.InitializeViewModel();
+
         // StartConfiguringController(); // For testing
     }
 
@@ -131,6 +167,12 @@ public class GameController : GameControllerBase
         if(TimeLeft <= 0) // Stop de game and show end screen
         {
             TimeScaleManager.PauseGame(0f);
+            ViewModel.EndPanelVisible = !ViewModel.EndPanelVisible;
+        }
+
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            ViewModel.EndPanelVisible = !ViewModel.EndPanelVisible;
         }
     }
 
@@ -180,6 +222,49 @@ public class GameController : GameControllerBase
         return firstNote;
     }
 
+    private void ViewModel_BackToMenu(object sender, EventArgs e)
+    {
+        BackToMenu();
+    }
+
+    private void ViewModel_PlayAgain(object sender, EventArgs e)
+    {
+        ResetGame();
+    }
+
+    private void ResetGame()
+    {
+        Points = 0;
+        TimeLeft = 60f;
+
+        TimeScaleManager.UnpauseGameAfterSeconds(1f);
+    }
+
+    private void BackToMenu()
+    {
+        TimeLeft = 0f;
+
+        foreach(var staff in Staffs)
+        {
+            staff.Notes.ForEach(x => x.Destroy());
+        }
+
+        ViewModel.HideAll();
+
+        Transition.SetPositionOpen_2();
+        Transition.Close();
+    }
+
+    private void Transition_Closed(object sender, EventArgs e)
+    {
+        SceneManager.LoadScene(StaticResource.SCENE_MAIN_MENU);
+    }
+
+    private void Transition_Opened1(object sender, EventArgs e)
+    {
+        ViewModel.ShowAll();
+    }
+
     /// <summary>
     /// Coroutine : Spawn notes on staff every 0.5f (for timescale = 1f)
     /// </summary>
@@ -194,5 +279,12 @@ public class GameController : GameControllerBase
                 yield return new WaitForSeconds(0.5f / Staffs.Count);
             }
         }
+    }
+
+    private IEnumerator Co_WaitForLoading()
+    {
+        yield return new WaitForSecondsRealtime(.25f);
+        Transition.Open_2();
+
     }
 }

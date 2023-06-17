@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ViewManager : MonoBehaviour
 {
     [SerializeField, TypeConstraint(typeof(IViewModel))]
     private GameObject DataContextContainer;
 
-    [SerializeField]
-    private List<SimpleBinding> Bindings;
+    [SerializeField, TypeConstraint(typeof(SimpleBinding))]
+    private List<GameObject> BindingsObjects;
 
+    private List<SimpleBinding> Bindings;
     private IViewModel DataContext;
 
     // Start is called before the first frame update
@@ -29,6 +31,10 @@ public class ViewManager : MonoBehaviour
 
     private void Awake()
     {
+        Bindings = new List<SimpleBinding>();
+
+        BindingsObjects.ForEach(x => Bindings.AddRange(x.GetComponents<SimpleBinding>()));
+
         DataContext = DataContextContainer.GetComponent<IViewModel>();
         InitialiserDataContext();
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -27,7 +28,10 @@ public static class StaticResource
     public static string PREFAB_EMPTY_NOTE_LINE => "empty_note_line";
     public static string PREFAB_NOTE_BUTTON => "NoteButton";
     public static string PREFAB_NOTE_BUTTON_SHARP => "NoteButtonSharp";
-    public static string PREFAB_TRANSITION => "transition"; 
+    public static string PREFAB_TRANSITION => "transition";
+
+    public static string SCENE_MAIN_MENU => "MainMenu";
+    public static string SCENE_MAIN_SCENE => "MainScene";
 
     /// <summary>
     /// Useful values
