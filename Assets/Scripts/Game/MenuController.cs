@@ -37,11 +37,8 @@ public class MenuController : MonoBehaviour
 
         if (arg0.name == StaticResource.SCENE_MAIN_MENU)
         {
+            Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
-        }
-        else if (arg0.name == StaticResource.SCENE_MAIN_SCENE)
-        {
-            
         }
     }
 
@@ -62,8 +59,21 @@ public class MenuController : MonoBehaviour
         
     }
 
-    public void ChangeScene()
+    public void ChangeScene_Trebble()
     {
+        SceneSessionManager.Instance.SetGameMode(GameMode.Trebble);
+        Transition.Close();
+    }
+
+    public void ChangeScene_Bass()
+    {
+        SceneSessionManager.Instance.SetGameMode(GameMode.Bass);
+        Transition.Close();
+    }
+
+    public void ChangeScene_TrebbleBass()
+    {
+        SceneSessionManager.Instance.SetGameMode(GameMode.TrebbleBass);
         Transition.Close();
     }
 

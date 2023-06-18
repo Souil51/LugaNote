@@ -109,17 +109,10 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("SceneManager_sceneLoaded");
         
-        // Transition.Opened -= Transition_Opened;
-
-        if (arg0.name == StaticResource.SCENE_MAIN_MENU)
+        if (arg0.name == StaticResource.SCENE_MAIN_SCENE)
         {
-            
-        }
-        else if (arg0.name == StaticResource.SCENE_MAIN_SCENE)
-        {
+            Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
-            //Transition.Opened += Transition_Opened;
-            //Transition.Open_2();
         }
     }
 
