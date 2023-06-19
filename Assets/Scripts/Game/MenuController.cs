@@ -16,26 +16,22 @@ public class MenuController : MonoBehaviour
     private void Awake()
     {
         // Transition.SetPositionOpen_1();
+        GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
     }
 
     private void OnEnable()
     {
-        Debug.Log("OnEnable");
-        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
         Transition.Closed += Transition_Closed;
     }
 
     private void OnDisable()
     {
-        SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+        GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
         Transition.Closed -= Transition_Closed;
     }
-
-    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    private void Instance_SceneLoaded(object sender, SceneEventArgs e)
     {
-        Debug.Log("SceneManager_sceneLoaded");
-
-        if (arg0.name == StaticResource.SCENE_MAIN_MENU)
+        if (e.Scene.name == StaticResource.SCENE_MAIN_MENU)
         {
             Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
@@ -44,7 +40,7 @@ public class MenuController : MonoBehaviour
 
     private void Transition_Closed(object sender, System.EventArgs e)
     {
-        SceneManager.LoadScene(StaticResource.SCENE_MAIN_SCENE);
+        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
     }
 
     // Start is called before the first frame update
@@ -61,19 +57,19 @@ public class MenuController : MonoBehaviour
 
     public void ChangeScene_Trebble()
     {
-        SceneSessionManager.Instance.SetGameMode(GameMode.Trebble);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Trebble);
         Transition.Close();
     }
 
     public void ChangeScene_Bass()
     {
-        SceneSessionManager.Instance.SetGameMode(GameMode.Bass);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Bass);
         Transition.Close();
     }
 
     public void ChangeScene_TrebbleBass()
     {
-        SceneSessionManager.Instance.SetGameMode(GameMode.TrebbleBass);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.TrebbleBass);
         Transition.Close();
     }
 

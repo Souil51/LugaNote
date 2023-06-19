@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
@@ -22,6 +23,9 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameInputHandler InputHandler;
     [SerializeField] private TimeScaleManager TimeScaleManager;
     [SerializeField] private GameViewModel ViewModel;
+    [SerializeField] private float YPositionFirstStaff;
+    [SerializeField] private float YPositionSecondStaff;
+    [SerializeField] private GameMode GameMode;
 
     public List<Staff> GameStaffs => Staffs;
     public bool GameReplacementMode => ReplacementMode;
@@ -74,8 +78,7 @@ public class GameController : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("OnEnable");
-        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
 
         Transition.Opened += Transition_Opened;
 
@@ -90,7 +93,7 @@ public class GameController : MonoBehaviour
 
     private void OnDisable()
     {
-        SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+        GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
 
         Transition.Opened -= Transition_Opened;
 
@@ -105,12 +108,12 @@ public class GameController : MonoBehaviour
         Controller.Configuration -= Controller_Configuration;
     }
 
-    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    private void Instance_SceneLoaded(object sender, SceneEventArgs e)
     {
-        Debug.Log("SceneManager_sceneLoaded");
-        
-        if (arg0.name == StaticResource.SCENE_MAIN_SCENE)
+        if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
+            GameMode = (GameMode)GameSceneManager.Instance.GetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+
             Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
         }
@@ -140,9 +143,25 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Start");
         // Generate the staff lines
-        Staffs.ForEach(x => x.InitializeStaff());
+        for(int i = 0; i < Staffs.Count; i++)
+        {
+            var staff = Staffs[i];
+
+            if (GameMode == GameMode.TrebbleBass)
+                staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
+            else
+            {
+                staff.transform.position = new Vector3(staff.transform.position.x, 0f, staff.transform.position.z);
+
+                if (GameMode == GameMode.Trebble && staff.StaffClef == Clef.Bass)
+                    staff.gameObject.SetActive(false);
+                else if (GameMode == GameMode.Bass && staff.StaffClef == Clef.Trebble)
+                    staff.gameObject.SetActive(false);
+            }
+            
+            staff.InitializeStaff();
+        }
 
         Points = 0;
         TimeLeft = 60f;
@@ -250,7 +269,7 @@ public class GameController : MonoBehaviour
 
     private void Transition_Closed(object sender, EventArgs e)
     {
-        SceneManager.LoadScene(StaticResource.SCENE_MAIN_MENU);
+        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_MENU);
     }
 
     private void Transition_Opened1(object sender, EventArgs e)
