@@ -14,7 +14,7 @@ using UnityEngine.SocialPlatforms;
 /// <summary>
 /// 
 /// </summary>
-public class GameController : MonoBehaviour
+public class GameController : MonoBehaviour, INotifyPropertyChanged
 {
     [SerializeField] private Transition Transition;
     [SerializeField] private List<Staff> Staffs;
@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
         set
         {
             _points = value;
-            ViewModel.Points = _points;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Points)));
         }
     }
 
@@ -74,6 +74,9 @@ public class GameController : MonoBehaviour
     public List<PianoNote> ControllerNotesUpWithOffset => _controllerNotesUpWithOffset;
 
     private static GameController _instance;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
     public static GameController Instance => _instance;
 
     private void OnEnable()
@@ -112,7 +115,7 @@ public class GameController : MonoBehaviour
     {
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
-            GameMode = (GameMode)GameSceneManager.Instance.GetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+            GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
 
             Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
@@ -163,8 +166,7 @@ public class GameController : MonoBehaviour
             staff.InitializeStaff();
         }
 
-        Points = 0;
-        TimeLeft = 60f;
+        ResetGame(false);
 
         ViewModel.InitializeViewModel();
 
@@ -244,12 +246,13 @@ public class GameController : MonoBehaviour
         ResetGame();
     }
 
-    private void ResetGame()
+    private void ResetGame(bool unpause = true)
     {
         Points = 0;
-        TimeLeft = 60f;
+        TimeLeft = 10f;
 
-        TimeScaleManager.UnpauseGameAfterSeconds(1f);
+        if(unpause)
+            TimeScaleManager.UnpauseGameAfterSeconds(1f);
     }
 
     private void BackToMenu()

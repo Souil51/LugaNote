@@ -61,6 +61,21 @@ public class GameSceneManager : MonoBehaviour
 
         return _datas[key].Value;
     }
+
+    public T GetValue<T>(string key)
+    {
+        if (!_datas.ContainsKey(key))
+            return default(T);
+
+        try
+        {
+            return (T)_datas[key].Value;
+        }
+        catch(Exception ex)
+        {
+            return default(T);
+        }
+    }
 }
 
 public class SceneSessionData

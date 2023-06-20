@@ -59,7 +59,7 @@ public class GameViewModel : ViewModelBase
 
     private void Awake()
     {
-        
+        GameController.Instance.PropertyChanged += Instance_PropertyChanged;
     }
 
     private void Update()
@@ -73,6 +73,15 @@ public class GameViewModel : ViewModelBase
     public void InitializeViewModel()
     {
         InitialiserNotifyPropertyChanged();
+    }
+
+    private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName == nameof(GameController.Instance.Points))
+        {
+            Points = GameController.Instance.Points;
+        }
+        
     }
 
     #region Methods
