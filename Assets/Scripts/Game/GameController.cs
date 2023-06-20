@@ -31,10 +31,32 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     public bool GameReplacementMode => ReplacementMode;
 
     private IController Controller;
+    private Coroutine _notesCoroutine = null;
 
     public bool IsStopped => Time.timeScale != 0f;
 
-    public bool IsGameEnded => TimeLeft <= 0;
+    private bool _isGameEnded = false;
+    public bool IsGameEnded
+    {
+        get => _isGameEnded;
+        private set
+        {
+            _isGameEnded = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGameEnded)));
+        }
+    }
+
+    private bool _isGameStarted = false;
+    public bool IsGameStarted
+    {
+        get => _isGameStarted;
+        private set
+        {
+            _isGameStarted = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGameStarted)));
+        }
+    }
+
 
     private float _timeLeft;
     public float TimeLeft
@@ -46,7 +68,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             _timeLeft = value;
 
             if(updateString)
-                ViewModel.TimeLeft = ((int)_timeLeft).ToString();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeLeft)));
         }
     }
 
@@ -60,6 +82,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Points)));
         }
     }
+
+    public bool IsPaused => TimeScaleManager.IsPaused;
 
     private PianoNote ControllerHigherNoteWithOffset => Controller.HigherNote + Controller.C4Offset;
     public PianoNote ControllerLowerNoteWithOffset => Controller.LowerNote + Controller.C4Offset;
@@ -83,22 +107,19 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
 
-        Transition.Opened += Transition_Opened;
-
         InputHandler.Guess += InputHandler_Guess;
+        InputHandler.Pause += InputHandler_Pause;
 
         ViewModel.PlayAgain += ViewModel_PlayAgain;
         ViewModel.BackToMenu += ViewModel_BackToMenu;
 
         Transition.Closed += Transition_Closed;
-        Transition.Opened += Transition_Opened1;
+        Transition.Opened += Transition_Opened;
     }
 
     private void OnDisable()
     {
         GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
-
-        Transition.Opened -= Transition_Opened;
 
         InputHandler.Guess -= InputHandler_Guess;
 
@@ -106,7 +127,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.BackToMenu -= ViewModel_BackToMenu;
 
         Transition.Closed -= Transition_Closed;
-        Transition.Opened -= Transition_Opened1;
+        Transition.Opened -= Transition_Opened;
 
         Controller.Configuration -= Controller_Configuration;
     }
@@ -166,8 +187,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             staff.InitializeStaff();
         }
 
-        ResetGame(false);
-
         ViewModel.InitializeViewModel();
 
         // StartConfiguringController(); // For testing
@@ -176,12 +195,12 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     // Update is called once per frame
     void Update()
     {
-        TimeLeft -= Time.unscaledDeltaTime;
+        if(IsGameStarted && !IsGameEnded)
+            TimeLeft -= Time.unscaledDeltaTime;
 
-        if(TimeLeft <= 0) // Stop de game and show end screen
+        if(IsGameStarted && !IsGameEnded && TimeLeft <= 0 ) // Stop de game and show end screen
         {
-            TimeScaleManager.PauseGame(0f);
-            ViewModel.EndPanelVisible = !ViewModel.EndPanelVisible;
+            EndGame();
         }
 
         if(Input.GetKeyDown(KeyCode.M))
@@ -198,15 +217,49 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         if (e.Result) Points++;
     }
 
-    private void Transition_Opened(object sender, EventArgs e)
+    private void InputHandler_Pause(object sender, EventArgs e)
     {
-        StartGame();
+        if (!TimeScaleManager.IsPaused)
+            TimeScaleManager.PauseGame(0);
+        else
+            TimeScaleManager.UnpauseGame();
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
     }
 
     private void StartGame()
     {
-        // Starting spawn note
-        StartCoroutine(Co_SpawnNotes());
+        IsGameEnded = false;
+        IsGameStarted = true;
+
+        Points = 0;
+        TimeLeft = 5f;
+
+        if (_notesCoroutine != null)
+            StopCoroutine(_notesCoroutine);
+
+        _notesCoroutine = StartCoroutine(Co_SpawnNotes());
+    }
+
+    private void ResetGame(float unpauseAfterSeconds = 1f)
+    {
+        foreach (var staff in Staffs)
+        {
+            staff.Notes.ForEach(x => x.Destroy());
+        }
+
+        StartGame();
+
+        if (unpauseAfterSeconds == 0)
+            TimeScaleManager.UnpauseGame();
+        else if(unpauseAfterSeconds > 0)
+            TimeScaleManager.UnpauseGameAfterSeconds(unpauseAfterSeconds);
+    }
+
+    private void EndGame()
+    {
+        IsGameEnded = true;
+        TimeScaleManager.PauseGame(0f);
     }
 
     /// <summary>
@@ -243,21 +296,16 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     private void ViewModel_PlayAgain(object sender, EventArgs e)
     {
-        ResetGame();
-    }
-
-    private void ResetGame(bool unpause = true)
-    {
-        Points = 0;
-        TimeLeft = 10f;
-
-        if(unpause)
-            TimeScaleManager.UnpauseGameAfterSeconds(1f);
+        if (IsGameEnded)
+            ResetGame(0f);
+        else
+            InputHandler_Pause(TimeScaleManager, EventArgs.Empty);
     }
 
     private void BackToMenu()
     {
         TimeLeft = 0f;
+        EndGame();
 
         foreach(var staff in Staffs)
         {
@@ -275,9 +323,10 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_MENU);
     }
 
-    private void Transition_Opened1(object sender, EventArgs e)
+    private void Transition_Opened(object sender, EventArgs e)
     {
         ViewModel.ShowAll();
+        StartGame();
     }
 
     /// <summary>
@@ -300,6 +349,5 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         yield return new WaitForSecondsRealtime(.25f);
         Transition.Open_2();
-
     }
 }

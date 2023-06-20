@@ -6,7 +6,9 @@ public class TimeScaleManager : MonoBehaviour
 {
     private float _lastTimeScale;
     private float _pauseTimer;
-    public bool IsPaused => _pauseTimer != 0;
+
+    private bool _isPaused = false;
+    public bool IsPaused => _isPaused;
 
     // Update is called once per frame
     void Update()
@@ -16,7 +18,7 @@ public class TimeScaleManager : MonoBehaviour
 
         var firstNote = GameController.Instance.GetFirstNote();
         // Update the timescale to slow down notes while they are approching the start of the staff
-        if (firstNote != null)
+        if (firstNote != null && !GameController.Instance.IsPaused && !GameController.Instance.IsGameEnded)
         {
             var firstNoteStaff = firstNote.Parent.Parent;
             // timescale based on the first Staff
@@ -36,6 +38,7 @@ public class TimeScaleManager : MonoBehaviour
     /// </summary>
     public void PauseGame(float duration)
     {
+        _isPaused = true;
         _lastTimeScale = Time.timeScale;
         Time.timeScale = 0f;
         _pauseTimer = duration;
@@ -69,6 +72,7 @@ public class TimeScaleManager : MonoBehaviour
     {
         _pauseTimer = 0f;
         Time.timeScale = _lastTimeScale;
+        _isPaused = false;
     }
 
     public void UnpauseGameAfterSeconds(float seconds)

@@ -55,6 +55,18 @@ public class GameViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    private string _playAgainString = "Play again";
+    public string PlayAgainString
+    {
+        get => _playAgainString;
+        set
+        {
+            _playAgainString = value;
+            OnPropertyChanged();
+        }
+    }
+
     #endregion
 
     private void Awake()
@@ -64,10 +76,7 @@ public class GameViewModel : ViewModelBase
 
     private void Update()
     {
-        if(GameController.Instance.IsGameEnded && !EndPanelVisible) 
-        {
-            EndPanelVisible = true;
-        }
+        
     }
 
     public void InitializeViewModel()
@@ -81,13 +90,37 @@ public class GameViewModel : ViewModelBase
         {
             Points = GameController.Instance.Points;
         }
-        
+        else if(e.PropertyName == nameof(GameController.Instance.TimeLeft))
+        {
+            TimeLeft = ((int)(GameController.Instance.TimeLeft)).ToString();
+        }
+        else if (e.PropertyName == nameof(GameController.Instance.IsGameEnded))
+        {
+            if (GameController.Instance.IsGameEnded && GameController.Instance.IsGameStarted && !EndPanelVisible)
+            {
+                PlayAgainString = "Play again";
+                EndPanelVisible = true;
+            }
+            else
+            {
+                EndPanelVisible = false;
+            }
+        }
+        else if (e.PropertyName == nameof(GameController.Instance.IsPaused))
+        {
+            PlayAgainString = "Resume game";
+            if (GameController.Instance.IsPaused && UIVisible)
+                EndPanelVisible = true;
+            else
+                EndPanelVisible = false;
+        }
     }
 
     #region Methods
     public void HideAll()
     {
         UIVisible = false;
+        EndPanelVisible = false;
     }
 
     public void ShowAll()
