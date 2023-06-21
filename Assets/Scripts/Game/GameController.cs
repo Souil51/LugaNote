@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Experimental;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,8 +36,18 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     public bool IsStopped => Time.timeScale != 0f;
 
-    private GameState _state;
-    public GameState State => _state;
+    private GameState _state = GameState.Loaded;
+
+    public GameState State
+    {
+        get { return _state; }
+        private set 
+        {
+            _state = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(State)));
+        }
+    }
+
 
     private bool _isGameEnded = false;
     public bool IsGameEnded
@@ -67,7 +78,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         get => _timeLeft;
         private set
         {
-            bool updateString = (int)value != (int)_timeLeft;
+            bool updateString = (int)value != (int)_timeLeft || value > _timeLeft;
             _timeLeft = value;
 
             if(updateString)
@@ -114,6 +125,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         InputHandler.Pause      += InputHandler_Pause;
         ViewModel.PlayAgain     += ViewModel_PlayAgain;
         ViewModel.BackToMenu    += ViewModel_BackToMenu;
+        ViewModel.Resume        += ViewModel_Resume;
         Transition.Closed       += Transition_Closed;
         Transition.Opened       += Transition_Opened;
     }
@@ -191,12 +203,12 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     // Update is called once per frame
     void Update()
     {
-        if(IsGameStarted && !IsGameEnded)
+        if(State == GameState.Started)
             TimeLeft -= Time.unscaledDeltaTime;
 
-        if(IsGameStarted && !IsGameEnded && TimeLeft <= 0 ) // Stop de game and show end screen
+        if(State == GameState.Started && TimeLeft <= 0 ) // Stop de game and show end screen
         {
-            EndGame();
+            ChangeState(GameState.Ended);
         }
     }
 
@@ -210,47 +222,10 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     private void InputHandler_Pause(object sender, EventArgs e)
     {
-        if (!TimeScaleManager.IsPaused)
-            TimeScaleManager.PauseGame(0);
-        else
-            TimeScaleManager.UnpauseGame();
-
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
-    }
-
-    private void StartGame()
-    {
-        IsGameEnded = false;
-        IsGameStarted = true;
-
-        Points = 0;
-        TimeLeft = 5f;
-
-        if (_notesCoroutine != null)
-            StopCoroutine(_notesCoroutine);
-
-        _notesCoroutine = StartCoroutine(Co_SpawnNotes());
-    }
-
-    private void ResetGame(float unpauseAfterSeconds = 1f)
-    {
-        foreach (var staff in Staffs)
-        {
-            staff.Notes.ForEach(x => x.Destroy());
-        }
-
-        StartGame();
-
-        if (unpauseAfterSeconds == 0)
-            TimeScaleManager.UnpauseGame();
-        else if(unpauseAfterSeconds > 0)
-            TimeScaleManager.UnpauseGameAfterSeconds(unpauseAfterSeconds);
-    }
-
-    private void EndGame()
-    {
-        IsGameEnded = true;
-        TimeScaleManager.PauseGame(0f);
+        if (State == GameState.Started)
+            ChangeState(GameState.Paused);
+        else if (State == GameState.Paused)
+            ChangeState(GameState.Started);
     }
 
     /// <summary>
@@ -282,27 +257,27 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     private void ViewModel_BackToMenu(object sender, EventArgs e)
     {
+        ChangeState(GameState.Starting);
         BackToMenu();
     }
 
     private void ViewModel_PlayAgain(object sender, EventArgs e)
     {
-        if (IsGameEnded)
-            ResetGame(0f);
-        else
-            InputHandler_Pause(TimeScaleManager, EventArgs.Empty);
+        if (State == GameState.Ended || State == GameState.Paused)
+        {
+            ChangeState(GameState.Starting);
+            ChangeState(GameState.Started);
+        }
+    }
+
+    private void ViewModel_Resume(object sender, EventArgs e)
+    {
+        if (State == GameState.Paused)
+            ChangeState(GameState.Started);
     }
 
     private void BackToMenu()
     {
-        TimeLeft = 0f;
-        EndGame();
-
-        foreach(var staff in Staffs)
-        {
-            staff.Notes.ForEach(x => x.Destroy());
-        }
-
         ViewModel.HideAll();
 
         Transition.SetPositionOpen_2();
@@ -317,31 +292,67 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     private void Transition_Opened(object sender, EventArgs e)
     {
         ViewModel.ShowAll();
-        StartGame();
+        ChangeState(GameState.Starting);
+        ChangeState(GameState.Started);
     }
 
     private void ChangeState(GameState newState)
     {
         bool changed = false;
 
-        if (newState == GameState.Starting && State == GameState.Started)
+        if ((State == GameState.Loaded || State == GameState.Ended || State == GameState.Paused)
+            && newState == GameState.Starting)
         {
+            foreach (var staff in Staffs)
+            {
+                staff.Notes.ForEach(x => x.Destroy());
+            }
+
+            IsGameEnded = false;
+            IsGameStarted = false;
+
+            Points = 0;
+            TimeLeft = 5f;
+
+            if (_notesCoroutine != null)
+                StopCoroutine(_notesCoroutine);
 
             changed = true;
         }
-        else if (newState == GameState.Started && State == GameState.Paused)
+        else if (State == GameState.Starting && newState == GameState.Started)
         {
+            TimeScaleManager.UnpauseGame();
+
+            IsGameStarted = true;
+            _notesCoroutine = StartCoroutine(Co_SpawnNotes());
 
             changed = true;
         }
-        else if(newState == GameState.Started && State == GameState.Ended)
+        else if (State == GameState.Started && newState == GameState.Ended)
         {
+            TimeLeft = 0f;
+            IsGameEnded = true;
+            TimeScaleManager.PauseGame(0f);
+
+            changed = true;
+        }
+        else if(State == GameState.Started && newState == GameState.Paused)
+        {
+            TimeScaleManager.PauseGame(0);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
+
+            changed = true;
+        }
+        else if (State == GameState.Paused && newState == GameState.Started)
+        {
+            TimeScaleManager.UnpauseGame();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
 
             changed = true;
         }
 
         if (changed)
-            _state = newState;
+            State = newState;
     }
 
     /// <summary>

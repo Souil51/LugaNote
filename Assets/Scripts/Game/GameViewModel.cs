@@ -11,6 +11,9 @@ public class GameViewModel : ViewModelBase
     public delegate void BackToMenuEventHandler(object sender, EventArgs e);
     public event BackToMenuEventHandler BackToMenu;
 
+    public delegate void ResumeEventHandler(object sender, EventArgs e);
+    public event ResumeEventHandler Resume;
+
     #region Properties
     private int _points = 0;
     public int Points
@@ -67,6 +70,19 @@ public class GameViewModel : ViewModelBase
         }
     }
 
+    private bool _isPaused;
+
+    public bool IsPaused
+    {
+        get { return _isPaused; }
+        private set 
+        { 
+            _isPaused = value;
+            OnPropertyChanged();
+        }
+    }
+
+
     #endregion
 
     private void Awake()
@@ -92,27 +108,22 @@ public class GameViewModel : ViewModelBase
         }
         else if(e.PropertyName == nameof(GameController.Instance.TimeLeft))
         {
-            TimeLeft = ((int)(GameController.Instance.TimeLeft)).ToString();
-        }
-        else if (e.PropertyName == nameof(GameController.Instance.IsGameEnded))
-        {
-            if (GameController.Instance.IsGameEnded && GameController.Instance.IsGameStarted && !EndPanelVisible)
-            {
-                PlayAgainString = "Play again";
-                EndPanelVisible = true;
-            }
+            if(GameController.Instance.TimeLeft == 0)
+                TimeLeft = (((int)(GameController.Instance.TimeLeft))).ToString();
             else
-            {
-                EndPanelVisible = false;
-            }
+                TimeLeft = (((int)(GameController.Instance.TimeLeft)) + 1).ToString();
         }
-        else if (e.PropertyName == nameof(GameController.Instance.IsPaused))
+        else if (e.PropertyName == nameof(GameController.Instance.State))
         {
-            PlayAgainString = "Resume game";
-            if (GameController.Instance.IsPaused && UIVisible)
-                EndPanelVisible = true;
-            else
-                EndPanelVisible = false;
+            bool panelVisible = false;
+            if (GameController.Instance.State == GameState.Ended || GameController.Instance.State == GameState.Paused)
+            {
+                if (!EndPanelVisible)
+                    panelVisible = true;
+            }
+
+            IsPaused = GameController.Instance.State == GameState.Paused;
+            EndPanelVisible = panelVisible;
         }
     }
 
@@ -136,6 +147,11 @@ public class GameViewModel : ViewModelBase
     public void Button_EndPanelBackToMenu()
     {
         BackToMenu?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void Button_EndPanelResume()
+    {
+        Resume?.Invoke(this, EventArgs.Empty);
     }
     #endregion
 }
