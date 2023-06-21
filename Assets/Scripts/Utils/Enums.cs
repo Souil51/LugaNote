@@ -12,6 +12,8 @@ public enum ScaleFactor { Screen = 0, Staff = 1 }
 public enum Clef { Trebble = 0, Bass = 1 }
 public enum GameMode { Trebble = 0, Bass = 1, TrebbleBass = 2 }
 
+public enum GameState { Starting = 0, Started = 1, Ended = 2, Paused = 3 }
+
 public enum SceneSessionKey 
 {
     [Description("GameMode")]

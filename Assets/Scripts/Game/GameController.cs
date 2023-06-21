@@ -35,6 +35,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     public bool IsStopped => Time.timeScale != 0f;
 
+    private GameState _state;
+    public GameState State => _state;
+
     private bool _isGameEnded = false;
     public bool IsGameEnded
     {
@@ -107,29 +110,24 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
 
-        InputHandler.Guess += InputHandler_Guess;
-        InputHandler.Pause += InputHandler_Pause;
-
-        ViewModel.PlayAgain += ViewModel_PlayAgain;
-        ViewModel.BackToMenu += ViewModel_BackToMenu;
-
-        Transition.Closed += Transition_Closed;
-        Transition.Opened += Transition_Opened;
+        InputHandler.Guess      += InputHandler_Guess;
+        InputHandler.Pause      += InputHandler_Pause;
+        ViewModel.PlayAgain     += ViewModel_PlayAgain;
+        ViewModel.BackToMenu    += ViewModel_BackToMenu;
+        Transition.Closed       += Transition_Closed;
+        Transition.Opened       += Transition_Opened;
     }
 
     private void OnDisable()
     {
         GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
 
-        InputHandler.Guess -= InputHandler_Guess;
-
-        ViewModel.PlayAgain -= ViewModel_PlayAgain;
-        ViewModel.BackToMenu -= ViewModel_BackToMenu;
-
-        Transition.Closed -= Transition_Closed;
-        Transition.Opened -= Transition_Opened;
-
-        Controller.Configuration -= Controller_Configuration;
+        InputHandler.Guess          -= InputHandler_Guess;
+        ViewModel.PlayAgain         -= ViewModel_PlayAgain;
+        ViewModel.BackToMenu        -= ViewModel_BackToMenu;
+        Transition.Closed           -= Transition_Closed;
+        Transition.Opened           -= Transition_Opened;
+        Controller.Configuration    -= Controller_Configuration;
     }
 
     private void Instance_SceneLoaded(object sender, SceneEventArgs e)
@@ -178,9 +176,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             {
                 staff.transform.position = new Vector3(staff.transform.position.x, 0f, staff.transform.position.z);
 
-                if (GameMode == GameMode.Trebble && staff.StaffClef == Clef.Bass)
-                    staff.gameObject.SetActive(false);
-                else if (GameMode == GameMode.Bass && staff.StaffClef == Clef.Trebble)
+                if (GameMode == GameMode.Trebble && staff.StaffClef == Clef.Bass || GameMode == GameMode.Bass && staff.StaffClef == Clef.Trebble)
                     staff.gameObject.SetActive(false);
             }
             
@@ -201,11 +197,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         if(IsGameStarted && !IsGameEnded && TimeLeft <= 0 ) // Stop de game and show end screen
         {
             EndGame();
-        }
-
-        if(Input.GetKeyDown(KeyCode.M))
-        {
-            ViewModel.EndPanelVisible = !ViewModel.EndPanelVisible;
         }
     }
 
@@ -327,6 +318,30 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         ViewModel.ShowAll();
         StartGame();
+    }
+
+    private void ChangeState(GameState newState)
+    {
+        bool changed = false;
+
+        if (newState == GameState.Starting && State == GameState.Started)
+        {
+
+            changed = true;
+        }
+        else if (newState == GameState.Started && State == GameState.Paused)
+        {
+
+            changed = true;
+        }
+        else if(newState == GameState.Started && State == GameState.Ended)
+        {
+
+            changed = true;
+        }
+
+        if (changed)
+            _state = newState;
     }
 
     /// <summary>
