@@ -17,6 +17,8 @@ using UnityEngine.SocialPlatforms;
 /// </summary>
 public class GameController : MonoBehaviour, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     [SerializeField] private Transition Transition;
     [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
@@ -26,17 +28,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private GameViewModel ViewModel;
     [SerializeField] private float YPositionFirstStaff;
     [SerializeField] private float YPositionSecondStaff;
+    [SerializeField] private float OneStaffScale;
+    [SerializeField] private float TwoStaffScale;
     [SerializeField] private GameMode GameMode;
-
-    public List<Staff> GameStaffs => Staffs;
-    public bool GameReplacementMode => ReplacementMode;
-
-    private IController Controller;
-    private Coroutine _notesCoroutine = null;
-
-    public bool IsStopped => Time.timeScale != 0f;
-
-    private GameState _state = GameState.Loaded;
 
     public GameState State
     {
@@ -47,7 +41,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(State)));
         }
     }
-
 
     private bool _isGameEnded = false;
     public bool IsGameEnded
@@ -70,7 +63,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGameStarted)));
         }
     }
-
 
     private float _timeLeft;
     public float TimeLeft
@@ -97,26 +89,20 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
+    public List<Staff> GameStaffs => Staffs;
+    public bool IsStopped => Time.timeScale != 0f;
+    public bool GameReplacementMode => ReplacementMode;
     public bool IsPaused => TimeScaleManager.IsPaused;
 
-    private PianoNote ControllerHigherNoteWithOffset => Controller.HigherNote + Controller.C4Offset;
-    public PianoNote ControllerLowerNoteWithOffset => Controller.LowerNote + Controller.C4Offset;
-
-    private List<PianoNote> _controllerNotesWithOffset = new List<PianoNote>();
-    public List<PianoNote> ControllerNotesWithOffset => ControllerNotesWithOffset;
-
-    private List<PianoNote> _controllerNotesDownWithOffset = new List<PianoNote>();
-    public List<PianoNote> ControllerNotesDownWithOffset => _controllerNotesDownWithOffset;
-
-    private List<PianoNote> _controllerNotesUpWithOffset = new List<PianoNote>();
-    public List<PianoNote> ControllerNotesUpWithOffset => _controllerNotesUpWithOffset;
-
+    private GameState _state = GameState.Loaded;
+    private IController _controller;
+    public IController Controller => _controller;
+    private Coroutine _notesCoroutine = null;
     private static GameController _instance;
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
+    
     public static GameController Instance => _instance;
 
+    #region Unity methods
     private void OnEnable()
     {
         GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
@@ -142,17 +128,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         Controller.Configuration    -= Controller_Configuration;
     }
 
-    private void Instance_SceneLoaded(object sender, SceneEventArgs e)
-    {
-        if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
-        {
-            GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
-
-            Transition.SetPositionClose();
-            StartCoroutine(Co_WaitForLoading());
-        }
-    }
-
     private void Awake()
     {
         if (GameController.Instance == null)
@@ -161,17 +136,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         if (Staffs.Count == 0)
             throw new Exception("Staffs list is empty");
 
-        Controller = ControllerFactory.GetControllerForType(ControllerType);
+        _controller = ControllerFactory.GetControllerForType(ControllerType);
         Controller.Configuration += Controller_Configuration;
-
-        // Applying offset to center keyboard on C4
-        _controllerNotesWithOffset = Controller.Notes;
-        _controllerNotesDownWithOffset = Controller.NotesDown;
-        if (Controller.C4Offset != 0)
-        {
-            _controllerNotesWithOffset = _controllerNotesWithOffset.Select(x => x + Controller.C4Offset).ToList();
-            _controllerNotesDownWithOffset = _controllerNotesDownWithOffset.Select(x => x + Controller.C4Offset).ToList();
-        }
     }
 
     // Start is called before the first frame update
@@ -181,6 +147,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         for(int i = 0; i < Staffs.Count; i++)
         {
             var staff = Staffs[i];
+
+            staff.transform.localScale = new Vector3(GameMode == GameMode.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode == GameMode.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
 
             if (GameMode == GameMode.TrebbleBass)
                 staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
@@ -211,90 +179,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             ChangeState(GameState.Ended);
         }
     }
-
-    private void InputHandler_Guess(object sender, GuessEventArgs e)
-    {
-        var firstnote = GetFirstNote();
-        firstnote.SetInactive();
-        firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
-        if (e.Result) Points++;
-    }
-
-    private void InputHandler_Pause(object sender, EventArgs e)
-    {
-        if (State == GameState.Started)
-            ChangeState(GameState.Paused);
-        else if (State == GameState.Paused)
-            ChangeState(GameState.Started);
-    }
-
-    /// <summary>
-    /// Controller configuration
-    /// Pause the game (unpause when receiving end configuration event)
-    /// </summary>
-    private void StartConfiguringController()
-    {
-        TimeScaleManager.PauseGame(-1f);
-        Controller.Configure();
-    }
-
-    /// <summary>
-    /// End of configuration, unpause the game after 1 second (to not get keys immediatly)
-    /// </summary>
-    private void Controller_Configuration(object sender, ConfigurationEventArgs e)
-    {
-        TimeScaleManager.PauseGame(1f);
-    }
-
-    /// <summary>
-    /// Pause the game, setting Timescale to 0f and saving timescale before the pause
-    /// </summary>
-    public Note GetFirstNote()
-    {
-        var firstNote = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault();
-        return firstNote;
-    }
-
-    private void ViewModel_BackToMenu(object sender, EventArgs e)
-    {
-        ChangeState(GameState.Starting);
-        BackToMenu();
-    }
-
-    private void ViewModel_PlayAgain(object sender, EventArgs e)
-    {
-        if (State == GameState.Ended || State == GameState.Paused)
-        {
-            ChangeState(GameState.Starting);
-            ChangeState(GameState.Started);
-        }
-    }
-
-    private void ViewModel_Resume(object sender, EventArgs e)
-    {
-        if (State == GameState.Paused)
-            ChangeState(GameState.Started);
-    }
-
-    private void BackToMenu()
-    {
-        ViewModel.HideAll();
-
-        Transition.SetPositionOpen_2();
-        Transition.Close();
-    }
-
-    private void Transition_Closed(object sender, EventArgs e)
-    {
-        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_MENU);
-    }
-
-    private void Transition_Opened(object sender, EventArgs e)
-    {
-        ViewModel.ShowAll();
-        ChangeState(GameState.Starting);
-        ChangeState(GameState.Started);
-    }
+    #endregion
 
     private void ChangeState(GameState newState)
     {
@@ -336,7 +221,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
             changed = true;
         }
-        else if(State == GameState.Started && newState == GameState.Paused)
+        else if (State == GameState.Started && newState == GameState.Paused)
         {
             TimeScaleManager.PauseGame(0);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
@@ -355,6 +240,106 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             State = newState;
     }
 
+    #region Methods
+    /// <summary>
+    /// Pause the game, setting Timescale to 0f and saving timescale before the pause
+    /// </summary>
+    public Note GetFirstNote()
+    {
+        var firstNote = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault();
+        return firstNote;
+    }
+
+    /// <summary>
+    /// Controller configuration
+    /// Pause the game (unpause when receiving end configuration event)
+    /// </summary>
+    private void StartConfiguringController()
+    {
+        TimeScaleManager.PauseGame(-1f);
+        Controller.Configure();
+    }
+
+    private void NavigateToMenu()
+    {
+        ViewModel.HideAll();
+
+        Transition.SetPositionOpen_2();
+        Transition.Close();
+    }
+    #endregion
+
+    #region Events callbacks
+    private void Instance_SceneLoaded(object sender, SceneEventArgs e)
+    {
+        if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
+        {
+            GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+
+            Transition.SetPositionClose();
+            StartCoroutine(Co_WaitForLoading());
+        }
+    }
+
+    private void InputHandler_Guess(object sender, GuessEventArgs e)
+    {
+        var firstnote = GetFirstNote();
+        firstnote.SetInactive();
+        firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
+        if (e.Result) Points++;
+    }
+
+    private void InputHandler_Pause(object sender, EventArgs e)
+    {
+        if (State == GameState.Started)
+            ChangeState(GameState.Paused);
+        else if (State == GameState.Paused)
+            ChangeState(GameState.Started);
+    }
+
+    /// <summary>
+    /// End of configuration, unpause the game after 1 second (to not get keys immediatly)
+    /// </summary>
+    private void Controller_Configuration(object sender, ConfigurationEventArgs e)
+    {
+        TimeScaleManager.PauseGame(1f);
+    }
+
+    private void ViewModel_BackToMenu(object sender, EventArgs e)
+    {
+        ChangeState(GameState.Starting);
+        NavigateToMenu();
+    }
+
+    private void ViewModel_PlayAgain(object sender, EventArgs e)
+    {
+        if (State == GameState.Ended || State == GameState.Paused)
+        {
+            ChangeState(GameState.Starting);
+            ChangeState(GameState.Started);
+        }
+    }
+
+    private void ViewModel_Resume(object sender, EventArgs e)
+    {
+        if (State == GameState.Paused)
+            ChangeState(GameState.Started);
+    }
+
+    private void Transition_Closed(object sender, EventArgs e)
+    {
+        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_MENU);
+    }
+
+    private void Transition_Opened(object sender, EventArgs e)
+    {
+        ViewModel.ShowAll();
+        ChangeState(GameState.Starting);
+        ChangeState(GameState.Started);
+    }
+    #endregion
+
+    #region Coroutines
     /// <summary>
     /// Coroutine : Spawn notes on staff every 0.5f (for timescale = 1f)
     /// </summary>
@@ -365,7 +350,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         {
             for(int i = 0; i < Staffs.Count; i++)
             {
-                Staffs[i].SpawnNote(ControllerHigherNoteWithOffset, ControllerLowerNoteWithOffset);
+                Staffs[i].SpawnNote(Controller.HigherNoteWithOffset, Controller.LowerNoteWithOffset);
                 yield return new WaitForSeconds(0.5f / Staffs.Count);
             }
         }
@@ -376,4 +361,5 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         yield return new WaitForSecondsRealtime(.25f);
         Transition.Open_2();
     }
+    #endregion
 }

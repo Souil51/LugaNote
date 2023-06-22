@@ -2,6 +2,7 @@ using MidiJack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MidiController : MonoBehaviour, IController
@@ -27,6 +28,18 @@ public class MidiController : MonoBehaviour, IController
     private int _c4Offset = 0;
     public int C4Offset => _c4Offset;
 
+    public PianoNote HigherNoteWithOffset => HigherNote + C4Offset;
+    public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
+
+    private List<PianoNote> _notesWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesWithOffset => _notesWithOffset;
+
+    private List<PianoNote> _notesDownWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesDownWithOffset => _notesDownWithOffset;
+
+    private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
@@ -40,6 +53,17 @@ public class MidiController : MonoBehaviour, IController
         // For MIDI keyboard with reduced note count, keyboard will be centered on C4
         var middleC = MusicHelper.GetMiddleCBetweenTwoNotes(HigherNote, LowerNote);
         _c4Offset = PianoNote.C4 - middleC;
+    }
+
+    private void Awake()
+    {
+        _notesWithOffset = Notes;
+        _notesDownWithOffset = NotesDown;
+        if (C4Offset != 0)
+        {
+            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+        }
     }
 
     // Update is called once per frame

@@ -24,6 +24,12 @@ public interface IController
 
     int C4Offset { get; }
 
+    public PianoNote HigherNoteWithOffset { get; }
+    public PianoNote LowerNoteWithOffset { get; }
+    public List<PianoNote> NotesWithOffset { get; }
+    public List<PianoNote> NotesDownWithOffset { get; }
+    public List<PianoNote> NotesUpWithOffset { get; }
+
     void Configure();
 }
 

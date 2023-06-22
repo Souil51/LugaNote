@@ -26,18 +26,24 @@ public class VisualController : MonoBehaviour, IController
 
     public int C4Offset => 0;
 
+    public PianoNote HigherNoteWithOffset => HigherNote + C4Offset;
+    public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
+
+    private List<PianoNote> _notesWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesWithOffset => _notesWithOffset;
+
+    private List<PianoNote> _notesDownWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesDownWithOffset => _notesDownWithOffset;
+
+    private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
     public void Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -49,6 +55,14 @@ public class VisualController : MonoBehaviour, IController
 
     private void Awake()
     {
+        _notesWithOffset = Notes;
+        _notesDownWithOffset = NotesDown;
+        if (C4Offset != 0)
+        {
+            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+        }
+
         GenerateButtons();
     }
 

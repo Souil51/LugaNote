@@ -24,6 +24,18 @@ public class KeyboardController : MonoBehaviour, IController
 
     public int C4Offset => 0;
 
+    public PianoNote HigherNoteWithOffset => HigherNote + C4Offset;
+    public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
+
+    private List<PianoNote> _notesWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesWithOffset => _notesWithOffset;
+
+    private List<PianoNote> _notesDownWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesDownWithOffset => _notesDownWithOffset;
+
+    private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
+    public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+
     // Keyboard has only few notes
 
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()
@@ -59,10 +71,15 @@ public class KeyboardController : MonoBehaviour, IController
         _lowerNote = PianoNote.A0;
     }
 
-    // Start is called before the first frame upd-ate
-    void Start()
+    private void Awake()
     {
-        
+        _notesWithOffset = Notes;
+        _notesDownWithOffset = NotesDown;
+        if (C4Offset != 0)
+        {
+            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+        }
     }
 
     // Update is called once per frame

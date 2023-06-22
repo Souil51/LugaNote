@@ -35,18 +35,18 @@ public class GameInputHandler : MonoBehaviour
 
             if (firstNote != null && !GameController.Instance.IsPaused)
             {
-                if (GameController.Instance.ControllerNotesDownWithOffset.Count > 0)
+                if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
                 {
                     bool? guess = null;
                     // Normal mode : the note has to be the exact same note
                     // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
                     if (
-                            GameController.Instance.ControllerNotesDownWithOffset.Count == 1
+                            GameController.Instance.Controller.NotesDownWithOffset.Count == 1
                             &&
                             (
-                                (!GameController.Instance.GameReplacementMode && GameController.Instance.ControllerNotesDownWithOffset[0] == firstNote.PianoNote)
+                                (!GameController.Instance.GameReplacementMode && GameController.Instance.Controller.NotesDownWithOffset[0] == firstNote.PianoNote)
                                 ||
-                                ((int)(GameController.Instance.ControllerNotesDownWithOffset[0]) % 12 == (int)(firstNote.PianoNote) % 12)
+                                ((int)(GameController.Instance.Controller.NotesDownWithOffset[0]) % 12 == (int)(firstNote.PianoNote) % 12)
                             )
                         )
                     {
@@ -66,13 +66,6 @@ public class GameInputHandler : MonoBehaviour
                     if (guess.HasValue)
                     {
                         Guess?.Invoke(this, new GuessEventArgs(guess.Value));
-
-                        // Debug.Log("Guess " + firstNote.Parent.Note);
-                        //firstNote.SetInactive();
-                        //firstNote = _controller.GetFirstNote();
-
-                        //if (guess.Value)
-                        //    Points++;
                     }
                 }
 
@@ -80,31 +73,7 @@ public class GameInputHandler : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     Guess?.Invoke(this, new GuessEventArgs(true));
-
-                    // Debug.Log("Guess " + firstNote.Parent.Note);
-                    //firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
-                    //firstNote.SetInactive();
-                    //Points++;
-
-                    // firstNote = GameController.Instance.GetFirstNote();
                 }
-
-                // Recall the method to get the potential next first note (because the current is disabled ?)
-                // firstNote = GameController.Instance.GetFirstNote();
-                // Update the timescale to slow down notes while they are approching the start of the staff
-                //if (firstNote != null)
-                //{
-                //    var firstNoteStaff = firstNote.Parent.Parent;
-                //    // timescale based on the first Staff
-                //    var totalDistance = firstNoteStaff.StartingPointPosition - firstNoteStaff.EndingPointPosition;
-                //    var distanceToEnd = firstNote.transform.localPosition.x - firstNoteStaff.EndingPointPosition;
-
-                //    float newTimeScale = distanceToEnd / totalDistance;
-                //    if (newTimeScale > 0.05f) // deadzone
-                //        Time.timeScale = distanceToEnd / totalDistance;
-                //    else
-                //        Time.timeScale = 0f;
-                //}
             }
         }
     }
