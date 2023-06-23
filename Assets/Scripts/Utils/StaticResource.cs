@@ -29,6 +29,7 @@ public static class StaticResource
     public static string PREFAB_NOTE_BUTTON => "NoteButton";
     public static string PREFAB_NOTE_BUTTON_SHARP => "NoteButtonSharp";
     public static string PREFAB_TRANSITION => "transition";
+    public static string PREFAB_VISUAL_KEYBOARD => "VisualKeyBoard";
 
     public static string SCENE_MAIN_MENU => "MainMenu";
     public static string SCENE_MAIN_SCENE => "MainScene";

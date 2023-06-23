@@ -2466,7 +2466,7 @@ MonoBehaviour:
   Staffs:
   - {fileID: 379582241}
   - {fileID: 1584240290}
-  ControllerType: 0
+  ControllerType: 2
   ReplacementMode: 1
   InputHandler: {fileID: 767779333}
   TimeScaleManager: {fileID: 767779334}

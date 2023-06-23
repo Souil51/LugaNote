@@ -21,7 +21,7 @@ public class VisualController : MonoBehaviour, IController
     public PianoNote HigherNote => PianoNote.C8;
     public PianoNote LowerNote => PianoNote.A0;
 
-    private PianoNote HigherVisibleNote => PianoNote.C4;
+    private PianoNote HigherVisibleNote => PianoNote.B3;
     private PianoNote LowerVisibleNote => PianoNote.C3;
 
     public int C4Offset => 0;
@@ -72,9 +72,11 @@ public class VisualController : MonoBehaviour, IController
     private void GenerateButtons()
     {
         // UI Canvas that will contains all buttons
-        var goCanvas = Instantiate(Resources.Load("UICanvas")) as GameObject;
+        var goCanvas = Instantiate(Resources.Load(StaticResource.PREFAB_VISUAL_KEYBOARD)) as GameObject;
         goCanvas.transform.localPosition = Vector3.zero;
         goCanvas.transform.SetParent(transform);
+
+        var btnPanel = goCanvas.transform.GetChild(0);
 
         // 2 prefabs to calculate the center position of the buttons
         var goTmpButton = Instantiate(Resources.Load("NoteButton")) as GameObject;
@@ -93,7 +95,8 @@ public class VisualController : MonoBehaviour, IController
 
         float totalWidth = (rectTmpButton.sizeDelta.x * naturalNotesCount) + (rectTmpSharp.sizeDelta.x * sharpNotesCount);
 
-        float currentX = -(totalWidth / 2);
+        float currentX = -(totalWidth / 4);
+        float startingY = -(rectTmpButton.sizeDelta.x / 4);
 
         // Destroy the 2 temp prefabs
         Destroy(goTmpButton);
@@ -107,11 +110,13 @@ public class VisualController : MonoBehaviour, IController
 
             string prefabName = MusicHelper.NaturalNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
-            goButtonNote.transform.SetParent(goCanvas.transform);
-            goButtonNote.transform.localPosition = new Vector3(currentX, yPosition + (altered ? 20 : 0), 0f);
+            goButtonNote.transform.SetParent(btnPanel);
+
+            var buttonTransform = goButtonNote.GetComponent<RectTransform>();
+            buttonTransform.localPosition = new Vector3(currentX, startingY + (altered ? 20 : 0), 0f);
 
             // Get the size of the button
-            var buttonWidth = goButtonNote.GetComponent<RectTransform>().sizeDelta.x;
+            var buttonWidth = buttonTransform.sizeDelta.x;
 
             // Update the text of the button
             var buttonTMP = goButtonNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -140,7 +145,7 @@ public class VisualController : MonoBehaviour, IController
                 NoteDown?.Invoke(this, new NoteEventArgs(note));
             });
 
-            currentX += buttonWidth;
+            currentX += buttonWidth / 2f;
         }
     }
 }
