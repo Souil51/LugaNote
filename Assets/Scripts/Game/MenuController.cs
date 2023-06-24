@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -10,6 +11,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MenuController : MonoBehaviour
 {
+    [SerializeField] private MidiConfigurationHelper Configuration;
+
     public Canvas Menu;
     public Transition Transition;
 
@@ -17,6 +20,10 @@ public class MenuController : MonoBehaviour
     {
         // Transition.SetPositionOpen_1();
         GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
+
+        var _controller = ControllerFactory.Instance.GetController();
+
+        Configuration.Initialize(_controller);
     }
 
     private void OnEnable()

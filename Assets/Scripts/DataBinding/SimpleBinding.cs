@@ -77,11 +77,22 @@ public class SimpleBinding : MonoBehaviour
             // Find the path to update
             BindingPath path = Paths.Find(x => x.Name == propertyName);
 
-            // Get the type of the property to update
-            Enum.TryParse(propInfo.PropertyType.Name, true, out TypeCode enumValue);
-            // Convert the new value to the same type of the UI element property
-            var convertedValue = Convert.ChangeType(value, enumValue);
-
+            object convertedValue = null;
+            if (value is IConvertible)
+            {
+                // Get the type of the property to update
+                Enum.TryParse(propInfo.PropertyType.Name, true, out TypeCode enumValue);
+                // Convert the new value to the same type of the UI element property
+                convertedValue = Convert.ChangeType(value, enumValue);
+            }
+            else
+            {
+                if(value is UnityEngine.Color)
+                {
+                    convertedValue = (UnityEngine.Color) value;
+                }
+            }
+            
             path.LastValue = convertedValue;
 
             // For all type but not string, update the value

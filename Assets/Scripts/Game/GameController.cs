@@ -130,7 +130,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         if (Staffs.Count == 0)
             throw new Exception("Staffs list is empty");
 
-        _controller = ControllerFactory.GetControllerForType(ControllerType);
+        _controller = ControllerFactory.Instance.GetController();
         Controller.Configuration += Controller_Configuration;
     }
 

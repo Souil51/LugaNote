@@ -14,6 +14,8 @@ public enum GameMode { Trebble = 0, Bass = 1, TrebbleBass = 2 }
 
 public enum GameState { Loaded = 5, Starting = 0, Started = 1, Ended = 2, Paused = 3, Navigating = 4 }
 
+public enum MidiConfigurationType { Touches88 = 0, Touches61 = 1, Custom = 3 }
+
 public enum SceneSessionKey 
 {
     [Description("GameMode")]

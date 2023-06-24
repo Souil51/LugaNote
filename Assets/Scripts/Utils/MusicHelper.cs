@@ -10,6 +10,9 @@ public class MusicHelper
     public static PianoNote HigherNote => PianoNote.C8;
     public static PianoNote LowerNote => PianoNote.A0;
 
+    public static PianoNote HigherNote_66Touches => PianoNote.C7;
+    public static PianoNote LowerNote_66Touches => PianoNote.C2;
+
     /// <summary>
     /// Return the A-G notation for each Clef
     /// </summary>

@@ -1,33 +1,93 @@
+using Assets;
+using Assets.Scripts.Utils;
 using MidiJack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.Profiling.HierarchyFrameDataView;
 
-public class MidiConfigurationHelper : MonoBehaviour
+public class MidiConfigurationHelper : ViewModelBase
 {
     public delegate void ConfigurationEndedEventHandler(object sender, MidiConfigurationReturn e);
     public event ConfigurationEndedEventHandler ConfigurationEnded;
 
-    private enum ConfigurationState { Initializing, Started, WaitingLowerNote, WaitingHigherNote, Ended, Canceled }
+    private enum ConfigurationState { Initializing, Started, WaitingLowerNote, WaitingHigherNote, WaitingConfirm, Ended, Canceled }
 
     private ConfigurationState _currentState = ConfigurationState.Initializing;
 
     private PianoNote _lowerNote;
     private PianoNote _higherNote;
 
-    private MidiController _controller;
+    private IController _controller;
+
+    private bool _isCustomConfiguration = false;
+    public bool IsCustomConfiguration
+    {
+        get => _isCustomConfiguration;
+        set 
+        {
+            _isCustomConfiguration = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isLowerNoteComplete;
+    public bool IsLowerNoteComplete
+    {
+        get { return _isLowerNoteComplete; }
+        set 
+        { 
+            _isLowerNoteComplete = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isHigherNoteComplete;
+    public bool IsHigherNoteComplete
+    {
+        get { return _isHigherNoteComplete; }
+        set
+        {
+            _isHigherNoteComplete = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _lowerPanelColor;
+    public Color LowerPanelColor
+    {
+        get { return _lowerPanelColor; }
+        set
+        {
+            _lowerPanelColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _higherPanelColor;
+    public Color HigherPanelColor
+    {
+        get { return _higherPanelColor; }
+        set
+        {
+            _higherPanelColor = value;
+            OnPropertyChanged();
+        }
+    }
+
 
     private void Awake()
     {
-        ChangeState(ConfigurationState.WaitingLowerNote);
+        ChangeState(ConfigurationState.Initializing);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        InitialiserNotifyPropertyChanged();
     }
 
     // Update is called once per frame
@@ -36,13 +96,12 @@ public class MidiConfigurationHelper : MonoBehaviour
         
     }
 
-    public void Initialize(MidiController controller)
+    public void Initialize(IController controller)
     {
         _controller = controller;
         controller.NoteDown += Controller_NoteDown;
 
         ChangeState(ConfigurationState.Started);
-        ChangeState(ConfigurationState.WaitingLowerNote);
     }
 
     private void Controller_NoteDown(object sender, NoteEventArgs e)
@@ -55,13 +114,53 @@ public class MidiConfigurationHelper : MonoBehaviour
         else if (_currentState == ConfigurationState.WaitingHigherNote)
         {
             _higherNote = e.Note;
-            ChangeState(ConfigurationState.Ended);
+            ChangeState(ConfigurationState.WaitingConfirm);
         }
     }
 
-    private void CancelConfiguration()
+    private void SetMode(MidiConfigurationType type)
+    {
+        if (type == MidiConfigurationType.Touches88)
+        {
+            ChangeState(ConfigurationState.WaitingConfirm);
+        }
+        else if (type == MidiConfigurationType.Touches61)
+        {
+            ChangeState(ConfigurationState.WaitingConfirm);
+        }
+        else if (type == MidiConfigurationType.Custom)
+        {
+            ChangeState(ConfigurationState.WaitingLowerNote);
+        }
+    }
+
+    public void CancelConfiguration()
     {
         ChangeState(ConfigurationState.Canceled);
+    }
+
+    public void ConfirmConfiguration()
+    {
+        ChangeState(ConfigurationState.Ended);
+    }
+
+    public void Touches88_Click()
+    {
+        _higherNote = MusicHelper.HigherNote;
+        _lowerNote = MusicHelper.LowerNote;
+        SetMode(MidiConfigurationType.Touches88);
+    }
+
+    public void Touches61_Click()
+    {
+        _higherNote = MusicHelper.HigherNote_66Touches;
+        _lowerNote = MusicHelper.LowerNote_66Touches;
+        SetMode(MidiConfigurationType.Touches61);
+    }
+
+    public void Custom_Click()
+    {
+        SetMode(MidiConfigurationType.Custom);
     }
 
     private void ChangeState(ConfigurationState newState)
@@ -74,17 +173,33 @@ public class MidiConfigurationHelper : MonoBehaviour
         }
         else if (_currentState == ConfigurationState.Started && newState == ConfigurationState.WaitingLowerNote)
         {
+            IsCustomConfiguration = true;
+
             stateChanged = true;
         }
         else if (_currentState == ConfigurationState.WaitingLowerNote && newState == ConfigurationState.WaitingHigherNote)
         {
+            IsLowerNoteComplete = true;
+            LowerPanelColor = UIHelper.GetColorFromHEX("3BFF5B");
+
             Debug.Log("Lower note configured : " + _lowerNote);
             stateChanged = true;
         }
-        else if (_currentState == ConfigurationState.WaitingHigherNote && newState == ConfigurationState.Ended)
+        else if (_currentState == ConfigurationState.WaitingHigherNote && newState == ConfigurationState.WaitingConfirm)
         {
+            IsHigherNoteComplete = true;
+            HigherPanelColor = UIHelper.GetColorFromHEX("3BFF5B");
+
             Debug.Log("Higher note configured : " + _higherNote);
 
+            stateChanged = true;
+        }
+        else if((_currentState == ConfigurationState.Started || _currentState == ConfigurationState.WaitingHigherNote) && newState == ConfigurationState.WaitingConfirm)
+        {
+            stateChanged = true;
+        }
+        else if(_currentState == ConfigurationState.WaitingConfirm && newState == ConfigurationState.Ended)
+        {
             if (_lowerNote > _higherNote) // if the user reverse the two notes
             {
                 var tmp = _lowerNote;
@@ -98,8 +213,6 @@ public class MidiConfigurationHelper : MonoBehaviour
 
             _controller.NoteDown -= Controller_NoteDown;
 
-            Destroy(gameObject); // Configuration is ended, destroy the object
-
             stateChanged = true;
         }
         else if(newState == ConfigurationState.Canceled)
@@ -108,12 +221,18 @@ public class MidiConfigurationHelper : MonoBehaviour
 
             _controller.NoteDown -= Controller_NoteDown;
 
-            Destroy(gameObject); // Configuration is ended, destroy the object
+            stateChanged = true;
         }
 
         if (stateChanged)
         {
+            Debug.Log("Change state from " + _currentState + " to " + newState);
             _currentState = newState;
+        }
+
+        if(_currentState == ConfigurationState.Canceled || _currentState == ConfigurationState.Ended)
+        {
+            gameObject.SetActive(false);
         }
     }
 }
