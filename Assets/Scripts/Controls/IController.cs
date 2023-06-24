@@ -30,7 +30,7 @@ public interface IController
     public List<PianoNote> NotesDownWithOffset { get; }
     public List<PianoNote> NotesUpWithOffset { get; }
 
-    void Configure();
+    void Configure(Canvas canvas);
 }
 
 public class NoteEventArgs : EventArgs

@@ -251,7 +251,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     private void StartConfiguringController()
     {
         TimeScaleManager.PauseGame(-1f);
-        Controller.Configure();
+        Controller.Configure(null);
     }
 
     private void NavigateToMenu()

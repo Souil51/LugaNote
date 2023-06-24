@@ -5,8 +5,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 public class MidiConfigurationHelper : ViewModelBase
@@ -74,6 +76,28 @@ public class MidiConfigurationHelper : ViewModelBase
         set
         {
             _higherPanelColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _confirmTextColor;
+    public Color ConfirmTextColor
+    {
+        get { return _confirmTextColor; }
+        set
+        {
+            _confirmTextColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _confirmInteractable;
+    public bool ConfirmInteractable
+    {
+        get { return _confirmInteractable; }
+        set
+        {
+            _confirmInteractable = value;
             OnPropertyChanged();
         }
     }
@@ -192,10 +216,16 @@ public class MidiConfigurationHelper : ViewModelBase
 
             Debug.Log("Higher note configured : " + _higherNote);
 
+            ConfirmInteractable = true;
+            ConfirmTextColor = Color.white;
+
             stateChanged = true;
         }
         else if((_currentState == ConfigurationState.Started || _currentState == ConfigurationState.WaitingHigherNote) && newState == ConfigurationState.WaitingConfirm)
         {
+            ConfirmInteractable = true;
+            ConfirmTextColor = Color.white;
+
             stateChanged = true;
         }
         else if(_currentState == ConfigurationState.WaitingConfirm && newState == ConfigurationState.Ended)

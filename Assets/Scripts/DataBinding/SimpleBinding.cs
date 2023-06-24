@@ -19,6 +19,7 @@ public class SimpleBinding : MonoBehaviour
     // THe UI element
     private ICanvasElement _canvasElement;
     private IUICustomElement _customElement;
+    private Selectable _selectableElement;
     // Used for the localization
     public LocalizeStringEvent localize;
 
@@ -34,6 +35,9 @@ public class SimpleBinding : MonoBehaviour
 
         if (_customElement == null)
             _customElement = GetComponent<IUICustomElement>();
+
+        if(_selectableElement == null)
+            _selectableElement = GetComponent<Selectable>();
     }
 
     /// <summary>
@@ -61,12 +65,16 @@ public class SimpleBinding : MonoBehaviour
         }*/
 
         if (!ChangeValueOfType(_canvasElement, value, propertyName))
-            ChangeValueOfType(_customElement, value, propertyName);
+            if (!ChangeValueOfType(_customElement, value, propertyName))
+                ChangeValueOfType(_selectableElement, value, propertyName);
     }
 
     private bool ChangeValueOfType(object obj, object value, string propertyName)
     {
         bool result = false;
+
+        if (obj == null)
+            return result;
 
         var propInfo = obj.GetType().GetProperty(MemberName);
 
@@ -134,5 +142,7 @@ public class SimpleBinding : MonoBehaviour
             propInfo.SetValue(canvasElement, value);
         else if (obj is IUICustomElement customElement)
             propInfo.SetValue(customElement, value);
+        else if(obj is Selectable selectableElement)
+            propInfo.SetValue(selectableElement, value);
     }
 }

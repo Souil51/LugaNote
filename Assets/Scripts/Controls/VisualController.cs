@@ -41,7 +41,7 @@ public class VisualController : MonoBehaviour, IController
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
-    public void Configure()
+    public void Configure(Canvas canvas)
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
     }

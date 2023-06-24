@@ -12,18 +12,20 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     [SerializeField] private MidiConfigurationHelper Configuration;
+    [SerializeField] private Canvas MainCanvas;
 
     public Canvas Menu;
     public Transition Transition;
+
+    private IController _controller;
 
     private void Awake()
     {
         // Transition.SetPositionOpen_1();
         GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
 
-        var _controller = ControllerFactory.Instance.GetController();
-
-        Configuration.Initialize(_controller);
+        _controller = ControllerFactory.Instance.GetController();
+        _controller.Configuration += _controller_Configuration;
     }
 
     private void OnEnable()
@@ -35,6 +37,7 @@ public class MenuController : MonoBehaviour
     {
         GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
         Transition.Closed -= Transition_Closed;
+        _controller.Configuration -= _controller_Configuration;
     }
     private void Instance_SceneLoaded(object sender, SceneEventArgs e)
     {
@@ -59,7 +62,15 @@ public class MenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            _controller.Configure(MainCanvas);
+        }
+    }
+
+    private void _controller_Configuration(object sender, ConfigurationEventArgs e)
+    {
+        Debug.Log("Configuration ENDED");
     }
 
     public void ChangeScene_Trebble()

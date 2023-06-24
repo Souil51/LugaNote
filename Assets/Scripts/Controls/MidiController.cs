@@ -108,11 +108,12 @@ public class MidiController : MonoBehaviour, IController
         Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
     }
 
-    public void Configure()
+    public void Configure(Canvas canvas)
     {
-        GameObject test = new GameObject();
-        var go = Instantiate(test, Vector3.zero, Quaternion.identity) as GameObject;
-        _configurationHelper = go.AddComponent<MidiConfigurationHelper>();
+        // GameObject test = new GameObject();
+        var go = Instantiate(Resources.Load("ConfigurationPanel"), Vector3.zero, Quaternion.identity) as GameObject;
+        go.transform.SetParent(canvas.transform);
+        _configurationHelper = go.GetComponent<MidiConfigurationHelper>();
         _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
 
         _configurationHelper.Initialize(this);

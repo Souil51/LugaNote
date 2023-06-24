@@ -62,6 +62,8 @@ public class KeyboardController : MonoBehaviour, IController
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
+    private MidiConfigurationHelper _configurationHelper;
+
     public KeyboardController()
     {
         _higherNote = keys.Last().Value;
@@ -111,8 +113,32 @@ public class KeyboardController : MonoBehaviour, IController
             NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
     }
 
-    public void Configure()
+    /*public void Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no keyboard configuration yet
+    }*/
+
+    private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
+    {
+        _configurationHelper.ConfigurationEnded -= Config_ConfigurationEnded;
+
+        if (e.StatusCode)
+        {
+            this._lowerNote = e.LowerNote;
+            this._higherNote = e.HigherNote;
+        }
+
+        Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
+    }
+
+    public void Configure(Canvas canvas)
+    {
+        // GameObject test = new GameObject();
+        var go = Instantiate(Resources.Load("ConfigurationPanel"), Vector3.zero, Quaternion.identity) as GameObject;
+        go.transform.SetParent(canvas.transform);
+        _configurationHelper = go.GetComponent<MidiConfigurationHelper>();
+        _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
+
+        _configurationHelper.Initialize(this);
     }
 }
