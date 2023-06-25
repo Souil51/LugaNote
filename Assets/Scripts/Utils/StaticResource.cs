@@ -40,6 +40,8 @@ public static class StaticResource
     public static Color COLOR_GOOD_GUESS => Color.green;
     public static Color COLOR_BAD_GUESS => Color.red;
 
+    public static string COLOR_HEX_DARKGREEN => "3BFF5B";
+
     public static int PIANO_KEY_COUNT => 88;
 
     public static string GET_PREFAB_NOTE(bool withLine, Alteration alteration)

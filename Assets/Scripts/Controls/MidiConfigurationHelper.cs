@@ -16,7 +16,7 @@ public class MidiConfigurationHelper : ViewModelBase
     public delegate void ConfigurationEndedEventHandler(object sender, MidiConfigurationReturn e);
     public event ConfigurationEndedEventHandler ConfigurationEnded;
 
-    private enum ConfigurationState { Initializing, Started, WaitingLowerNote, WaitingHigherNote, WaitingConfirm, Ended, Canceled }
+    private enum ConfigurationState { Initializing, Started, WaitingLowerNote, WaitingHigherNote, Ended, Canceled }
 
     private ConfigurationState _currentState = ConfigurationState.Initializing;
 
@@ -114,12 +114,6 @@ public class MidiConfigurationHelper : ViewModelBase
         InitialiserNotifyPropertyChanged();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Initialize(IController controller)
     {
         _controller = controller;
@@ -138,7 +132,7 @@ public class MidiConfigurationHelper : ViewModelBase
         else if (_currentState == ConfigurationState.WaitingHigherNote)
         {
             _higherNote = e.Note;
-            ChangeState(ConfigurationState.WaitingConfirm);
+            ChangeState(ConfigurationState.Ended);
         }
     }
 
@@ -146,11 +140,11 @@ public class MidiConfigurationHelper : ViewModelBase
     {
         if (type == MidiConfigurationType.Touches88)
         {
-            ChangeState(ConfigurationState.WaitingConfirm);
+            ChangeState(ConfigurationState.Ended);
         }
         else if (type == MidiConfigurationType.Touches61)
         {
-            ChangeState(ConfigurationState.WaitingConfirm);
+            ChangeState(ConfigurationState.Ended);
         }
         else if (type == MidiConfigurationType.Custom)
         {
@@ -204,51 +198,37 @@ public class MidiConfigurationHelper : ViewModelBase
         else if (_currentState == ConfigurationState.WaitingLowerNote && newState == ConfigurationState.WaitingHigherNote)
         {
             IsLowerNoteComplete = true;
-            LowerPanelColor = UIHelper.GetColorFromHEX("3BFF5B");
+            LowerPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_DARKGREEN);
 
             Debug.Log("Lower note configured : " + _lowerNote);
             stateChanged = true;
         }
-        else if (_currentState == ConfigurationState.WaitingHigherNote && newState == ConfigurationState.WaitingConfirm)
+        else if (_currentState == ConfigurationState.WaitingHigherNote && newState == ConfigurationState.Ended)
         {
-            IsHigherNoteComplete = true;
-            HigherPanelColor = UIHelper.GetColorFromHEX("3BFF5B");
-
             Debug.Log("Higher note configured : " + _higherNote);
 
+            IsHigherNoteComplete = true;
+            HigherPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_DARKGREEN);
+
             ConfirmInteractable = true;
             ConfirmTextColor = Color.white;
 
+            EndConfiguration();
+
             stateChanged = true;
         }
-        else if((_currentState == ConfigurationState.Started || _currentState == ConfigurationState.WaitingHigherNote) && newState == ConfigurationState.WaitingConfirm)
+        else if((_currentState == ConfigurationState.Started || _currentState == ConfigurationState.WaitingHigherNote) && newState == ConfigurationState.Ended)
         {
             ConfirmInteractable = true;
             ConfirmTextColor = Color.white;
 
-            stateChanged = true;
-        }
-        else if(_currentState == ConfigurationState.WaitingConfirm && newState == ConfigurationState.Ended)
-        {
-            if (_lowerNote > _higherNote) // if the user reverse the two notes
-            {
-                var tmp = _lowerNote;
-                _lowerNote = _higherNote;
-                _higherNote = tmp;
-            }
-
-            Debug.Log("Configuration is complete. Lower note = " + _lowerNote + ", higher note = " + _higherNote);
-
-            ConfigurationEnded?.Invoke(this, new MidiConfigurationReturn(true, _higherNote, _lowerNote));
-
-            _controller.NoteDown -= Controller_NoteDown;
+            EndConfiguration();
 
             stateChanged = true;
         }
         else if(newState == ConfigurationState.Canceled)
         {
             ConfigurationEnded?.Invoke(this, new MidiConfigurationReturn(false, PianoNote.C8, PianoNote.A0));
-
             _controller.NoteDown -= Controller_NoteDown;
 
             stateChanged = true;
@@ -262,8 +242,24 @@ public class MidiConfigurationHelper : ViewModelBase
 
         if(_currentState == ConfigurationState.Canceled || _currentState == ConfigurationState.Ended)
         {
-            gameObject.SetActive(false);
+            // gameObject.SetActive(false);
+            Destroy(gameObject);
         }
+    }
+
+    private void EndConfiguration()
+    {
+        Debug.Log("Configuration is complete. Lower note = " + _lowerNote + ", higher note = " + _higherNote);
+
+        if (_lowerNote > _higherNote) // if the user reverse the two notes
+        {
+            var tmp = _lowerNote;
+            _lowerNote = _higherNote;
+            _higherNote = tmp;
+        }
+
+        ConfigurationEnded?.Invoke(this, new MidiConfigurationReturn(true, _higherNote, _lowerNote));
+        _controller.NoteDown -= Controller_NoteDown;
     }
 }
 

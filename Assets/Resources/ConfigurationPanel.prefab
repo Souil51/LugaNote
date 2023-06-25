@@ -114,10 +114,10 @@ RectTransform:
   m_Father: {fileID: 8201509140501197913}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 429, y: -51.1728}
+  m_SizeDelta: {x: 858, y: 102.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509140116973764
 CanvasRenderer:
@@ -2386,10 +2386,10 @@ RectTransform:
   m_Father: {fileID: 8201509140588279646}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 424, y: -111.9032}
+  m_SizeDelta: {x: 848, y: 223.8064}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509140969939236
 CanvasRenderer:
@@ -2601,7 +2601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8201509141113050924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2618,10 +2618,10 @@ RectTransform:
   m_Father: {fileID: 8201509140866250919}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 209.5, y: -48.42}
+  m_SizeDelta: {x: 419, y: 96.84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141113050914
 CanvasRenderer:
@@ -2956,10 +2956,10 @@ RectTransform:
   m_Father: {fileID: 8201509140116973760}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 643.5, y: -51.1728}
+  m_SizeDelta: {x: 429, y: 102.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141178346563
 CanvasRenderer:
@@ -3033,10 +3033,10 @@ RectTransform:
   m_Father: {fileID: 8201509140116973760}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 214.5, y: -51.1728}
+  m_SizeDelta: {x: 429, y: 102.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141181643265
 CanvasRenderer:
@@ -3209,10 +3209,10 @@ RectTransform:
   m_Father: {fileID: 8201509140501197913}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 429, y: -221.7488}
+  m_SizeDelta: {x: 858, y: 238.8064}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141251732116
 CanvasRenderer:
@@ -3502,10 +3502,10 @@ RectTransform:
   m_Father: {fileID: 8201509140866250919}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 429, y: -48.42}
+  m_SizeDelta: {x: 858, y: 96.84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141576460492
 CanvasRenderer:
@@ -4746,6 +4746,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6096898992989121743, guid: a9a68129bf2f9e24591d69f5748f1b33, type: 3}
   m_PrefabInstance: {fileID: 8201509140077298956}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8201509140077298948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2687826855584655811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26620573df1628943a8ee65d50d4f77e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8201509140077298949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4763,18 +4775,6 @@ MonoBehaviour:
   - Name: IsLowerNoteComplete
     LocalizeName: 
   localize: {fileID: 0}
---- !u!114 &8201509140077298948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2687826855584655811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26620573df1628943a8ee65d50d4f77e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2687826855584655812 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6096898992989121736, guid: a9a68129bf2f9e24591d69f5748f1b33, type: 3}
@@ -4907,18 +4907,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6096898992989121743, guid: a9a68129bf2f9e24591d69f5748f1b33, type: 3}
   m_PrefabInstance: {fileID: 8201509140655026163}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8201509140655026123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2687826856145650492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26620573df1628943a8ee65d50d4f77e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8201509140655026122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4936,3 +4924,15 @@ MonoBehaviour:
   - Name: IsHigherNoteComplete
     LocalizeName: 
   localize: {fileID: 0}
+--- !u!114 &8201509140655026123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2687826856145650492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26620573df1628943a8ee65d50d4f77e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

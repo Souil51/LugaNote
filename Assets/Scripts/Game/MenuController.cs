@@ -1,4 +1,5 @@
 using Assets.Scripts.Game;
+using Assets.Scripts.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -9,15 +10,38 @@ using UnityEngine.SceneManagement;
 /// Main menu script
 /// Handle main menu UI events and scene transition
 /// </summary>
-public class MenuController : MonoBehaviour
+public class MenuController : ViewModelBase
 {
     [SerializeField] private MidiConfigurationHelper Configuration;
     [SerializeField] private Canvas MainCanvas;
+    [SerializeField] private InfoMessage Info;
 
     public Canvas Menu;
     public Transition Transition;
 
     private IController _controller;
+
+    private bool _isInfoVisible = false;
+    public bool IsInfoVisible
+    {
+        get => _isInfoVisible;
+        private set
+        {
+            _isInfoVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _infoText = string.Empty;
+    public string InfoText
+    {
+        get => _infoText;
+        private set
+        {
+            _infoText = value;
+            OnPropertyChanged();
+        }
+    }
 
     private void Awake()
     {
@@ -53,10 +77,14 @@ public class MenuController : MonoBehaviour
         GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        Info.Disappeared += Info_Disappeared;
+    }
+
+    private void Info_Disappeared(object sender, System.EventArgs e)
+    {
+        IsInfoVisible = false;
     }
 
     // Update is called once per frame
@@ -71,6 +99,20 @@ public class MenuController : MonoBehaviour
     private void _controller_Configuration(object sender, ConfigurationEventArgs e)
     {
         Debug.Log("Configuration ENDED");
+
+        if (e.Result)
+        {
+            string info = "";
+
+            if (_controller.HigherNote - _controller.LowerNote == 88 - 1)
+                info = string.Format(Strings.MENU_MIDI_88_TOUCHES);
+            else if (_controller.HigherNote - _controller.LowerNote == 61 - 1)
+                info = string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            else
+                info = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+
+            ShowInfo(info);
+        }
     }
 
     public void ChangeScene_Trebble()
@@ -91,9 +133,33 @@ public class MenuController : MonoBehaviour
         Transition.Close();
     }
 
+    private void ShowInfo(string info, float duration = 2f)
+    {
+        InfoText = info;
+        IsInfoVisible = true;
+
+        StartCoroutine(Co_Info(duration));
+    }
+
+    private void HideInfo()
+    {
+        Info.Disappear();
+    }
+
+    public void StartControllerConfiguration()
+    {
+        _controller.Configure(MainCanvas);
+    }
+
     private IEnumerator Co_WaitForLoading()
     {
         yield return new WaitForSecondsRealtime(.25f);
         Transition.Open_1();
+    }
+
+    private IEnumerator Co_Info(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        HideInfo();
     }
 }
