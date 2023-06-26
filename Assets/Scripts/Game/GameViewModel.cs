@@ -14,6 +14,9 @@ public class GameViewModel : ViewModelBase
     public delegate void ResumeEventHandler(object sender, EventArgs e);
     public event ResumeEventHandler Resume;
 
+    public delegate void OpenReturnToMenuEventHandler(object sender, EventArgs e);
+    public event OpenReturnToMenuEventHandler ReturnToMenu;
+
     #region Properties
     private int _points = 0;
     public int Points
@@ -153,5 +156,11 @@ public class GameViewModel : ViewModelBase
     {
         Resume?.Invoke(this, EventArgs.Empty);
     }
+
+    public void Button_ReturnToMenu_Click()
+    {
+        ReturnToMenu?.Invoke(this, EventArgs.Empty);
+    }
+
     #endregion
 }
