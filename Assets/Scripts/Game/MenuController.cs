@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MenuController : ViewModelBase
 {
+    #region Properties
     [SerializeField] private MidiConfigurationHelper Configuration;
     [SerializeField] private Canvas MainCanvas;
     [SerializeField] private InfoMessage Info;
@@ -42,14 +43,15 @@ public class MenuController : ViewModelBase
             OnPropertyChanged();
         }
     }
+    #endregion
 
+    #region Unity methods
     private void Awake()
     {
-        // Transition.SetPositionOpen_1();
-        GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
+        GameSceneManager.Instance.SceneLoaded += GameSceneManager_SceneLoaded;
 
         _controller = ControllerFactory.Instance.GetController();
-        _controller.Configuration += _controller_Configuration;
+        _controller.Configuration += controller_Configuration;
     }
 
     private void OnEnable()
@@ -59,32 +61,14 @@ public class MenuController : ViewModelBase
 
     private void OnDisable()
     {
-        GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
+        GameSceneManager.Instance.SceneLoaded -= GameSceneManager_SceneLoaded;
         Transition.Closed -= Transition_Closed;
-        _controller.Configuration -= _controller_Configuration;
-    }
-    private void Instance_SceneLoaded(object sender, SceneEventArgs e)
-    {
-        if (e.Scene.name == StaticResource.SCENE_MAIN_MENU)
-        {
-            Transition.SetPositionClose();
-            StartCoroutine(Co_WaitForLoading());
-        }
-    }
-
-    private void Transition_Closed(object sender, System.EventArgs e)
-    {
-        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
+        _controller.Configuration -= controller_Configuration;
     }
 
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
-    }
-
-    private void Info_Disappeared(object sender, System.EventArgs e)
-    {
-        IsInfoVisible = false;
     }
 
     // Update is called once per frame
@@ -95,43 +79,7 @@ public class MenuController : ViewModelBase
             _controller.Configure(MainCanvas);
         }
     }
-
-    private void _controller_Configuration(object sender, ConfigurationEventArgs e)
-    {
-        Debug.Log("Configuration ENDED");
-
-        if (e.Result)
-        {
-            string info = "";
-
-            if (_controller.HigherNote - _controller.LowerNote == 88 - 1)
-                info = string.Format(Strings.MENU_MIDI_88_TOUCHES);
-            else if (_controller.HigherNote - _controller.LowerNote == 61 - 1)
-                info = string.Format(Strings.MENU_MIDI_61_TOUCHES);
-            else
-                info = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
-
-            ShowInfo(info);
-        }
-    }
-
-    public void ChangeScene_Trebble()
-    {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Trebble);
-        Transition.Close();
-    }
-
-    public void ChangeScene_Bass()
-    {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Bass);
-        Transition.Close();
-    }
-
-    public void ChangeScene_TrebbleBass()
-    {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.TrebbleBass);
-        Transition.Close();
-    }
+    #endregion
 
     private void ShowInfo(string info, float duration = 2f)
     {
@@ -151,15 +99,83 @@ public class MenuController : ViewModelBase
         _controller.Configure(MainCanvas);
     }
 
+    #region Events callbacks
+    private void controller_Configuration(object sender, ConfigurationEventArgs e)
+    {
+        Debug.Log("Configuration ENDED");
+
+        if (e.Result)
+        {
+            string info = "";
+
+            if (_controller.HigherNote - _controller.LowerNote == 88 - 1)
+                info = string.Format(Strings.MENU_MIDI_88_TOUCHES);
+            else if (_controller.HigherNote - _controller.LowerNote == 61 - 1)
+                info = string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            else
+                info = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+
+            ShowInfo(info);
+        }
+    }
+
+    private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
+    {
+        if (e.Scene.name == StaticResource.SCENE_MAIN_MENU)
+        {
+            Transition.SetPositionClose();
+            StartCoroutine(Co_WaitForLoading());
+        }
+    }
+
+    private void Transition_Closed(object sender, System.EventArgs e)
+    {
+        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
+    }
+
+    private void Info_Disappeared(object sender, System.EventArgs e)
+    {
+        IsInfoVisible = false;
+    }
+    #endregion
+
+    #region UI event
+    public void ChangeScene_Trebble()
+    {
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Trebble);
+        Transition.Close();
+    }
+
+    public void ChangeScene_Bass()
+    {
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Bass);
+        Transition.Close();
+    }
+
+    public void ChangeScene_TrebbleBass()
+    {
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.TrebbleBass);
+        Transition.Close();
+    }
+    #endregion
+
+    #region Coroutines
+    /// <summary>
+    /// Wait 0.25s before opening the transition, to wait all loading
+    /// </summary>
     private IEnumerator Co_WaitForLoading()
     {
         yield return new WaitForSecondsRealtime(.25f);
         Transition.Open_1();
     }
 
+    /// <summary>
+    /// Hide the info panel after X seconds
+    /// </summary>
     private IEnumerator Co_Info(float duration)
     {
         yield return new WaitForSeconds(duration);
         HideInfo();
     }
+    #endregion
 }

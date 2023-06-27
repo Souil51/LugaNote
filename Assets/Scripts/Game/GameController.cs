@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
+    #region Properties
     [SerializeField] private Transition Transition;
     [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
@@ -95,11 +96,12 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     private static GameController _instance;
     
     public static GameController Instance => _instance;
+    #endregion
 
     #region Unity methods
     private void OnEnable()
     {
-        GameSceneManager.Instance.SceneLoaded += Instance_SceneLoaded;
+        GameSceneManager.Instance.SceneLoaded += GameSceneManager_SceneLoaded;
 
         InputHandler.Guess      += InputHandler_Guess;
         InputHandler.Pause      += InputHandler_Pause;
@@ -113,15 +115,15 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     private void OnDisable()
     {
-        GameSceneManager.Instance.SceneLoaded -= Instance_SceneLoaded;
+        GameSceneManager.Instance.SceneLoaded -= GameSceneManager_SceneLoaded;
 
         InputHandler.Guess          -= InputHandler_Guess;
         ViewModel.PlayAgain         -= ViewModel_PlayAgain;
         ViewModel.BackToMenu        -= ViewModel_BackToMenu;
+        ViewModel.Resume            -= ViewModel_Resume;
         ViewModel.ReturnToMenu      -= ViewModel_ReturnToMenu;
         Transition.Closed           -= Transition_Closed;
         Transition.Opened           -= Transition_Opened;
-        Controller.Configuration    -= Controller_Configuration;
     }
 
     private void Awake()
@@ -133,7 +135,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             throw new Exception("Staffs list is empty");
 
         _controller = ControllerFactory.Instance.GetController();
-        Controller.Configuration += Controller_Configuration;
     }
 
     // Start is called before the first frame update
@@ -160,8 +161,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
 
         ViewModel.InitializeViewModel();
-
-        // StartConfiguringController(); // For testing
     }
 
     // Update is called once per frame
@@ -246,16 +245,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         return firstNote;
     }
 
-    /// <summary>
-    /// Controller configuration
-    /// Pause the game (unpause when receiving end configuration event)
-    /// </summary>
-    private void StartConfiguringController()
-    {
-        TimeScaleManager.PauseGame(-1f);
-        Controller.Configure(null);
-    }
-
     private void NavigateToMenu()
     {
         ViewModel.HideAll();
@@ -266,7 +255,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     #endregion
 
     #region Events callbacks
-    private void Instance_SceneLoaded(object sender, SceneEventArgs e)
+    private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
     {
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
@@ -291,14 +280,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             ChangeState(GameState.Paused);
         else if (State == GameState.Paused)
             ChangeState(GameState.Started);
-    }
-
-    /// <summary>
-    /// End of configuration, unpause the game after 1 second (to not get keys immediatly)
-    /// </summary>
-    private void Controller_Configuration(object sender, ConfigurationEventArgs e)
-    {
-        TimeScaleManager.PauseGame(1f);
     }
 
     private void ViewModel_BackToMenu(object sender, EventArgs e)
@@ -345,7 +326,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     /// <summary>
     /// Coroutine : Spawn notes on staff every 0.5f (for timescale = 1f)
     /// </summary>
-    /// <returns></returns>
     public IEnumerator Co_SpawnNotes()
     {
         while (true)
@@ -358,6 +338,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Wait 0.25s before opening the transition, to wait all loading
+    /// </summary>
     private IEnumerator Co_WaitForLoading()
     {
         yield return new WaitForSecondsRealtime(.25f);
