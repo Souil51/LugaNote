@@ -11,7 +11,7 @@ namespace Assets.Scripts.Data
 {
     public class SaveManager
     {
-        private static readonly bool m_bUseFile = false;
+        private static readonly bool m_bUseFile = true;
         private static readonly string m_szSaveFileName = "save.json";
 
         public static Save GetSave()
@@ -74,7 +74,7 @@ namespace Assets.Scripts.Data
 
             foreach (var gameMode in lstModes)
             {
-                var gameModeData = new GameModeData();
+                var gameModeData = new GameModeData(gameMode);
                 save.AddGameModeData(gameModeData);
             }
 
@@ -103,7 +103,7 @@ namespace Assets.Scripts.Data
         public GameModeData GetGameModeData(int nIndex)
         {
             if (nIndex >= _datas.Count)
-                return new GameModeData();
+                return null;
             else
                 return _datas[nIndex];
         }
@@ -112,10 +112,15 @@ namespace Assets.Scripts.Data
     [Serializable]
     public class GameModeData
     {
-        private List<Score> _scores;
+        private GameMode _gameMode;
+        public GameMode GameMode => _gameMode;
 
-        public GameModeData()
+        private List<Score> _scores;
+        public List<Score> Scores => _scores;
+
+        public GameModeData(GameMode gameMode)
         {
+            _gameMode = gameMode;
             _scores = new List<Score>();
         }
     }

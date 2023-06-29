@@ -1,3 +1,4 @@
+using Assets.Scripts.Data;
 using Assets.Scripts.Game;
 using Assets.Scripts.Utils;
 using System.Collections;
@@ -69,6 +70,9 @@ public class MenuController : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
+
+        var save = SaveManager.GetSave();
+        SaveManager.SaveGame(save);
     }
 
     // Update is called once per frame
@@ -142,19 +146,19 @@ public class MenuController : ViewModelBase
     #region UI event
     public void ChangeScene_Trebble()
     {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Trebble);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameModeType.Trebble);
         Transition.Close();
     }
 
     public void ChangeScene_Bass()
     {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.Bass);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameModeType.Bass);
         Transition.Close();
     }
 
     public void ChangeScene_TrebbleBass()
     {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameMode.TrebbleBass);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameModeType.TrebbleBass);
         Transition.Close();
     }
     #endregion

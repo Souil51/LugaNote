@@ -10,7 +10,8 @@ public enum TransitionPosition { Open_1 = 0, Open_2 = 1, Close = 2 };
 public enum ControllerType { Keyboard = 0, MIDI = 1, Visual = 2 }
 public enum ScaleFactor { Screen = 0, Staff = 1 }
 public enum Clef { Trebble = 0, Bass = 1 }
-public enum GameMode { Trebble = 0, Bass = 1, TrebbleBass = 2 }
+public enum GameModeType { Trebble = 0, Bass = 1, TrebbleBass = 2 }
+public enum IntervalMode { Note = 0, Interval = 1, Chord = 2 }
 
 public enum GameState { Loaded = 5, Starting = 0, Started = 1, Ended = 2, Paused = 3, Navigating = 4 }
 

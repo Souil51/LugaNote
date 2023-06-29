@@ -25,7 +25,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private float YPositionSecondStaff;
     [SerializeField] private float OneStaffScale;
     [SerializeField] private float TwoStaffScale;
-    [SerializeField] private GameMode GameMode;
+    [SerializeField] private GameModeType GameMode;
+    [SerializeField] private IntervalMode IntervalMode;
 
     public GameState State
     {
@@ -145,15 +146,15 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         {
             var staff = Staffs[i];
 
-            staff.transform.localScale = new Vector3(GameMode == GameMode.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode == GameMode.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
+            staff.transform.localScale = new Vector3(GameMode == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
 
-            if (GameMode == GameMode.TrebbleBass)
+            if (GameMode == GameModeType.TrebbleBass)
                 staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
             else
             {
                 staff.transform.position = new Vector3(staff.transform.position.x, 0f, staff.transform.position.z);
 
-                if (GameMode == GameMode.Trebble && staff.StaffClef == Clef.Bass || GameMode == GameMode.Bass && staff.StaffClef == Clef.Trebble)
+                if (GameMode == GameModeType.Trebble && staff.StaffClef == Clef.Bass || GameMode == GameModeType.Bass && staff.StaffClef == Clef.Trebble)
                     staff.gameObject.SetActive(false);
             }
             
@@ -259,7 +260,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
-            GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+            GameMode = GameSceneManager.Instance.GetValue<GameModeType>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
 
             Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
@@ -330,10 +331,17 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         while (true)
         {
-            for(int i = 0; i < Staffs.Count; i++)
+            switch (IntervalMode) 
             {
-                Staffs[i].SpawnNote(Controller.HigherNoteWithOffset, Controller.LowerNoteWithOffset);
-                yield return new WaitForSeconds(0.5f / Staffs.Count);
+                case IntervalMode.Note:
+                    {
+                        for (int i = 0; i < Staffs.Count; i++)
+                        {
+                            Staffs[i].SpawnNote(Controller.HigherNoteWithOffset, Controller.LowerNoteWithOffset);
+                            yield return new WaitForSeconds(0.5f / Staffs.Count);
+                        }
+                    }
+                    break;
             }
         }
     }
