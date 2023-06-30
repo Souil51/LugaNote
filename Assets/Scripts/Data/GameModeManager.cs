@@ -22,6 +22,7 @@ namespace Assets.Scripts.Data
         }
     }
 
+    [Serializable]
     public class GameMode
     {
         private int _id;

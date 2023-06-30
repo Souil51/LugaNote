@@ -70,9 +70,6 @@ public class MenuController : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
-
-        var save = SaveManager.GetSave();
-        SaveManager.SaveGame(save);
     }
 
     // Update is called once per frame

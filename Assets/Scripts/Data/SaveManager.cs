@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Assets.Scripts.Data
                 StreamReader sr = new StreamReader(szFilesPath);
                 string szJson = sr.ReadToEnd();
 
-                save = JsonUtility.FromJson<Save>(szJson);
+                save = JsonConvert.DeserializeObject<Save>(szJson);
 
                 sr.Close();
                 sr.Dispose();
@@ -52,7 +53,7 @@ namespace Assets.Scripts.Data
         {
             string szFilesPath = GetSaveLocation();
 
-            string jsonString = JsonUtility.ToJson(save);
+            string jsonString = JsonConvert.SerializeObject(save);
 
             StreamWriter sw = new StreamWriter(szFilesPath);
             sw.Write(jsonString);
