@@ -4,30 +4,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameSceneManager : MonoBehaviour
+public class GameSceneManager
 {
     public delegate void SceneLoadedEventHandler(object sender, SceneEventArgs e);
     public event SceneLoadedEventHandler SceneLoaded;
 
-    public static GameSceneManager Instance { get; private set; }
     private Dictionary<string, SceneSessionData> _datas = new Dictionary<string, SceneSessionData>();
 
-    private void OnEnable()
+    private static GameSceneManager _instance;
+    public static GameSceneManager Instance 
     {
-        if (Instance != null && Instance != this)
+        get
         {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+            if (_instance == null)
+            {
+                _instance = new GameSceneManager();
+            }
 
+            return _instance;
+        }
+        private set
+        {
+            _instance = value;
+        }
+    }
+
+    private GameSceneManager()
+    {
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
 
-    private void OnDisable()
+    ~GameSceneManager()
     {
         SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
     }
@@ -72,7 +79,7 @@ public class GameSceneManager : MonoBehaviour
         {
             return (T)_datas[key].Value;
         }
-        catch(Exception ex)
+        catch
         {
             return default(T);
         }

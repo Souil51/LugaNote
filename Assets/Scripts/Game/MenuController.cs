@@ -1,6 +1,7 @@
 using Assets.Scripts.Data;
 using Assets.Scripts.Game;
 using Assets.Scripts.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -70,6 +71,10 @@ public class MenuController : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
+
+        var save = SaveManager.Save;
+        save.AddScore(save.GetGameModeData(0), 10, DateTime.Now);
+        SaveManager.SaveGame(save);
     }
 
     // Update is called once per frame

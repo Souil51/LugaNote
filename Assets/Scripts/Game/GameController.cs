@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
     [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
-    [SerializeField] private GameInputHandler InputHandler;
+    [SerializeField] private GameInputManager InputHandler;
     [SerializeField] private TimeScaleManager TimeScaleManager;
     [SerializeField] private GameViewModel ViewModel;
     [SerializeField] private float YPositionFirstStaff;

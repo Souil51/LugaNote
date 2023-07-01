@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GameInputHandler : MonoBehaviour
+public class GameInputManager : MonoBehaviour
 {
     public delegate void GuessEventHandler(object sender, GuessEventArgs e);
     public event GuessEventHandler Guess;
