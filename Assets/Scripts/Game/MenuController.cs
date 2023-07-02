@@ -78,9 +78,10 @@ public class MenuController : ViewModelBase
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            _controller.Configure(MainCanvas);
+            SoundManager.PlayNote(MusicHelper.LowerNote);
+            SoundManager.PlayNote(MusicHelper.HigherNote);
         }
     }
     #endregion

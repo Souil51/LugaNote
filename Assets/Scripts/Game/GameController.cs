@@ -195,7 +195,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             IsGameStarted = false;
 
             Points = 0;
-            TimeLeft = 5f;
+            TimeLeft = 20f;
 
             if (_notesCoroutine != null)
                 StopCoroutine(_notesCoroutine);

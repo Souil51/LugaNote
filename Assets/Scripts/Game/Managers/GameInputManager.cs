@@ -37,6 +37,8 @@ public class GameInputManager : MonoBehaviour
             {
                 if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
                 {
+                    SoundManager.PlayNote(GameController.Instance.Controller.NotesDownWithOffset[0]);
+                    Debug.Log(GameController.Instance.Controller.NotesDownWithOffset[0]);
                     bool? guess = null;
                     // Normal mode : the note has to be the exact same note
                     // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)

@@ -34,6 +34,8 @@ public static class StaticResource
     public static string SCENE_MAIN_MENU => "MainMenu";
     public static string SCENE_MAIN_SCENE => "MainScene";
 
+    public static string RESOURCES_SOUND_NOTE_BASE => "sounds/notes/key_";
+
     /// <summary>
     /// Useful values
     /// </summary>
