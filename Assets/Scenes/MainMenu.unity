@@ -1160,6 +1160,7 @@ GameObject:
   - component: {fileID: 204346762}
   - component: {fileID: 204346764}
   - component: {fileID: 204346763}
+  - component: {fileID: 204346765}
   m_Layer: 5
   m_Name: bronzeDate_3
   m_TagString: Untagged
@@ -1284,6 +1285,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 204346761}
   m_CullTransparentMesh: 1
+--- !u!114 &204346765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204346761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: BronzeScoreDate
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &223138848
 GameObject:
   m_ObjectHideFlags: 0
@@ -1593,8 +1611,10 @@ GameObject:
   - component: {fileID: 278140092}
   - component: {fileID: 278140091}
   - component: {fileID: 278140090}
+  - component: {fileID: 278140094}
+  - component: {fileID: 278140093}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Panel_score_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1688,6 +1708,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 278140088}
   m_CullTransparentMesh: 1
+--- !u!114 &278140093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278140088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8306c2affd528ff4cbbce0a1323b6e80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DataContextContainer: {fileID: 278140088}
+  BindingsObjects:
+  - {fileID: 487829497}
+  - {fileID: 1879632189}
+  - {fileID: 392285155}
+  - {fileID: 2145827690}
+  - {fileID: 2131973354}
+  - {fileID: 1500702271}
+--- !u!114 &278140094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278140088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a7a3e7cc85d3b44b496e7750f2bc1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameModeType: 1
+  IntervalMode: 0
 --- !u!1 &297469159
 GameObject:
   m_ObjectHideFlags: 0
@@ -2267,6 +2321,7 @@ GameObject:
   - component: {fileID: 392285156}
   - component: {fileID: 392285158}
   - component: {fileID: 392285157}
+  - component: {fileID: 392285159}
   m_Layer: 5
   m_Name: goldDate_2
   m_TagString: Untagged
@@ -2391,6 +2446,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392285155}
   m_CullTransparentMesh: 1
+--- !u!114 &392285159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392285155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: GoldScoreDate
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &394942414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2719,6 +2791,7 @@ GameObject:
   - component: {fileID: 487829498}
   - component: {fileID: 487829500}
   - component: {fileID: 487829499}
+  - component: {fileID: 487829501}
   m_Layer: 5
   m_Name: bronzeDate_2
   m_TagString: Untagged
@@ -2843,6 +2916,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 487829497}
   m_CullTransparentMesh: 1
+--- !u!114 &487829501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487829497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: BronzeScoreDate
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &493500205
 GameObject:
   m_ObjectHideFlags: 0
@@ -3879,6 +3969,7 @@ GameObject:
   - component: {fileID: 797980941}
   - component: {fileID: 797980943}
   - component: {fileID: 797980942}
+  - component: {fileID: 797980944}
   m_Layer: 5
   m_Name: silverScore_3
   m_TagString: Untagged
@@ -4004,6 +4095,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797980940}
   m_CullTransparentMesh: 1
+--- !u!114 &797980944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797980940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: SilverScoreValue
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &808332739
 GameObject:
   m_ObjectHideFlags: 0
@@ -4311,6 +4419,7 @@ GameObject:
   - component: {fileID: 871660305}
   - component: {fileID: 871660307}
   - component: {fileID: 871660306}
+  - component: {fileID: 871660308}
   m_Layer: 5
   m_Name: bronzeScore_3
   m_TagString: Untagged
@@ -4436,6 +4545,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 871660304}
   m_CullTransparentMesh: 1
+--- !u!114 &871660308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871660304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: BronzeScoreValue
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &876186210
 GameObject:
   m_ObjectHideFlags: 0
@@ -4792,8 +4918,10 @@ GameObject:
   - component: {fileID: 993574921}
   - component: {fileID: 993574920}
   - component: {fileID: 993574919}
+  - component: {fileID: 993574923}
+  - component: {fileID: 993574924}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Panel_scores_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4887,6 +5015,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 993574917}
   m_CullTransparentMesh: 1
+--- !u!114 &993574923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993574917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a7a3e7cc85d3b44b496e7750f2bc1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameModeType: 2
+  IntervalMode: 0
+--- !u!114 &993574924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993574917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8306c2affd528ff4cbbce0a1323b6e80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DataContextContainer: {fileID: 993574917}
+  BindingsObjects:
+  - {fileID: 1448228577}
+  - {fileID: 1587188015}
+  - {fileID: 204346761}
+  - {fileID: 871660304}
+  - {fileID: 1793014143}
+  - {fileID: 797980940}
 --- !u!1 &996353242
 GameObject:
   m_ObjectHideFlags: 0
@@ -5724,6 +5886,7 @@ GameObject:
   - component: {fileID: 1448228578}
   - component: {fileID: 1448228580}
   - component: {fileID: 1448228579}
+  - component: {fileID: 1448228581}
   m_Layer: 5
   m_Name: goldScore_3
   m_TagString: Untagged
@@ -5849,6 +6012,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1448228577}
   m_CullTransparentMesh: 1
+--- !u!114 &1448228581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448228577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: GoldScoreValue
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &1451950133
 GameObject:
   m_ObjectHideFlags: 0
@@ -6156,6 +6336,7 @@ GameObject:
   - component: {fileID: 1500702272}
   - component: {fileID: 1500702274}
   - component: {fileID: 1500702273}
+  - component: {fileID: 1500702275}
   m_Layer: 5
   m_Name: silverScore_2
   m_TagString: Untagged
@@ -6281,6 +6462,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1500702271}
   m_CullTransparentMesh: 1
+--- !u!114 &1500702275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500702271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: SilverScoreValue
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &1509390192
 GameObject:
   m_ObjectHideFlags: 0
@@ -6679,6 +6877,7 @@ GameObject:
   - component: {fileID: 1587188016}
   - component: {fileID: 1587188018}
   - component: {fileID: 1587188017}
+  - component: {fileID: 1587188019}
   m_Layer: 5
   m_Name: goldDate_3
   m_TagString: Untagged
@@ -6803,6 +7002,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1587188015}
   m_CullTransparentMesh: 1
+--- !u!114 &1587188019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587188015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: GoldScoreDate
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &1619298399
 GameObject:
   m_ObjectHideFlags: 0
@@ -7522,6 +7738,7 @@ GameObject:
   - component: {fileID: 1793014144}
   - component: {fileID: 1793014146}
   - component: {fileID: 1793014145}
+  - component: {fileID: 1793014147}
   m_Layer: 5
   m_Name: silverDate_3
   m_TagString: Untagged
@@ -7646,6 +7863,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793014143}
   m_CullTransparentMesh: 1
+--- !u!114 &1793014147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793014143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: SilverScoreDate
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &1830164317
 GameObject:
   m_ObjectHideFlags: 0
@@ -8005,6 +8239,10 @@ MonoBehaviour:
   Configuration: {fileID: 1540859896}
   MainCanvas: {fileID: 1710494379}
   Info: {fileID: 1983145724}
+  GameModes:
+  - {fileID: 2060402653}
+  - {fileID: 278140094}
+  - {fileID: 0}
   Menu: {fileID: 1710494379}
   Transition: {fileID: 53575051}
 --- !u!4 &1879009019
@@ -8033,6 +8271,7 @@ GameObject:
   - component: {fileID: 1879632190}
   - component: {fileID: 1879632192}
   - component: {fileID: 1879632191}
+  - component: {fileID: 1879632193}
   m_Layer: 5
   m_Name: bronzeScore_2
   m_TagString: Untagged
@@ -8158,6 +8397,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1879632189}
   m_CullTransparentMesh: 1
+--- !u!114 &1879632193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879632189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: BronzeScoreValue
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &1950170895
 GameObject:
   m_ObjectHideFlags: 0
@@ -8935,7 +9191,7 @@ GameObject:
   - component: {fileID: 2060402653}
   - component: {fileID: 2060402652}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Panel_score_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9043,12 +9299,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DataContextContainer: {fileID: 2060402647}
   BindingsObjects:
+  - {fileID: 2029212219}
+  - {fileID: 232331608}
   - {fileID: 394942414}
   - {fileID: 48042940}
   - {fileID: 67998449}
   - {fileID: 1619298399}
-  - {fileID: 2029212219}
-  - {fileID: 232331608}
 --- !u!114 &2060402653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9061,6 +9317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a7a3e7cc85d3b44b496e7750f2bc1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameModeType: 0
+  IntervalMode: 0
 --- !u!1 &2118771384
 GameObject:
   m_ObjectHideFlags: 0
@@ -9273,6 +9531,7 @@ GameObject:
   - component: {fileID: 2131973355}
   - component: {fileID: 2131973357}
   - component: {fileID: 2131973356}
+  - component: {fileID: 2131973358}
   m_Layer: 5
   m_Name: silverDate_2
   m_TagString: Untagged
@@ -9397,6 +9656,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2131973354}
   m_CullTransparentMesh: 1
+--- !u!114 &2131973358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131973354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: SilverScoreDate
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &2145827690
 GameObject:
   m_ObjectHideFlags: 0
@@ -9408,6 +9684,7 @@ GameObject:
   - component: {fileID: 2145827691}
   - component: {fileID: 2145827693}
   - component: {fileID: 2145827692}
+  - component: {fileID: 2145827694}
   m_Layer: 5
   m_Name: goldScore_2
   m_TagString: Untagged
@@ -9533,6 +9810,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145827690}
   m_CullTransparentMesh: 1
+--- !u!114 &2145827694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145827690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: GoldScoreValue
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1001 &8201509140693516715
 PrefabInstance:
   m_ObjectHideFlags: 0

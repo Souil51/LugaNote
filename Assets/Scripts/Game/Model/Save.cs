@@ -21,17 +21,15 @@ namespace Assets.Scripts.Game.Model
             _datas.Add(modeData);
         }
 
-        public GameModeData GetGameModeData(int nIndex)
+        public GameModeData GetGameModeData(GameModeType gameModeType, IntervalMode intervalMode)
         {
-            if (nIndex >= _datas.Count)
-                return null;
-            else
-                return _datas[nIndex];
+            var gameMode = new GameMode(0, gameModeType, intervalMode);
+            return _datas.FirstOrDefault(x => x.GameMode.Equals(gameMode));
         }
 
-        public void AddScore(GameModeData gameModeData, int score, DateTime date)
+        public void AddScore(GameMode gameMode, int score, DateTime date)
         {
-            var saveGameModeData = _datas.FirstOrDefault(x => x.Equals(gameModeData));
+            var saveGameModeData = _datas.FirstOrDefault(x => x.GameMode.Equals(gameMode));
 
             if (saveGameModeData != null)
             {

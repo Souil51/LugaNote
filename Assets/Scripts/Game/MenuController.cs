@@ -19,6 +19,8 @@ public class MenuController : ViewModelBase
     [SerializeField] private Canvas MainCanvas;
     [SerializeField] private InfoMessage Info;
 
+    [SerializeField] private List<GameModeController> GameModes;
+
     public Canvas Menu;
     public Transition Transition;
 
@@ -71,10 +73,6 @@ public class MenuController : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
-
-        var save = SaveManager.Save;
-        save.AddScore(save.GetGameModeData(0), 10, DateTime.Now);
-        SaveManager.SaveGame(save);
     }
 
     // Update is called once per frame
@@ -148,19 +146,22 @@ public class MenuController : ViewModelBase
     #region UI event
     public void ChangeScene_Trebble()
     {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameModeType.Trebble);
+        var gameMode = GameModeManager.GetGameMode(GameModeType.Trebble, IntervalMode.Note);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
     }
 
     public void ChangeScene_Bass()
     {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameModeType.Bass);
+        var gameMode = GameModeManager.GetGameMode(GameModeType.Bass, IntervalMode.Note);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
     }
 
     public void ChangeScene_TrebbleBass()
     {
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), GameModeType.TrebbleBass);
+        var gameMode = GameModeManager.GetGameMode(GameModeType.TrebbleBass, IntervalMode.Note);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
     }
     #endregion

@@ -21,5 +21,13 @@ namespace Assets.Scripts.Data
                 };
             }
         }
+
+        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode)
+        {
+            var gameMode = new GameMode(0, gameModeType, intervalMode);
+            var existingGameMode = GameModes.Where(x => x.Equals(gameMode)).FirstOrDefault();
+
+            return existingGameMode;
+        }
     }
 }

@@ -1,4 +1,6 @@
+using Assets.Scripts.Data;
 using Assets.Scripts.Game;
+using Assets.Scripts.Game.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,8 +27,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private float YPositionSecondStaff;
     [SerializeField] private float OneStaffScale;
     [SerializeField] private float TwoStaffScale;
-    [SerializeField] private GameModeType GameMode;
-    [SerializeField] private IntervalMode IntervalMode;
+    
+    private GameMode GameMode;
 
     public GameState State
     {
@@ -145,16 +147,16 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         for(int i = 0; i < Staffs.Count; i++)
         {
             var staff = Staffs[i];
+                
+            staff.transform.localScale = new Vector3(GameMode.GameModeType == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode.GameModeType == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
 
-            staff.transform.localScale = new Vector3(GameMode == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
-
-            if (GameMode == GameModeType.TrebbleBass)
+            if (GameMode.GameModeType == GameModeType.TrebbleBass)
                 staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
             else
             {
                 staff.transform.position = new Vector3(staff.transform.position.x, 0f, staff.transform.position.z);
 
-                if (GameMode == GameModeType.Trebble && staff.StaffClef == Clef.Bass || GameMode == GameModeType.Bass && staff.StaffClef == Clef.Trebble)
+                if (GameMode.GameModeType == GameModeType.Trebble && staff.StaffClef == Clef.Bass || GameMode.GameModeType == GameModeType.Bass && staff.StaffClef == Clef.Trebble)
                     staff.gameObject.SetActive(false);
             }
             
@@ -215,6 +217,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             IsGameEnded = true;
             TimeScaleManager.PauseGame(0f);
 
+            SaveManager.AddScore(GameMode, Points, DateTime.Now);
+            SaveManager.SaveGame();
             changed = true;
         }
         else if (State == GameState.Started && newState == GameState.Paused)
@@ -260,7 +264,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
-            GameMode = GameSceneManager.Instance.GetValue<GameModeType>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+            GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
 
             Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());
@@ -331,7 +335,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         while (true)
         {
-            switch (IntervalMode) 
+            switch (GameMode.IntervalMode) 
             {
                 case IntervalMode.Note:
                     {

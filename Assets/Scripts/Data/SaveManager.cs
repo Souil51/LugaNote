@@ -33,7 +33,7 @@ namespace Assets.Scripts.Data
             }
         }
 
-        public static Save GetSave()
+        private static Save GetSave()
         {
             Save save;
 
@@ -79,10 +79,15 @@ namespace Assets.Scripts.Data
             sw.Dispose();
         }
 
-        public static void SaveGame(Save save)
+        public static void SaveGame()
         {
             if (m_bUseFile)
-                SaveGameToFile(save);
+                SaveGameToFile(Save);
+        }
+
+        public static void AddScore(GameMode gameMode, int score, DateTime date)
+        {
+            Save.AddScore(gameMode, score, date);
         }
 
         private static Save InitGameSave()

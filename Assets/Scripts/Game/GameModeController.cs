@@ -3,25 +3,36 @@ using Assets.Scripts.Game.Model;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameModeController : ViewModelBase
 {
+    [SerializeField] private GameModeType GameModeType;
+    [SerializeField] private IntervalMode IntervalMode;
+
     private GameModeData _gameModeData;
 
-    public int GoldScoreValue => _gameModeData?.Scores.Count == 0 ? 0 : _gameModeData.Scores[0].Value;
-    public string GoldScoreDate => _gameModeData?.Scores.Count == 0 ? "" : _gameModeData.Scores[0].DateString;
-    
-    public int SilverScoreValue => _gameModeData?.Scores.Count <= 1 ? 0 : _gameModeData.Scores[1].Value;
-    public string SilverScoreDate => _gameModeData?.Scores.Count <= 1 ? "" : _gameModeData.Scores[1].DateString;
+    private List<Score> _scoresOrdered => _gameModeData.Scores.OrderByDescending(x => x.Value).ToList();
 
-    public int BronzeScoreValue => _gameModeData?.Scores.Count <= 2 ? 0 : _gameModeData.Scores[2].Value;
-    public string BronzeScoreDate => _gameModeData?.Scores.Count <= 2 ? "" : _gameModeData.Scores[1].DateString;
+    public int GoldScoreValue => _scoresOrdered.Count == 0 ? 0 : _scoresOrdered[0].Value;
+    public string GoldScoreDate => _scoresOrdered.Count == 0 ? "" : _scoresOrdered[0].DateString;
+    
+    public int SilverScoreValue => _scoresOrdered.Count <= 1 ? 0 : _scoresOrdered[1].Value;
+    public string SilverScoreDate => _scoresOrdered.Count <= 1 ? "" : _scoresOrdered[1].DateString;
+
+    public int BronzeScoreValue => _scoresOrdered.Count <= 2 ? 0 : _scoresOrdered[2].Value;
+    public string BronzeScoreDate => _scoresOrdered.Count <= 2 ? "" : _scoresOrdered[2].DateString;
 
     private void Awake()
     {
-        _gameModeData = SaveManager.Save.GetGameModeData(0);
+        _gameModeData = SaveManager.Save.GetGameModeData(GameModeType, IntervalMode);
 
+        InitialiserNotifyPropertyChanged();
+    }
+
+    private void Start()
+    {
         OnPropertyChanged("GoldScoreValue");
         OnPropertyChanged("GoldScoreDate");
         OnPropertyChanged("SilverScoreValue");
