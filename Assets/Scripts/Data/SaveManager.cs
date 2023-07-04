@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Scripts.Game.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
 namespace Assets.Scripts.Data
@@ -15,7 +17,23 @@ namespace Assets.Scripts.Data
         private static readonly bool m_bUseFile = true;
         private static readonly string m_szSaveFileName = "save.json";
 
-        public static Save GetSave()
+        private static Save _save;
+        public static Save Save 
+        {
+            get
+            {
+                if(_save == null)
+                    _save = GetSave();
+
+                return _save;
+            }
+            private set
+            {
+                _save = value;
+            }
+        }
+
+        private static Save GetSave()
         {
             Save save;
 
@@ -61,10 +79,15 @@ namespace Assets.Scripts.Data
             sw.Dispose();
         }
 
-        public static void SaveGame(Save save)
+        public static void SaveGame()
         {
             if (m_bUseFile)
-                SaveGameToFile(save);
+                SaveGameToFile(Save);
+        }
+
+        public static void AddScore(GameMode gameMode, int score, DateTime date)
+        {
+            Save.AddScore(gameMode, score, date);
         }
 
         private static Save InitGameSave()
@@ -84,52 +107,5 @@ namespace Assets.Scripts.Data
 
             return save;
         }
-    }
-
-    [Serializable]
-    public class Save
-    {
-        public List<GameModeData> _datas;
-
-        public Save()
-        {
-            _datas = new List<GameModeData>();
-        }
-
-        public void AddGameModeData(GameModeData modeData)
-        {
-            _datas.Add(modeData);
-        }
-
-        public GameModeData GetGameModeData(int nIndex)
-        {
-            if (nIndex >= _datas.Count)
-                return null;
-            else
-                return _datas[nIndex];
-        }
-    }
-
-    [Serializable]
-    public class GameModeData
-    {
-        private GameMode _gameMode;
-        public GameMode GameMode => _gameMode;
-
-        private List<Score> _scores;
-        public List<Score> Scores => _scores;
-
-        public GameModeData(GameMode gameMode)
-        {
-            _gameMode = gameMode;
-            _scores = new List<Score>();
-        }
-    }
-
-    [Serializable]
-    public class Score
-    {
-        private int _value;
-        public int Value => _value;
     }
 }

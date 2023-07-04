@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Game.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,26 +21,13 @@ namespace Assets.Scripts.Data
                 };
             }
         }
-    }
 
-    [Serializable]
-    public class GameMode
-    {
-        private int _id;
-        public int Id => _id;
-
-        private GameModeType _gameModeType;
-        public GameModeType GameModeType => _gameModeType;
-
-        private IntervalMode _intervalMode;
-        public IntervalMode IntervalMode => _intervalMode;
-
-
-        public GameMode(int id, GameModeType gameModeType, IntervalMode intervalMode)
+        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode)
         {
-            _id = id;
-            _gameModeType = gameModeType;
-            _intervalMode = intervalMode;
+            var gameMode = new GameMode(0, gameModeType, intervalMode);
+            var existingGameMode = GameModes.Where(x => x.Equals(gameMode)).FirstOrDefault();
+
+            return existingGameMode;
         }
     }
 }

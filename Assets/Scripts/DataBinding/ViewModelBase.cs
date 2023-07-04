@@ -20,7 +20,7 @@ public class ViewModelBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
         {
             if (property.IsStatic()) continue;
 
-            if (typeof(INotifyPropertyChanged).IsAssignableFrom(property.PropertyType)) // if the property implements INotifyPropertyChange
+             if (typeof(INotifyPropertyChanged).IsAssignableFrom(property.PropertyType)) // if the property implements INotifyPropertyChange
             {
                 // Get the object that implements  INotifyPropertyChanged from the property
                 INotifyPropertyChanged obj = (INotifyPropertyChanged)type.GetProperty(property.Name).GetValue(this, null);
@@ -65,7 +65,7 @@ public class ViewModelBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
         if (!String.IsNullOrEmpty(propertyName)) propertyName += ".";
 
         // Notify change
-        OnPropertyChanged(sender, propertyName + e.PropertyName);
+         OnPropertyChanged(sender, propertyName + e.PropertyName);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

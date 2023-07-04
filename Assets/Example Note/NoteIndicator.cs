@@ -11,11 +11,6 @@ public class NoteIndicator : MonoBehaviour
 
         bool keyDown = MidiMaster.GetKeyDown(noteNumber);
 
-        if (keyDown)
-        {
-            int i = 0;
-        }
-
         var color = MidiMaster.GetKeyDown(noteNumber) ? Color.red : Color.white;
         GetComponent<Renderer>().material.color = color;
     }

@@ -22,6 +22,7 @@ public enum SceneSessionKey
     [Description("GameMode")]
     GameMode = 0
 }
+
 /// <summary>
 /// All the notes, natural and sharp
 /// </summary>

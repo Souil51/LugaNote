@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GameInputHandler : MonoBehaviour
+public class GameInputManager : MonoBehaviour
 {
     public delegate void GuessEventHandler(object sender, GuessEventArgs e);
     public event GuessEventHandler Guess;
@@ -37,6 +37,9 @@ public class GameInputHandler : MonoBehaviour
             {
                 if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
                 {
+                    SoundManager.PlayNote(GameController.Instance.Controller.NotesDownWithOffset[0]);
+                    Debug.Log(GameController.Instance.Controller.NotesDownWithOffset[0]);
+                    bool? guess = null;
                     bool? guessValue = null;
                     // Normal mode : the note has to be the exact same note
                     // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
