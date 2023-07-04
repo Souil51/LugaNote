@@ -8,8 +8,7 @@ public class GameSceneManager
 {
     public delegate void SceneLoadedEventHandler(object sender, SceneEventArgs e);
     public event SceneLoadedEventHandler SceneLoaded;
-
-    public static GameSceneManager Instance { get; private set; }
+    
     private Dictionary<string, SceneSessionData> _sessionDatas = new Dictionary<string, SceneSessionData>();
 
     private static GameSceneManager _instance;
