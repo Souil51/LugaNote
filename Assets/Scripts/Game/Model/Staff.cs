@@ -26,8 +26,8 @@ public class Staff : MonoBehaviour
     private float _disappearPointPosition = 0f;
     public float DisappearPointPosition => _disappearPointPosition;
 
-    private float _lineDistance = 0f;
-    public float LineDistance => _lineDistance;
+    private float _lineDistanceSpacing = 0f;
+    public float LineDistanceSpacing => _lineDistanceSpacing;
 
     public List<Note> Notes 
     {
@@ -42,18 +42,6 @@ public class Staff : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void InitializeStaff()
@@ -82,11 +70,11 @@ public class Staff : MonoBehaviour
         int positionDifference = maxPosition - minPosition;
 
         float yDistance = (firstIndicator.transform.position.y - lastIndicator.transform.position.y) / positionDifference;
-        float yHalfDistance = yDistance / 2;
-        _lineDistance = yHalfDistance;
+        float yHalfSpacing = yDistance / 2;
+        _lineDistanceSpacing = yHalfSpacing;
 
         // Starting at the top line
-        float currentY = firstIndicator.transform.position.y - (((minPosition * 2) + 7) * yHalfDistance);
+        float currentY = firstIndicator.transform.position.y - (((minPosition * 2) + 7) * yHalfSpacing);
 
         PianoNote currentNote = MusicHelper.GetFirstPianoNoteForClef(Clef);
 
@@ -101,7 +89,7 @@ public class Staff : MonoBehaviour
 
             Lines.Add(staffLine);
 
-            currentY += yHalfDistance;
+            currentY += yHalfSpacing;
 
             currentNote++;
             if (MusicHelper.SharpNotes.Contains(currentNote))

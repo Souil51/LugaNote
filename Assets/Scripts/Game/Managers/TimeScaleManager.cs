@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TimeScaleManager : MonoBehaviour
 {
-    private float _lastTimeScale;
-    private float _pauseTimer;
+    private float _timeScaleBeforePause;
+    private float _pauseTimeLeft;
 
     private bool _isPaused = false;
     public bool IsPaused => _isPaused;
@@ -39,9 +39,9 @@ public class TimeScaleManager : MonoBehaviour
     public void PauseGame(float duration)
     {
         _isPaused = true;
-        _lastTimeScale = Time.timeScale;
+        _timeScaleBeforePause = Time.timeScale;
         Time.timeScale = 0f;
-        _pauseTimer = duration;
+        _pauseTimeLeft = duration;
     }
 
     /// <summary>
@@ -49,12 +49,12 @@ public class TimeScaleManager : MonoBehaviour
     /// </summary>
     private void UpdatePause()
     {
-        if (_pauseTimer != 0) // Pause can be positive or negative (= unlimited pause)
+        if (_pauseTimeLeft != 0) // Pause can be positive or negative (= unlimited pause)
         {
-            if (_pauseTimer > 0)
+            if (_pauseTimeLeft > 0)
             {
-                _pauseTimer -= Time.unscaledDeltaTime;
-                if (_pauseTimer < 0)
+                _pauseTimeLeft -= Time.unscaledDeltaTime;
+                if (_pauseTimeLeft < 0)
                 {
                     UnpauseGame();
                 }
@@ -70,13 +70,13 @@ public class TimeScaleManager : MonoBehaviour
     /// </summary>
     public void UnpauseGame()
     {
-        _pauseTimer = 0f;
-        Time.timeScale = _lastTimeScale;
+        _pauseTimeLeft = 0f;
+        Time.timeScale = _timeScaleBeforePause;
         _isPaused = false;
     }
 
     public void UnpauseGameAfterSeconds(float seconds)
     {
-        _pauseTimer = seconds;
+        _pauseTimeLeft = seconds;
     }
 }

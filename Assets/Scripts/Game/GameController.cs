@@ -107,9 +107,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         InputHandler.Guess      += InputHandler_Guess;
         InputHandler.Pause      += InputHandler_Pause;
         ViewModel.PlayAgain     += ViewModel_PlayAgain;
-        ViewModel.BackToMenu    += ViewModel_BackToMenu;
+        ViewModel.NavigateToMenu    += ViewModel_NavigateToMenu;
         ViewModel.Resume        += ViewModel_Resume;
-        ViewModel.ReturnToMenu  += ViewModel_ReturnToMenu;
+        ViewModel.OpenMenu  += ViewModel_OpenMenu;
         Transition.Closed       += Transition_Closed;
         Transition.Opened       += Transition_Opened;
     }
@@ -120,9 +120,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
         InputHandler.Guess          -= InputHandler_Guess;
         ViewModel.PlayAgain         -= ViewModel_PlayAgain;
-        ViewModel.BackToMenu        -= ViewModel_BackToMenu;
+        ViewModel.NavigateToMenu        -= ViewModel_NavigateToMenu;
         ViewModel.Resume            -= ViewModel_Resume;
-        ViewModel.ReturnToMenu      -= ViewModel_ReturnToMenu;
+        ViewModel.OpenMenu      -= ViewModel_OpenMenu;
         Transition.Closed           -= Transition_Closed;
         Transition.Opened           -= Transition_Opened;
     }
@@ -283,7 +283,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             ChangeState(GameState.Started);
     }
 
-    private void ViewModel_BackToMenu(object sender, EventArgs e)
+    private void ViewModel_NavigateToMenu(object sender, EventArgs e)
     {
         ChangeState(GameState.Starting);
         NavigateToMenu();
@@ -304,7 +304,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             ChangeState(GameState.Started);
     }
 
-    private void ViewModel_ReturnToMenu(object sender, EventArgs e)
+    private void ViewModel_OpenMenu(object sender, EventArgs e)
     {
         if (State == GameState.Started)
             ChangeState(GameState.Paused);

@@ -85,9 +85,9 @@ public class StaffLine : MonoBehaviour
 
         float xScale = 1f;
         if (ScaleFactor == ScaleFactor.Screen)
-            xScale = 9.5f * ScreenManager.Ratio;
+            xScale = 9.5f * ScreenManager.ScreenRatio;
         else if(ScaleFactor == ScaleFactor.Staff)
-            xScale = 19f * _parent.transform.localScale.x * ScreenManager.Ratio;
+            xScale = 19f * _parent.transform.localScale.x * ScreenManager.ScreenRatio;
 
         gameObject.transform.localScale = new Vector3(xScale, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
     }

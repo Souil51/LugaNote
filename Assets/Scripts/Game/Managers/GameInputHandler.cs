@@ -37,7 +37,7 @@ public class GameInputHandler : MonoBehaviour
             {
                 if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
                 {
-                    bool? guess = null;
+                    bool? guessValue = null;
                     // Normal mode : the note has to be the exact same note
                     // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
                     if (
@@ -53,19 +53,19 @@ public class GameInputHandler : MonoBehaviour
                         // Good guess
                         // Debug.Log("Good guess");
                         firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
-                        guess = true;
+                        guessValue = true;
                     }
                     else
                     {
                         // Bad guess
                         // Debug.Log("Bad guess");
                         firstNote.ChangeColor(StaticResource.COLOR_BAD_GUESS);
-                        guess = false;
+                        guessValue = false;
                     }
 
-                    if (guess.HasValue)
+                    if (guessValue.HasValue)
                     {
-                        Guess?.Invoke(this, new GuessEventArgs(guess.Value));
+                        Guess?.Invoke(this, new GuessEventArgs(guessValue.Value));
                     }
                 }
 

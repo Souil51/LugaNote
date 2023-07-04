@@ -10,7 +10,7 @@ public class GameSceneManager : MonoBehaviour
     public event SceneLoadedEventHandler SceneLoaded;
 
     public static GameSceneManager Instance { get; private set; }
-    private Dictionary<string, SceneSessionData> _datas = new Dictionary<string, SceneSessionData>();
+    private Dictionary<string, SceneSessionData> _sessionDatas = new Dictionary<string, SceneSessionData>();
 
     private void OnEnable()
     {
@@ -37,11 +37,6 @@ public class GameSceneManager : MonoBehaviour
         SceneLoaded?.Invoke(this, new SceneEventArgs(arg0, arg1));
     }
 
-    private void Awake()
-    {
-        
-    }
-
     public void LoadScene(string scene)
     {
         SceneManager.LoadScene(scene);
@@ -49,28 +44,28 @@ public class GameSceneManager : MonoBehaviour
 
     public void SetValue(string key, object value)
     {
-        if (!_datas.ContainsKey(key))
-            _datas.Add(key, new SceneSessionData(key, value));
+        if (!_sessionDatas.ContainsKey(key))
+            _sessionDatas.Add(key, new SceneSessionData(key, value));
         else
-            _datas[key] = new SceneSessionData(key, value);
+            _sessionDatas[key] = new SceneSessionData(key, value);
     }
 
     public object GetValue(string key)
     {
-        if (!_datas.ContainsKey(key))
+        if (!_sessionDatas.ContainsKey(key))
             return null;
 
-        return _datas[key].Value;
+        return _sessionDatas[key].Value;
     }
 
     public T GetValue<T>(string key)
     {
-        if (!_datas.ContainsKey(key))
+        if (!_sessionDatas.ContainsKey(key))
             return default(T);
 
         try
         {
-            return (T)_datas[key].Value;
+            return (T)_sessionDatas[key].Value;
         }
         catch(Exception ex)
         {

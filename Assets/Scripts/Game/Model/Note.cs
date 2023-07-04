@@ -11,6 +11,9 @@ using UnityEngine;
 /// </summary>
 public class Note : MonoBehaviour
 {
+    public delegate void DestroyEventHandler(object sender, EventArgs args);
+    public event DestroyEventHandler DestroyEvent;
+
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;
 
@@ -47,24 +50,9 @@ public class Note : MonoBehaviour
     private long _creationTimestamp;
     public long CreationTimestamp => _creationTimestamp;
 
-    public delegate void DestroyEventHandler(object sender, EventArgs args);
-    public event DestroyEventHandler DestroyEvent;
-
     private void Awake()
     {
         _sprtRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration)
@@ -77,7 +65,7 @@ public class Note : MonoBehaviour
         // For lower or higher notes than that empty lines have to be displayed for better accuracy
         if (emptyLinesAbove > 0 || emptyLinesBelow > 0)
         {
-            float distance = Parent.Parent.LineDistance / transform.localScale.x;
+            float distance = Parent.Parent.LineDistanceSpacing / transform.localScale.x;
             float offset = Parent.IsSpaceLine || Parent.IsVisible ? distance : 2f * distance;
 
             if (emptyLinesBelow > 0)

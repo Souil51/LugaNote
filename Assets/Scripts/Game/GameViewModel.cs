@@ -8,14 +8,14 @@ public class GameViewModel : ViewModelBase
     public delegate void PlayAgainEventHandler(object sender, EventArgs e);
     public event PlayAgainEventHandler PlayAgain;
 
-    public delegate void BackToMenuEventHandler(object sender, EventArgs e);
-    public event BackToMenuEventHandler BackToMenu;
+    public delegate void NavigateToMenuEventHandler(object sender, EventArgs e);
+    public event NavigateToMenuEventHandler NavigateToMenu;
 
     public delegate void ResumeEventHandler(object sender, EventArgs e);
     public event ResumeEventHandler Resume;
 
-    public delegate void OpenReturnToMenuEventHandler(object sender, EventArgs e);
-    public event OpenReturnToMenuEventHandler ReturnToMenu;
+    public delegate void OpenMenuEventHandler(object sender, EventArgs e);
+    public event OpenMenuEventHandler OpenMenu;
 
     #region Properties
     private int _points = 0;
@@ -93,11 +93,6 @@ public class GameViewModel : ViewModelBase
         GameController.Instance.PropertyChanged += Instance_PropertyChanged;
     }
 
-    private void Update()
-    {
-        
-    }
-
     public void InitializeViewModel()
     {
         InitialiserNotifyPropertyChanged();
@@ -149,7 +144,7 @@ public class GameViewModel : ViewModelBase
 
     public void Button_EndPanelBackToMenu()
     {
-        BackToMenu?.Invoke(this, EventArgs.Empty);
+        NavigateToMenu?.Invoke(this, EventArgs.Empty);
     }
 
     public void Button_EndPanelResume()
@@ -159,7 +154,7 @@ public class GameViewModel : ViewModelBase
 
     public void Button_ReturnToMenu_Click()
     {
-        ReturnToMenu?.Invoke(this, EventArgs.Empty);
+        OpenMenu?.Invoke(this, EventArgs.Empty);
     }
 
     #endregion
