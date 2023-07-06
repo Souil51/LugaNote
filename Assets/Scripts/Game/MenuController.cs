@@ -21,6 +21,8 @@ public class MenuController : ViewModelBase
 
     [SerializeField] private List<GameModeController> GameModes;
 
+    [SerializeField] private AudioSource AudioSourceTest;
+
     public Canvas Menu;
     public Transition Transition;
 
@@ -73,6 +75,7 @@ public class MenuController : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
+        SoundManager.LoadAllNotes();
     }
 
     // Update is called once per frame
@@ -80,8 +83,13 @@ public class MenuController : ViewModelBase
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            SoundManager.PlayNote(MusicHelper.LowerNote);
-            SoundManager.PlayNote(MusicHelper.HigherNote);
+            AudioSourceTest.clip = SoundManager.GetNoteClip(PianoNote.C4);
+            AudioSourceTest.Play();
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            SoundManager.PlayNote(PianoNote.C4);
         }
     }
     #endregion
@@ -107,8 +115,6 @@ public class MenuController : ViewModelBase
     #region Events callbacks
     private void controller_Configuration(object sender, ConfigurationEventArgs e)
     {
-        Debug.Log("Configuration ENDED");
-
         if (e.Result)
         {
             string info = "";

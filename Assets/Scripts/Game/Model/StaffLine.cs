@@ -122,8 +122,6 @@ public class StaffLine : MonoBehaviour
         note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, this.Alteration);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
-        // Debug.Log("Spawn note : " + note.AlteredNote);
-
         note.DestroyEvent += Note_DestroyEvent;
 
         _notes.Add(note);

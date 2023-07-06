@@ -24,9 +24,8 @@ public class GameInputManager : MonoBehaviour
     {
         // Guessing system
         var firstNote = GameController.Instance.GetFirstNote();
-        // Debug.Log("First note : " + MusicHelper.GetNoteCommonName(firstNote.PianoNote));
 
-        if(!GameController.Instance.IsGameEnded)
+        if (!GameController.Instance.IsGameEnded)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -53,14 +52,12 @@ public class GameInputManager : MonoBehaviour
                         )
                     {
                         // Good guess
-                        // Debug.Log("Good guess");
                         firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
                         guessValue = true;
                     }
                     else
                     {
                         // Bad guess
-                        // Debug.Log("Bad guess");
                         firstNote.ChangeColor(StaticResource.COLOR_BAD_GUESS);
                         guessValue = false;
                     }

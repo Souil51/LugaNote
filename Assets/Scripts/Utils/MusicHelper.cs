@@ -279,8 +279,6 @@ public class MusicHelper
 
         int difference = idxNaturalNote - idxFirstNote;
 
-        // Debug.Log(NaturalNote + " - " + firstNote + " - " + idxFirstNote + " - " + idxNaturalNote + " - " + difference);
-
         if (difference < 1)
             return 3;
         else if (difference < 3)
