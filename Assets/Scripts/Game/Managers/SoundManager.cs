@@ -25,7 +25,13 @@ public class SoundManager : MonoBehaviour
 
     public static void PlaySound(AudioClip audioClip)
     {
-        AudioSource.PlayClipAtPoint(audioClip, Vector3.zero);
+        // Use custom One Shot Sound because PlayClipAtPoint stops working when spamming
+        GameObject newGo = new GameObject();
+        var audioSource = newGo.AddComponent<AudioSource>();
+        var oneShotSound = newGo.AddComponent<OneShotSound>();
+
+        oneShotSound.InitializeAudioSource(audioSource);
+        oneShotSound.PlayClip(audioClip);
     }
 
     public static AudioClip GetNoteClip(PianoNote note)

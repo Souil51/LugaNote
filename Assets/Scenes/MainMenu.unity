@@ -2671,7 +2671,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 60
+  m_FlexibleWidth: 30
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!222 &449980870
@@ -2989,7 +2989,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 30
+  m_FlexibleWidth: 50
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!222 &493500208
@@ -7202,7 +7202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024db3cb3dd1fdc439ed3fa99aed39a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 2
 --- !u!4 &1697902071
 Transform:
   m_ObjectHideFlags: 0
@@ -7436,6 +7436,7 @@ MonoBehaviour:
   BindingsObjects:
   - {fileID: 1983145716}
   - {fileID: 1493739099}
+  - {fileID: 1786391426}
 --- !u!1 &1781077535
 GameObject:
   m_ObjectHideFlags: 0
@@ -7583,6 +7584,7 @@ GameObject:
   - component: {fileID: 1786391429}
   - component: {fileID: 1786391428}
   - component: {fileID: 1786391430}
+  - component: {fileID: 1786391431}
   m_Layer: 5
   m_Name: device
   m_TagString: Untagged
@@ -7608,7 +7610,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 262.21, y: 0}
+  m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1786391428
 MonoBehaviour:
@@ -7630,7 +7632,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: MIDI controller
+  m_text: MIDI controller (88 keys)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7727,6 +7729,23 @@ MonoBehaviour:
   m_FlexibleWidth: 47.5
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1786391431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786391426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: ControllerLabel
+    LocalizeName: 
+  localize: {fileID: 0}
 --- !u!1 &1793014143
 GameObject:
   m_ObjectHideFlags: 0
@@ -8084,7 +8103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -377.76, y: 0}
+  m_AnchoredPosition: {x: -554.4, y: 0}
   m_SizeDelta: {x: 704.48, y: 167.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1851080475

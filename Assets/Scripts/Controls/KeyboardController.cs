@@ -75,13 +75,7 @@ public class KeyboardController : MonoBehaviour, IController
 
     private void Awake()
     {
-        _notesWithOffset = Notes;
-        _notesDownWithOffset = NotesDown;
-        if (C4Offset != 0)
-        {
-            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
-        }
+        UpdateNotesWithOffset();
     }
 
     // Update is called once per frame
@@ -110,6 +104,8 @@ public class KeyboardController : MonoBehaviour, IController
             }
         }
 
+        UpdateNotesWithOffset();
+
         if (_notesDown.Count > 0)
             NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
     }
@@ -118,6 +114,17 @@ public class KeyboardController : MonoBehaviour, IController
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no keyboard configuration yet
     }*/
+
+    private void UpdateNotesWithOffset()
+    {
+        _notesWithOffset = new List<PianoNote>(Notes);
+        _notesDownWithOffset = new List<PianoNote>(NotesDown);
+        if (C4Offset != 0)
+        {
+            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+        }
+    }
 
     private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
     {

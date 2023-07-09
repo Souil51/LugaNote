@@ -77,6 +77,7 @@ public class MidiController : MonoBehaviour, IController
         {
             if (MidiMaster.GetKeyDown(i))
             {
+                SoundManager.PlayNote((PianoNote)(i - A0StartingMidiNote));
                 _notesDown.Add((PianoNote)(i - A0StartingMidiNote));
             }
 

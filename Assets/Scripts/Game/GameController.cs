@@ -160,7 +160,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     staff.gameObject.SetActive(false);
             }
             
-            staff.InitializeStaff();
+            if(staff.gameObject.activeSelf)
+                staff.InitializeStaff();
         }
 
         ViewModel.InitializeViewModel();
@@ -204,6 +205,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (State == GameState.Starting && newState == GameState.Started)
         {
+            if (_controller is VisualController visualCtrl)
+                visualCtrl.ShowButtons();
+
             TimeScaleManager.UnpauseGame();
 
             IsGameStarted = true;
@@ -339,7 +343,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             {
                 case IntervalMode.Note:
                     {
-                        for (int i = 0; i < Staffs.Count; i++)
+                        for (int i = 0; i < Staffs.Where(x => x.gameObject.activeSelf).ToList().Count; i++)
                         {
                             Staffs[i].SpawnNote(Controller.HigherNoteWithOffset, Controller.LowerNoteWithOffset);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);

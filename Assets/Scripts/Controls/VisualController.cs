@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -38,6 +39,14 @@ public class VisualController : MonoBehaviour, IController
     private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
     public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
 
+    private GameObject _buttonCanvas;
+
+    // These contains notes pressed based on Buttons callback on PointerDown and PointerUp
+    // As this is note like Input.Key and button don't have "KeyDown" (PointerDown trigger each frame if button is pressed)
+    // I use list to track which button is down or not
+    private List<PianoNote> _lastUpdateButtonsNoteDown = new List<PianoNote>();
+    private List<PianoNote> _buttonsNoteDown = new List<PianoNote>();
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 
@@ -51,25 +60,71 @@ public class VisualController : MonoBehaviour, IController
     {
         _notesDown.Clear();
         _notesUp.Clear();
+
+        // Bases on button pressed list, track if a note is Down (= note changed from Up to Down this exact frame)
+        foreach (var buttonNote in _buttonsNoteDown)
+        {
+            if (!_lastUpdateButtonsNoteDown.Contains(buttonNote))
+            {
+                SoundManager.PlayNote(buttonNote);
+                _notesDown.Add(buttonNote);
+
+                _notes.Add(buttonNote);// For note's holding, just add if Down and remove if Up
+            }
+        }
+
+        // Bases on button pressed list, track if a note is Up (= note changed from Down to Up this exact frame)
+        foreach (var buttonNote in _lastUpdateButtonsNoteDown)
+        {
+            if (!_buttonsNoteDown.Contains(buttonNote))
+            {
+                _notesUp.Add(buttonNote);
+
+                _notes.Remove(buttonNote);// For note's holding, just add if Down and remove if Up
+            }
+        }
+
+        UpdateNotesWithOffset();
+
+        if (_notesDown.Count > 0)
+            NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
+
+        _lastUpdateButtonsNoteDown = new List<PianoNote>(_buttonsNoteDown);
     }
 
     private void Awake()
     {
-        _notesWithOffset = Notes;
-        _notesDownWithOffset = NotesDown;
+        UpdateNotesWithOffset();
+
+        _buttonCanvas = GenerateButtons();
+        HideButtons();
+    }
+
+    private void UpdateNotesWithOffset()
+    {
+        _notesWithOffset = new List<PianoNote>(Notes);
+        _notesDownWithOffset = new List<PianoNote>(NotesDown);
         if (C4Offset != 0)
         {
             _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
             _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
         }
+    }
 
-        GenerateButtons();
+    public void ShowButtons()
+    {
+        _buttonCanvas.SetActive(true);
+    }
+
+    public void HideButtons()
+    {
+        _buttonCanvas.SetActive(false);
     }
 
     /// <summary>
     /// Generate all UI buttons and their events
     /// </summary>
-    private void GenerateButtons()
+    private GameObject GenerateButtons()
     {
         // UI Canvas that will contains all buttons
         var goCanvas = Instantiate(Resources.Load(StaticResource.PREFAB_VISUAL_KEYBOARD)) as GameObject;
@@ -126,26 +181,27 @@ public class VisualController : MonoBehaviour, IController
             // But we want to know when button is up or held
             var buttonEventTrigger = goButtonNote.GetComponent<EventTrigger>();
 
+            // PointerDown and PointerUp just fill list to track which button is pressed and which is not
+            // PianoNote list used by the game are managed in the update method, like other controllers
+            // It's possible to handle this in callbacks but easier to do like this others controllers
             var pointerUp = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
             pointerUp.callback.AddListener((data) =>
             {
-                NotesUp.Add(note);
-
-                bool noteDown = Notes.Any(x => x == note);
-                if (noteDown)
-                    Notes.Remove(note);
+                _buttonsNoteDown.Remove(note);
             });
 
             var pointerDown = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerDown).FirstOrDefault();
             pointerDown.callback.AddListener((data) =>
             {
-                NotesDown.Add(note);
-                Notes.Add(note);
-
-                NoteDown?.Invoke(this, new NoteEventArgs(note));
+                if (!_buttonsNoteDown.Contains(note))
+                {
+                    _buttonsNoteDown.Add(note);
+                }
             });
 
             currentX += buttonWidth / 2f;
         }
+
+        return goCanvas;
     }
 }

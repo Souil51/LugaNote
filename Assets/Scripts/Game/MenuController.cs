@@ -49,6 +49,20 @@ public class MenuController : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    private string _controllerLabel = "MIDI controller (88 keys)";
+    public string ControllerLabel
+    {
+        get => _controllerLabel;
+        private set
+        {
+            _controllerLabel = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private MenuState CurrentState = MenuState.Loaded;
+
     #endregion
 
     #region Unity methods
@@ -76,6 +90,10 @@ public class MenuController : ViewModelBase
     {
         Info.Disappeared += Info_Disappeared;
         SoundManager.LoadAllNotes();
+
+        ChangeState(MenuState.Idle);
+
+        InitialiserNotifyPropertyChanged();
     }
 
     // Update is called once per frame
@@ -94,6 +112,31 @@ public class MenuController : ViewModelBase
     }
     #endregion
 
+    private void ChangeState(MenuState newState)
+    {
+        bool stateChanged = false;
+
+        if(CurrentState == MenuState.Loaded && newState == MenuState.Idle)
+        {
+            stateChanged = true;
+        }
+        else if(CurrentState == MenuState.Idle && newState == MenuState.Configuration)
+        {
+            _controller.Configure(MainCanvas);
+
+            stateChanged = true;
+        } 
+        else if(CurrentState == MenuState.Configuration && newState == MenuState.Idle)
+        {
+            stateChanged = true;
+        }
+
+        if (stateChanged)
+        {
+            CurrentState = newState;
+        }
+    }
+
     private void ShowInfo(string info, float duration = 2f)
     {
         InfoText = info;
@@ -109,7 +152,7 @@ public class MenuController : ViewModelBase
 
     public void StartControllerConfiguration()
     {
-        _controller.Configure(MainCanvas);
+        ChangeState(MenuState.Configuration);
     }
 
     #region Events callbacks
@@ -120,14 +163,25 @@ public class MenuController : ViewModelBase
             string info = "";
 
             if (_controller.HigherNote - _controller.LowerNote == 88 - 1)
-                info = string.Format(Strings.MENU_MIDI_88_TOUCHES);
+            {
+                info = string.Format(Strings.MENU_INFO_MIDI_88_TOUCHES);
+                ControllerLabel = string.Format(Strings.MENU_MIDI_88_TOUCHES);
+            }
             else if (_controller.HigherNote - _controller.LowerNote == 61 - 1)
-                info = string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            {
+                info = string.Format(Strings.MENU_INFO_MIDI_61_TOUCHES);
+                ControllerLabel = string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            }
             else
-                info = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+            {
+                info = string.Format(Strings.MENU_INFO_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+                ControllerLabel = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+            }
 
             ShowInfo(info);
         }
+
+        ChangeState(MenuState.Idle);
     }
 
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
@@ -153,6 +207,8 @@ public class MenuController : ViewModelBase
     #region UI event
     public void ChangeScene_Trebble()
     {
+        if (CurrentState != MenuState.Idle) return;
+
         var gameMode = GameModeManager.GetGameMode(GameModeType.Trebble, IntervalMode.Note);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
@@ -160,6 +216,8 @@ public class MenuController : ViewModelBase
 
     public void ChangeScene_Bass()
     {
+        if (CurrentState != MenuState.Idle) return;
+
         var gameMode = GameModeManager.GetGameMode(GameModeType.Bass, IntervalMode.Note);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
@@ -167,6 +225,8 @@ public class MenuController : ViewModelBase
 
     public void ChangeScene_TrebbleBass()
     {
+        if (CurrentState != MenuState.Idle) return;
+
         var gameMode = GameModeManager.GetGameMode(GameModeType.TrebbleBass, IntervalMode.Note);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
