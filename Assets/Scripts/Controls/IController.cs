@@ -31,6 +31,9 @@ public interface IController
     public List<PianoNote> NotesUpWithOffset { get; }
 
     void Configure(Canvas canvas);
+
+    void ShowControllerUI();
+    void HideControllerUI();
 }
 
 public class NoteEventArgs : EventArgs

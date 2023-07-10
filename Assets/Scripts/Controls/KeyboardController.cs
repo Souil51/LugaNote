@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
 public class KeyboardController : MonoBehaviour, IController
 {
     private List<PianoNote> _notesDown = new List<PianoNote>();
@@ -148,5 +149,15 @@ public class KeyboardController : MonoBehaviour, IController
         _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
 
         _configurationHelper.Initialize(this);
+    }
+
+    public void ShowControllerUI()
+    {
+        // Do nothing (qwerty / azerty handle here ?)
+    }
+
+    public void HideControllerUI()
+    {
+        // Do nothing (qwerty / azerty handle here ?)
     }
 }

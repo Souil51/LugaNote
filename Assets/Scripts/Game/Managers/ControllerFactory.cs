@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.Game
@@ -42,6 +43,12 @@ namespace Assets.Scripts.Game
                     break;
                 case ControllerType.Visual:
                     controller = gameObject.AddComponent(typeof(VisualController)) as VisualController;
+                    break;
+                case ControllerType.KeyboardAndVisual:
+                    controller = gameObject.AddComponent(typeof(MultipleController)) as MultipleController;
+                    var keyboardController = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
+                    var visualController = gameObject.AddComponent(typeof(VisualController)) as VisualController;
+                    ((MultipleController)controller).InitializeController(keyboardController, visualController);
                     break;
                 case ControllerType.Keyboard:
                 default:

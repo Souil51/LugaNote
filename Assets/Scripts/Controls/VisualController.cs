@@ -5,6 +5,7 @@ using TMPro;
 using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization.PropertyVariants.TrackedProperties;
 using UnityEngine.UI;
 
 public class VisualController : MonoBehaviour, IController
@@ -97,7 +98,7 @@ public class VisualController : MonoBehaviour, IController
         UpdateNotesWithOffset();
 
         _buttonCanvas = GenerateButtons();
-        HideButtons();
+        HideControllerUI();
     }
 
     private void UpdateNotesWithOffset()
@@ -111,12 +112,12 @@ public class VisualController : MonoBehaviour, IController
         }
     }
 
-    public void ShowButtons()
+    public void ShowControllerUI()
     {
         _buttonCanvas.SetActive(true);
     }
 
-    public void HideButtons()
+    public void HideControllerUI()
     {
         _buttonCanvas.SetActive(false);
     }
@@ -150,9 +151,10 @@ public class VisualController : MonoBehaviour, IController
 
         float totalWidth = (rectTmpButton.sizeDelta.x * naturalNotesCount) + (rectTmpSharp.sizeDelta.x * sharpNotesCount);
 
-        float currentX = -(totalWidth / 4);
+        float spaceBetween = 5f;
+        float currentX = -(totalWidth / 4) - ((naturalNotesCount + sharpNotesCount) * spaceBetween / 2);
         float startingY = -(rectTmpButton.sizeDelta.x / 4);
-
+        
         // Destroy the 2 temp prefabs
         Destroy(goTmpButton);
         Destroy(goTmpSharp);
@@ -199,7 +201,7 @@ public class VisualController : MonoBehaviour, IController
                 }
             });
 
-            currentX += buttonWidth / 2f;
+            currentX += buttonWidth / 2f + spaceBetween;
         }
 
         return goCanvas;

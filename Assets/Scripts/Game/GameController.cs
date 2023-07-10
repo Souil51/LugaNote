@@ -205,8 +205,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (State == GameState.Starting && newState == GameState.Started)
         {
-            if (_controller is VisualController visualCtrl)
-                visualCtrl.ShowButtons();
+            _controller.ShowControllerUI();
 
             TimeScaleManager.UnpauseGame();
 
@@ -217,6 +216,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (State == GameState.Started && newState == GameState.Ended)
         {
+            _controller.HideControllerUI();
+
             TimeLeft = 0f;
             IsGameEnded = true;
             TimeScaleManager.PauseGame(0f);
@@ -227,6 +228,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (State == GameState.Started && newState == GameState.Paused)
         {
+            _controller.HideControllerUI();
+
             TimeScaleManager.PauseGame(0);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
 
@@ -234,6 +237,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (State == GameState.Paused && newState == GameState.Started)
         {
+            _controller.ShowControllerUI();
+
             TimeScaleManager.UnpauseGame();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPaused)));
 

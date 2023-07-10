@@ -119,4 +119,14 @@ public class MidiController : MonoBehaviour, IController
 
         _configurationHelper.Initialize(this);
     }
+
+    public void ShowControllerUI()
+    {
+        // Do nothing (show key pressed here ?)
+    }
+
+    public void HideControllerUI()
+    {
+        // Do nothing (show key pressed here ?)
+    }
 }
