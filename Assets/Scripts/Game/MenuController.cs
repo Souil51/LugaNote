@@ -94,6 +94,8 @@ public class MenuController : ViewModelBase
         ChangeState(MenuState.Idle);
 
         InitialiserNotifyPropertyChanged();
+
+        ControllerLabel = _controller.Label;
     }
 
     // Update is called once per frame
@@ -161,21 +163,19 @@ public class MenuController : ViewModelBase
         if (e.Result)
         {
             string info = "";
+            ControllerLabel = _controller.Label;
 
-            if (_controller.HigherNote - _controller.LowerNote == 88 - 1)
-            {
-                info = string.Format(Strings.MENU_INFO_MIDI_88_TOUCHES);
-                ControllerLabel = string.Format(Strings.MENU_MIDI_88_TOUCHES);
-            }
-            else if (_controller.HigherNote - _controller.LowerNote == 61 - 1)
+            if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 88)
             {
                 info = string.Format(Strings.MENU_INFO_MIDI_61_TOUCHES);
-                ControllerLabel = string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            }
+            else if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 61)
+            {
+                info = string.Format(Strings.MENU_INFO_MIDI_61_TOUCHES);
             }
             else
             {
-                info = string.Format(Strings.MENU_INFO_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
-                ControllerLabel = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+                info = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
             }
 
             ShowInfo(info);

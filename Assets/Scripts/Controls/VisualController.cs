@@ -40,6 +40,10 @@ public class VisualController : MonoBehaviour, IController
     private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
     public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
 
+    public string Label => "Touch screen";
+
+    public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerNote, (int)HigherNote - (int)LowerNote + 1).Select(x => (PianoNote)x).ToList();
+
     private GameObject _buttonCanvas;
 
     // These contains notes pressed based on Buttons callback on PointerDown and PointerUp

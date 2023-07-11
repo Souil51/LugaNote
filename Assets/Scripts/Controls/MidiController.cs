@@ -1,3 +1,4 @@
+using Assets.Scripts.Utils;
 using MidiJack;
 using System;
 using System.Collections;
@@ -39,6 +40,27 @@ public class MidiController : MonoBehaviour, IController
 
     private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
     public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+
+    public string Label 
+    {
+        get
+        {
+            if((int)HigherNote - (int)LowerNote + 1 == 88)
+            {
+                return string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            } 
+            else if((int)HigherNote - (int)LowerNote + 1 == 61)
+            {
+                return string.Format(Strings.MENU_MIDI_61_TOUCHES);
+            }
+            else
+            {
+                return string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, HigherNote - LowerNote, LowerNote, HigherNote);
+            }
+        }
+    }
+
+    public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerNote, (int)HigherNote - (int)LowerNote + 1).Select(x => (PianoNote)x).ToList();
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;

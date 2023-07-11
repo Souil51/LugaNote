@@ -50,6 +50,19 @@ namespace Assets.Scripts.Game
                     var visualController = gameObject.AddComponent(typeof(VisualController)) as VisualController;
                     ((MultipleController)controller).InitializeController(keyboardController, visualController);
                     break;
+                case ControllerType.KeyboardAndMidi:
+                    controller = gameObject.AddComponent(typeof(MultipleController)) as MultipleController;
+                    var keyboardController_2 = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
+                    var midiController_2 = gameObject.AddComponent(typeof(MidiController)) as MidiController;
+                    ((MultipleController)controller).InitializeController(keyboardController_2, midiController_2);
+                    break;
+                case ControllerType.KeyboardVisualMidi:
+                    controller = gameObject.AddComponent(typeof(MultipleController)) as MultipleController;
+                    var keyboardController_3 = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;
+                    var midiController_3 = gameObject.AddComponent(typeof(MidiController)) as MidiController;
+                    var visualController_3 = gameObject.AddComponent(typeof(VisualController)) as VisualController;
+                    ((MultipleController)controller).InitializeController(keyboardController_3, midiController_3, visualController_3);
+                    break;
                 case ControllerType.Keyboard:
                 default:
                     controller = gameObject.AddComponent(typeof(KeyboardController)) as KeyboardController;

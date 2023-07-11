@@ -22,6 +22,8 @@ public interface IController
     List<PianoNote> NotesUp { get; }
     List<PianoNote> Notes { get; }
 
+    List<PianoNote> AvailableNotes { get; }
+
     int C4Offset { get; }
 
     public PianoNote HigherNoteWithOffset { get; }
@@ -29,6 +31,8 @@ public interface IController
     public List<PianoNote> NotesWithOffset { get; }
     public List<PianoNote> NotesDownWithOffset { get; }
     public List<PianoNote> NotesUpWithOffset { get; }
+
+    public string Label { get; }
 
     void Configure(Canvas canvas);
 

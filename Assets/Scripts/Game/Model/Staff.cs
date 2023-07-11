@@ -112,4 +112,14 @@ public class Staff : MonoBehaviour
 
         return index;
     }
+
+    public int SpawnNote(List<PianoNote> notes)
+    {
+        var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
+
+        int index = Random.Range(0, _availableLines.Count);
+        _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+
+        return index;
+    }
 }

@@ -350,7 +350,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     {
                         for (int i = 0; i < Staffs.Where(x => x.gameObject.activeSelf).ToList().Count; i++)
                         {
-                            Staffs[i].SpawnNote(Controller.HigherNoteWithOffset, Controller.LowerNoteWithOffset);
+                            Staffs[i].SpawnNote(Controller.AvailableNotes);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }

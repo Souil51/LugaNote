@@ -37,7 +37,25 @@ public class MultipleController : MonoBehaviour, IController
     private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
     public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
 
+    public string Label
+    {
+        get
+        {
+            return string.Join(", ", _controllers.Select(x => x.Label).ToList());
+        }
+    }
+
+    public List<PianoNote> AvailableNotes
+    {
+        get
+        {
+            var notes = _controllers.SelectMany(x => x.AvailableNotes).ToList();
+            return notes.Distinct().ToList();
+        }
+    }
+
     private List<IController> _controllers = new List<IController>();
+    private MidiConfigurationHelper _configurationHelper;
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
@@ -63,18 +81,44 @@ public class MultipleController : MonoBehaviour, IController
         if (_notesDown.Count > 0)
             NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
     }
+    private void OnDisable()
+    {
+        var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+        if (midiController != null)
+        {
+            midiController.Configuration -= MidiController_Configuration;
+        }
+    }
 
     public void InitializeController(params IController[] controllers)
     {
         _controllers = new List<IController>(controllers);
 
         _lowerNote = _controllers.Select(x => x.LowerNote).Max();
-        _higherNote = _controllers.Select(x => x.HigherNote).Max();
+        _higherNote = _controllers.Select(x => x.HigherNote).Min();
+
+        var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+        if (midiController != null)
+        {
+            midiController.Configuration += MidiController_Configuration;
+        }
+    }
+
+    private void MidiController_Configuration(object sender, ConfigurationEventArgs e)
+    {
+        _lowerNote = _controllers.Select(x => x.LowerNote).Max();
+        _higherNote = _controllers.Select(x => x.HigherNote).Min();
+
+        Configuration?.Invoke(this, e);
     }
 
     public void Configure(Canvas canvas)
     {
-        // Do nothing
+        var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+        if (midiController != null)
+        {
+            midiController.Configure(canvas);
+        }
     }
 
     private void UpdateNotesWithOffset()
