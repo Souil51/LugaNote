@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private float YPositionSecondStaff;
     [SerializeField] private float OneStaffScale;
     [SerializeField] private float TwoStaffScale;
+    [SerializeField] private float StaffSeparatorYPosition;
     
     private GameMode GameMode;
 
@@ -92,6 +93,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     public bool GameReplacementMode => ReplacementMode;
     public bool IsPaused => TimeScaleManager.IsPaused;
 
+    public bool HasControllerUI => _controller.HasUI;
+
     private GameState _state = GameState.Loaded;
     private IController _controller;
     public IController Controller => _controller;
@@ -112,6 +115,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.NavigateToMenu    += ViewModel_NavigateToMenu;
         ViewModel.Resume        += ViewModel_Resume;
         ViewModel.OpenMenu  += ViewModel_OpenMenu;
+        ViewModel.ToggleVisualKeysVisibility += ViewModel_ToggleVisualKeysVisibility;
         Transition.Closed       += Transition_Closed;
         Transition.Opened       += Transition_Opened;
     }
@@ -125,6 +129,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.NavigateToMenu        -= ViewModel_NavigateToMenu;
         ViewModel.Resume            -= ViewModel_Resume;
         ViewModel.OpenMenu      -= ViewModel_OpenMenu;
+        ViewModel.ToggleVisualKeysVisibility -= ViewModel_ToggleVisualKeysVisibility;
         Transition.Closed           -= Transition_Closed;
         Transition.Opened           -= Transition_Opened;
     }
@@ -151,7 +156,12 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             staff.transform.localScale = new Vector3(GameMode.GameModeType == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode.GameModeType == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
 
             if (GameMode.GameModeType == GameModeType.TrebbleBass)
+            {
                 staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
+
+                var go = Instantiate(Resources.Load(StaticResource.PREFAB_DOTTED_LINE)) as GameObject;
+                go.transform.position = new Vector3(0, StaffSeparatorYPosition, 0);
+            }
             else
             {
                 staff.transform.position = new Vector3(staff.transform.position.x, 0f, staff.transform.position.z);
@@ -323,6 +333,14 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             ChangeState(GameState.Paused);
     }
 
+    private void ViewModel_ToggleVisualKeysVisibility(object sender, EventArgs e)
+    {
+        if(_controller.IsControllerUIVisible)
+            _controller.HideControllerUI();
+        else
+            _controller.ShowControllerUI();
+    }
+
     private void Transition_Closed(object sender, EventArgs e)
     {
         GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_MENU);
@@ -350,7 +368,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     {
                         for (int i = 0; i < Staffs.Where(x => x.gameObject.activeSelf).ToList().Count; i++)
                         {
-                            Staffs[i].SpawnNote(Controller.AvailableNotes);
+                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(Controller.AvailableNotes);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }

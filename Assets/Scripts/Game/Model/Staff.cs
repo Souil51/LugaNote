@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Animations;
 
 /// <summary>
 /// Staff script
@@ -116,6 +117,9 @@ public class Staff : MonoBehaviour
     public int SpawnNote(List<PianoNote> notes)
     {
         var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
+        /*var _availableLines = new List<StaffLine>();
+        _availableLines.Add(Lines.First());
+        _availableLines.Add(Lines.Last());*/
 
         int index = Random.Range(0, _availableLines.Count);
         _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);

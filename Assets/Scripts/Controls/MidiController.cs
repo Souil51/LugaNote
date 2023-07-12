@@ -47,7 +47,7 @@ public class MidiController : MonoBehaviour, IController
         {
             if((int)HigherNote - (int)LowerNote + 1 == 88)
             {
-                return string.Format(Strings.MENU_MIDI_61_TOUCHES);
+                return string.Format(Strings.MENU_MIDI_88_TOUCHES);
             } 
             else if((int)HigherNote - (int)LowerNote + 1 == 61)
             {
@@ -61,6 +61,10 @@ public class MidiController : MonoBehaviour, IController
     }
 
     public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerNote, (int)HigherNote - (int)LowerNote + 1).Select(x => (PianoNote)x).ToList();
+
+    public bool IsControllerUIVisible => true;
+
+    public bool HasUI => false;
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;

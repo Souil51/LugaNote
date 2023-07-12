@@ -54,6 +54,22 @@ public class MultipleController : MonoBehaviour, IController
         }
     }
 
+    public bool IsControllerUIVisible
+    {
+        get
+        {
+            var visualController = _controllers.Where(x => x.GetType() == typeof(VisualController)).FirstOrDefault();
+            if (visualController != null)
+            {
+                return visualController.IsControllerUIVisible;
+            }
+            return true;
+        }
+    }
+
+    private bool _hasUI = false;
+    public bool HasUI => _hasUI;
+
     private List<IController> _controllers = new List<IController>();
     private MidiConfigurationHelper _configurationHelper;
 
@@ -101,6 +117,12 @@ public class MultipleController : MonoBehaviour, IController
         if (midiController != null)
         {
             midiController.Configuration += MidiController_Configuration;
+        }
+
+        var visualController = _controllers.Where(x => x.GetType() == typeof(VisualController)).FirstOrDefault();
+        if (visualController != null)
+        {
+            _hasUI = true;
         }
     }
 

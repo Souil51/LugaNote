@@ -167,7 +167,7 @@ public class MenuController : ViewModelBase
 
             if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 88)
             {
-                info = string.Format(Strings.MENU_INFO_MIDI_61_TOUCHES);
+                info = string.Format(Strings.MENU_INFO_MIDI_88_TOUCHES);
             }
             else if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 61)
             {

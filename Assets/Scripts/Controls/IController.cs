@@ -34,6 +34,9 @@ public interface IController
 
     public string Label { get; }
 
+    public bool HasUI { get; }
+    public bool IsControllerUIVisible { get; }
+
     void Configure(Canvas canvas);
 
     void ShowControllerUI();

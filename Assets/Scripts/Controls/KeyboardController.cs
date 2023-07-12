@@ -41,6 +41,10 @@ public class KeyboardController : MonoBehaviour, IController
 
     public List<PianoNote> AvailableNotes => keys.Select(x => x.Value).ToList();
 
+    public bool IsControllerUIVisible => true;
+
+    public bool HasUI => false;
+
     // Keyboard has only few notes
 
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()

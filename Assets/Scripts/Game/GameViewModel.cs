@@ -17,6 +17,9 @@ public class GameViewModel : ViewModelBase
     public delegate void OpenMenuEventHandler(object sender, EventArgs e);
     public event OpenMenuEventHandler OpenMenu;
 
+    public delegate void ToggleVisualKeysEventHandler(object sender, EventArgs e);
+    public event ToggleVisualKeysEventHandler ToggleVisualKeysVisibility;
+
     #region Properties
     private int _points = 0;
     public int Points
@@ -85,6 +88,30 @@ public class GameViewModel : ViewModelBase
         }
     }
 
+    private bool _visualKeysVisibilityVisibility = true;
+
+    private string _visualKeysVisibilityText;
+    public string VisualKeysVisibilityText
+    {
+        get => _visualKeysVisibilityText;
+        set
+        {
+            _visualKeysVisibilityText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _uIButtonsVisible;
+    public bool UIButtonVisible
+    {
+        get { return _uIButtonsVisible; }
+        set 
+        { 
+            _uIButtonsVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
 
     #endregion
 
@@ -96,6 +123,9 @@ public class GameViewModel : ViewModelBase
     public void InitializeViewModel()
     {
         InitialiserNotifyPropertyChanged();
+
+        UIButtonVisible = GameController.Instance.HasControllerUI;
+        UpdateVisualKeysVisibilityText();
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -155,6 +185,22 @@ public class GameViewModel : ViewModelBase
     public void Button_ReturnToMenu_Click()
     {
         OpenMenu?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void Button_ToggleVisualKeysVisibility()
+    {
+        ToggleVisualKeysVisibility?.Invoke(this, EventArgs.Empty);
+
+        _visualKeysVisibilityVisibility = !_visualKeysVisibilityVisibility;
+        UpdateVisualKeysVisibilityText();
+    }
+
+    private void UpdateVisualKeysVisibilityText()
+    {
+        if (_visualKeysVisibilityVisibility)
+            VisualKeysVisibilityText = "Hide visuals keys";
+        else
+            VisualKeysVisibilityText = "Show visuals keys";
     }
 
     #endregion

@@ -7211,7 +7211,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1697902069}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8923323, y: 3.2674928, z: -0.032788657}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10096,7 +10096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141110972849, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 78.79592
+      value: 78.79593
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141110972849, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -10280,7 +10280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141576460494, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 419
+      value: 858
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141576460494, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10288,11 +10288,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141576460494, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 648.5
+      value: 429
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141576460494, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -48.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 8201509141733175760, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
+      propertyPath: m_text
+      value: MIDI Controller configuration
+      objectReference: {fileID: 0}
+    - target: {fileID: 8201509141733175760, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
+      propertyPath: m_fontSize
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8201509141733175760, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 8201509141932385884, guid: 2eda212dc159347478a48ab2d032e0bc, type: 3}
       propertyPath: m_Pivot.x

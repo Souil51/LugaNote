@@ -44,6 +44,11 @@ public class VisualController : MonoBehaviour, IController
 
     public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerNote, (int)HigherNote - (int)LowerNote + 1).Select(x => (PianoNote)x).ToList();
 
+    private bool _isControllerUIVisible;
+    public bool IsControllerUIVisible => _isControllerUIVisible;
+
+    public bool HasUI => true;
+
     private GameObject _buttonCanvas;
 
     // These contains notes pressed based on Buttons callback on PointerDown and PointerUp
@@ -118,11 +123,13 @@ public class VisualController : MonoBehaviour, IController
 
     public void ShowControllerUI()
     {
+        _isControllerUIVisible = true;
         _buttonCanvas.SetActive(true);
     }
 
     public void HideControllerUI()
     {
+        _isControllerUIVisible = false;
         _buttonCanvas.SetActive(false);
     }
 
@@ -137,6 +144,7 @@ public class VisualController : MonoBehaviour, IController
         goCanvas.transform.SetParent(transform);
 
         var btnPanel = goCanvas.transform.GetChild(0);
+        btnPanel.gameObject.transform.localPosition += new Vector3(0, -25f, 0);
 
         // 2 prefabs to calculate the center position of the buttons
         var goTmpButton = Instantiate(Resources.Load("NoteButton")) as GameObject;
