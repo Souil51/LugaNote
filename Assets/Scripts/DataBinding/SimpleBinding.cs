@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
@@ -98,6 +99,10 @@ public class SimpleBinding : MonoBehaviour
                 if(value is UnityEngine.Color)
                 {
                     convertedValue = (UnityEngine.Color) value;
+                }
+                else
+                {
+                    convertedValue = value.GetType().Default();
                 }
             }
             

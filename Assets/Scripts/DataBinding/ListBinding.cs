@@ -20,13 +20,37 @@ namespace Assets.Scripts.DataBinding
         public List<BindingPath> Paths;
         // Item to clone
         public GameObject UIItem;
+        public MonoBehaviour TemplateSelector;
 
         private List<GameObject> _uiItems = new List<GameObject>();
         private Type _listType;
         private IList _list = null;
+        private IListBindingTemplateSelector _templateSelector;
 
         private void InitListInfo(object value)
         {
+            if (UIItem.activeSelf) UIItem.SetActive(false);
+
+            // Init the template selector and hide template items
+            if (!(TemplateSelector is IListBindingTemplateSelector))
+            {
+                throw new Exception("Template selector does not implements IListBindingTemplateSelector");
+            }
+
+            if(TemplateSelector != null)
+            {
+                _templateSelector = (IListBindingTemplateSelector)TemplateSelector;
+                _templateSelector.InitSelector();
+
+                if (TemplateSelector != null)
+                {
+                    foreach (var template in _templateSelector.Templates)
+                    {
+                        template.SetActive(false);
+                    }
+                }
+            }
+            
             if (IsIList(value)) // Is the value a IList ?
             {
                 _listType = GetListType(value); // What is the type ?
@@ -48,17 +72,14 @@ namespace Assets.Scripts.DataBinding
                     int idx = 0;
                     foreach (var listItem in _list)
                     {
-                        if (idx == 0 && UIItem.activeSelf) // If the Item to clone is active, use it for the first list object
-                        {
-                            _uiItems.Add(UIItem);
-                        }
-                        else // or clone the item
-                        {
-                            GameObject newItem = GameObject.Instantiate(UIItem);
-                            newItem.transform.SetParent(this.transform);
+                        // Get the template
+                        var template = TemplateSelector != null ? _templateSelector.GetTemplate(idx) : UIItem;
 
-                            _uiItems.Add(newItem);
-                        }
+                        GameObject newItem = GameObject.Instantiate(template); // Clone the template
+                        newItem.transform.SetParent(this.transform);
+                        newItem.SetActive(true);
+
+                        _uiItems.Add(newItem);
 
                         idx++;
                     }
@@ -68,8 +89,12 @@ namespace Assets.Scripts.DataBinding
                     int numberToAdd = _list.Count - _uiItems.Count;
                     for (int i = 0; i < numberToAdd; i++)
                     {
-                        GameObject newItem = GameObject.Instantiate(UIItem);
+                        // Get the template
+                        var template = TemplateSelector != null ? _templateSelector.GetTemplate(_uiItems.Count) : UIItem;
+
+                        GameObject newItem = GameObject.Instantiate(template); // Clone the template
                         newItem.transform.SetParent(this.transform);
+                        newItem.SetActive(true);
 
                         _uiItems.Add(newItem);
                     }

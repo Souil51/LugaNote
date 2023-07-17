@@ -41,6 +41,7 @@ public class GameControllerTest : ViewModelBase
     {
         var PlayerList = new List<Player>();
         PlayerList.Add(new Player(10, "Player 1"));
+        listBinding.ChangeValue(PlayerList);
         PlayerList.Add(new Player(20, "Player 2"));
         listBinding.ChangeValue(PlayerList);
 
