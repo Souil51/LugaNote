@@ -35,7 +35,7 @@ public class ViewModelBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
                     if (!obj.GetType().IsPrimitive)
                         _properties.Add(obj, property.Name);
 
-                    // This is for initialization a launch
+                    // This is for initialization at launch
                     // For each properties of the GameController inner object
                     foreach (PropertyInfo propertyChild in obj.GetType().GetProperties())
                     {

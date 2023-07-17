@@ -13,6 +13,8 @@ namespace Assets
     {
         public string Name;
         public string LocalizeName;
+        public string BeforeConcatenationString;
+        public string AfterConcatenationString;
 
         public object LastValue;
     }

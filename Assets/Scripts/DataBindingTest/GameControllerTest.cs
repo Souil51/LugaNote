@@ -1,3 +1,4 @@
+using Assets.Scripts.DataBinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,10 +32,19 @@ public class GameControllerTest : ViewModelBase
         }
     }
 
+    public List<Player> PlayerList;
+
+    public ListBinding listBinding;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        var PlayerList = new List<Player>();
+        PlayerList.Add(new Player(10, "Player 1"));
+        PlayerList.Add(new Player(20, "Player 2"));
+        listBinding.ChangeValue(PlayerList);
+
+        PlayerList[0].GetDamaged(1);
     }
 
     // Update is called once per frame

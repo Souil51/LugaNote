@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class Player : INotifyPropertyChanged
 {
+    public Player(int maxHealth, string name)
+    {
+        Health = maxHealth;
+        Name = name;
+    }
+
     public Player(int maxHealth)
     {
         Health = maxHealth;
@@ -22,6 +28,17 @@ public class Player : INotifyPropertyChanged
             else
                 _health = value;
 
+            OnPropertyChanged();
+        }
+    }
+
+    private string _name;
+    public string Name
+    {
+        get => _name;
+        private set
+        {
+            _name = value;
             OnPropertyChanged();
         }
     }

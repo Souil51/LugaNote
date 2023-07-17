@@ -45,6 +45,8 @@ public class KeyboardController : MonoBehaviour, IController
 
     public bool HasUI => false;
 
+    public bool IsConfigurable => false;
+
     // Keyboard has only few notes
 
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()

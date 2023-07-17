@@ -27,6 +27,7 @@ public class SoundManager : MonoBehaviour
     {
         // Use custom One Shot Sound because PlayClipAtPoint stops working when spamming
         GameObject newGo = new GameObject();
+        newGo.transform.position = Vector3.zero;
         var audioSource = newGo.AddComponent<AudioSource>();
         var oneShotSound = newGo.AddComponent<OneShotSound>();
 

@@ -36,6 +36,7 @@ public interface IController
 
     public bool HasUI { get; }
     public bool IsControllerUIVisible { get; }
+    public bool IsConfigurable { get; }
 
     void Configure(Canvas canvas);
 

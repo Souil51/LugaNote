@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -180,6 +181,11 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Break();
+        }
+
         if(State == GameState.Started)
             TimeLeft -= Time.unscaledDeltaTime;
 

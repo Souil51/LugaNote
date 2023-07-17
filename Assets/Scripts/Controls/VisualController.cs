@@ -49,6 +49,8 @@ public class VisualController : MonoBehaviour, IController
 
     public bool HasUI => true;
 
+    public bool IsConfigurable => false;
+
     private GameObject _buttonCanvas;
 
     // These contains notes pressed based on Buttons callback on PointerDown and PointerUp

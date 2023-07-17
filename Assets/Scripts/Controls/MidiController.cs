@@ -66,6 +66,8 @@ public class MidiController : MonoBehaviour, IController
 
     public bool HasUI => false;
 
+    public bool IsConfigurable => true;
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
 

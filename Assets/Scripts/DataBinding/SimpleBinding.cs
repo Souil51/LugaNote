@@ -112,7 +112,25 @@ public class SimpleBinding : MonoBehaviour
             {
                 if (localize == null)
                 {
-                    string concat = String.Join("", Paths.Where(x => x.LastValue != null).Select(x => x.LastValue));
+                    string concat = "";
+                    var pathToConcat = Paths.Where(x => x.LastValue != null).ToList();
+                    if(pathToConcat.Count > 1)
+                    {
+                        for (int i = 0; i < pathToConcat.Count; i++)
+                        {
+                            if (i == 0)
+                                concat += pathToConcat[i].LastValue.ToString() + pathToConcat[i].AfterConcatenationString;
+                            else if (i == pathToConcat.Count - 1)
+                                concat += pathToConcat[i].BeforeConcatenationString + pathToConcat[i].LastValue.ToString();
+                            else
+                                concat += pathToConcat[i].BeforeConcatenationString + pathToConcat[i].LastValue.ToString() + pathToConcat[i].AfterConcatenationString;
+                        }
+                    } 
+                    else if(pathToConcat.Count == 1)
+                    {
+                        concat = pathToConcat[0].LastValue.ToString();
+                    }
+                    
                     SetValueOfType(propInfo, obj, concat);
                 }
                 else

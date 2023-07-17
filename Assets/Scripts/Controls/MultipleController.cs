@@ -70,6 +70,15 @@ public class MultipleController : MonoBehaviour, IController
     private bool _hasUI = false;
     public bool HasUI => _hasUI;
 
+    public bool IsConfigurable
+    {
+        get
+        {
+            var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+            return midiController != null;
+        }
+    }
+
     private List<IController> _controllers = new List<IController>();
     private MidiConfigurationHelper _configurationHelper;
 

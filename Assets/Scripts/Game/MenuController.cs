@@ -61,6 +61,17 @@ public class MenuController : ViewModelBase
         }
     }
 
+    private bool _isMidiConfigurationVisible;
+    public bool IsMidiConfigurationVisible
+    {
+        get => _isMidiConfigurationVisible;
+        private set
+        {
+            _isMidiConfigurationVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
     private MenuState CurrentState = MenuState.Loaded;
 
     #endregion
@@ -96,6 +107,7 @@ public class MenuController : ViewModelBase
         InitialiserNotifyPropertyChanged();
 
         ControllerLabel = _controller.Label;
+        IsMidiConfigurationVisible = _controller.IsConfigurable;
     }
 
     // Update is called once per frame
@@ -154,7 +166,8 @@ public class MenuController : ViewModelBase
 
     public void StartControllerConfiguration()
     {
-        ChangeState(MenuState.Configuration);
+        if(CurrentState == MenuState.Idle)
+            ChangeState(MenuState.Configuration);
     }
 
     #region Events callbacks
@@ -231,6 +244,22 @@ public class MenuController : ViewModelBase
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         Transition.Close();
     }
+
+    public void ViewScore_Trebble()
+    {
+
+    }
+
+    public void ViewScore_Bass()
+    {
+
+    }
+
+    public void ViewScore_TrebbleBass()
+    {
+
+    }
+
     #endregion
 
     #region Coroutines

@@ -19,6 +19,7 @@ public class OneShotSound : MonoBehaviour
 
     private IEnumerator Co_PlayClip(AudioClip clip)
     {
+        if (_audioSource.isPlaying) _audioSource.Stop();
         _audioSource.clip = clip;
         _audioSource.Play();
 

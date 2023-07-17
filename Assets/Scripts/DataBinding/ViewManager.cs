@@ -15,6 +15,7 @@ public class ViewManager : MonoBehaviour
     private List<GameObject> BindingsObjects;
 
     private List<SimpleBinding> Bindings;
+    
     private IViewModel DataContext;
 
     // Start is called before the first frame update
