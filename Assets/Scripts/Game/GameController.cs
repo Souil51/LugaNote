@@ -149,8 +149,14 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     // Start is called before the first frame update
     void Start()
     {
+        // For testing
+        if (GameMode == null)
+        {
+            GameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note);
+        }
+
         // Generate the staff lines
-        for(int i = 0; i < Staffs.Count; i++)
+        for (int i = 0; i < Staffs.Count; i++)
         {
             var staff = Staffs[i];
                 

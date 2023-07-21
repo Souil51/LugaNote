@@ -84,6 +84,7 @@ public class MultipleController : MonoBehaviour, IController
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
+    public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
     private void Awake()
     {
@@ -126,6 +127,7 @@ public class MultipleController : MonoBehaviour, IController
         if (midiController != null)
         {
             midiController.Configuration += MidiController_Configuration;
+            midiController.ConfigurationDestroyed += MidiController_ConfigurationDestroyed;
         }
 
         var visualController = _controllers.Where(x => x.GetType() == typeof(VisualController)).FirstOrDefault();
@@ -143,13 +145,20 @@ public class MultipleController : MonoBehaviour, IController
         Configuration?.Invoke(this, e);
     }
 
-    public void Configure(Canvas canvas)
+    private void MidiController_ConfigurationDestroyed(object sender, Assets.GameObjectEventArgs e)
+    {
+        ConfigurationDestroyed?.Invoke(sender, e);
+    }
+
+    public GameObject Configure()
     {
         var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
         if (midiController != null)
         {
-            midiController.Configure(canvas);
+            return midiController.Configure();
         }
+
+        return null;
     }
 
     private void UpdateNotesWithOffset()

@@ -43,6 +43,17 @@ public class Player : INotifyPropertyChanged
         }
     }
 
+    private Player _friend;
+    public Player Friend
+    {
+        get => _friend;
+        private set
+        {
+            _friend = value;
+            OnPropertyChanged();
+        }
+    }
+
     public void GetDamaged(int amount)
     {
         Health -= amount;
@@ -51,6 +62,16 @@ public class Player : INotifyPropertyChanged
         {
             //Mort
         }
+    }
+
+    public void SetFriend(Player friend)
+    {
+        this.Friend = friend;
+    }
+
+    public void SetName(string newName)
+    {
+        Name = newName;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

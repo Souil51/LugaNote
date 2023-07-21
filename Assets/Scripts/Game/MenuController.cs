@@ -1,3 +1,4 @@
+using Assets;
 using Assets.Scripts.Data;
 using Assets.Scripts.Game;
 using Assets.Scripts.Utils;
@@ -83,6 +84,7 @@ public class MenuController : ViewModelBase
 
         _controller = ControllerFactory.Instance.GetController();
         _controller.Configuration += controller_Configuration;
+        _controller.ConfigurationDestroyed += _controller_ConfigurationDestroyed;
     }
 
     private void OnEnable()
@@ -124,6 +126,9 @@ public class MenuController : ViewModelBase
             SoundManager.PlayNote(PianoNote.C4);
         }
     }
+
+
+
     #endregion
 
     private void ChangeState(MenuState newState)
@@ -136,7 +141,12 @@ public class MenuController : ViewModelBase
         }
         else if(CurrentState == MenuState.Idle && newState == MenuState.Configuration)
         {
-            _controller.Configure(MainCanvas);
+            var goConfiguration = _controller.Configure();
+
+            if (goConfiguration != null)
+            {
+                OnGameObjectCreated(this, new GameObjectEventArgs(goConfiguration));
+            }
 
             stateChanged = true;
         } 
@@ -195,6 +205,11 @@ public class MenuController : ViewModelBase
         }
 
         ChangeState(MenuState.Idle);
+    }
+
+    private void _controller_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
+    {
+        OnGameObjectDestroyed(sender, e);
     }
 
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)

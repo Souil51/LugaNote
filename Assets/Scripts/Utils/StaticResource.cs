@@ -31,6 +31,7 @@ public static class StaticResource
     public static string PREFAB_TRANSITION => "transition";
     public static string PREFAB_VISUAL_KEYBOARD => "VisualKeyBoard";
 
+    public static string PREFAB_MIDI_CONFIGURATION_PANEL => "ConfigurationPanel";
     public static string PREFAB_DOTTED_LINE => "DottedLine";
     public static string SCENE_MAIN_MENU => "MainMenu";
     public static string SCENE_MAIN_SCENE => "MainScene";

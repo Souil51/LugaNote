@@ -72,6 +72,7 @@ public class KeyboardController : MonoBehaviour, IController
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
+    public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
     private MidiConfigurationHelper _configurationHelper;
 
@@ -150,15 +151,11 @@ public class KeyboardController : MonoBehaviour, IController
         Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
     }
 
-    public void Configure(Canvas canvas)
+    public GameObject Configure()
     {
-        // GameObject test = new GameObject();
-        var go = Instantiate(Resources.Load("ConfigurationPanel"), Vector3.zero, Quaternion.identity) as GameObject;
-        go.transform.SetParent(canvas.transform);
-        _configurationHelper = go.GetComponent<MidiConfigurationHelper>();
-        _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
+        Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
 
-        _configurationHelper.Initialize(this);
+        return null;
     }
 
     public void ShowControllerUI()

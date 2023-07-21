@@ -76,6 +76,17 @@ public class GameViewModel : ViewModelBase
         }
     }
 
+    private string _resumeString = "Resume";
+    public string ResumeString
+    {
+        get => _resumeString;
+        set
+        {
+            _resumeString = value;
+            OnPropertyChanged();
+        }
+    }
+
     private bool _isPaused;
 
     public bool IsPaused

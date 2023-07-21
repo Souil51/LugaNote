@@ -70,6 +70,7 @@ public class MidiController : MonoBehaviour, IController
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
+    public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
     private MidiConfigurationHelper _configurationHelper;
 
@@ -137,15 +138,25 @@ public class MidiController : MonoBehaviour, IController
         Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
     }
 
-    public void Configure(Canvas canvas)
+    public GameObject Configure()
     {
         // GameObject test = new GameObject();
-        var go = Instantiate(Resources.Load("ConfigurationPanel"), Vector3.zero, Quaternion.identity) as GameObject;
-        go.transform.SetParent(canvas.transform);
+        var go = Instantiate(Resources.Load(StaticResource.PREFAB_MIDI_CONFIGURATION_PANEL), Vector3.zero, Quaternion.identity) as GameObject;
+        // go.transform.SetParent(canvas.transform);
         _configurationHelper = go.GetComponent<MidiConfigurationHelper>();
         _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
+        _configurationHelper.ConfigurationDestroyed += _configurationHelper_ConfigurationDestroyed;
 
         _configurationHelper.Initialize(this);
+
+        return go;
+    }
+
+    private void _configurationHelper_ConfigurationDestroyed(object sender, Assets.GameObjectEventArgs e)
+    {
+        _configurationHelper.ConfigurationDestroyed -= _configurationHelper_ConfigurationDestroyed;
+
+        ConfigurationDestroyed?.Invoke(sender, e);
     }
 
     public void ShowControllerUI()

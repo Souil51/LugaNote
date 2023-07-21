@@ -27,6 +27,28 @@ public class SimpleBinding : MonoBehaviour
     private void Awake()
     {
         InitComponent();
+
+        if(Paths.Where(x => x.LastValue != null).ToList().Count == 0)
+        {
+            object elementToChange = _canvasElement;
+            var propInfo = elementToChange.GetType().GetProperty(MemberName);
+            if (propInfo == null)
+            {
+                elementToChange = _customElement;
+                propInfo = elementToChange.GetType().GetProperty(MemberName);
+
+                if (propInfo == null)
+                {
+                    elementToChange = _selectableElement;
+                    propInfo = elementToChange.GetType().GetProperty(MemberName);
+                }
+            }
+
+            if (propInfo != null)
+            {
+                SetValueOfType(propInfo, elementToChange, propInfo.PropertyType.Default());
+            }
+        }
     }
 
     private void InitComponent()
@@ -50,14 +72,16 @@ public class SimpleBinding : MonoBehaviour
     {
         InitComponent();
 
-        /*string[] splitName = MemberName.Split('.');
+        /* test : Possibility to bind inner property of UI Element ???
+        string[] splitName = propertyName.Split('.');
+        PropertyInfo propInfo;
         if (splitName.Length == 1)
         {
-            propInfo = _canvasElement.GetType().GetProperty(MemberName);
+            propInfo = value.GetType().GetProperty(propertyName);
         }
         else if (splitName.Length == 2)
         {
-            propInfo = _canvasElement.GetType().GetProperty(splitName[0]);
+            propInfo = value.GetType().GetProperty(splitName[0]);
             if(propInfo == null)
                 propInfo = _canvasElement.GetType().GetProperty("base"); // Testing common values
 
@@ -100,7 +124,7 @@ public class SimpleBinding : MonoBehaviour
                 {
                     convertedValue = (UnityEngine.Color) value;
                 }
-                else
+                else if(value != null)
                 {
                     convertedValue = value.GetType().Default();
                 }

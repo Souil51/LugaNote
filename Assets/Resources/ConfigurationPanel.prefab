@@ -376,8 +376,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 424, y: -116.9032}
-  m_SizeDelta: {x: 848, y: 71.2688}
+  m_AnchoredPosition: {x: 424, y: -170.3548}
+  m_SizeDelta: {x: 848, y: 106.9032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509140264241779
 CanvasRenderer:
@@ -394,7 +394,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8201509140264241790}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -445,6 +445,8 @@ MonoBehaviour:
   Paths:
   - Name: IsCustomConfiguration
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &8201509140264532572
 GameObject:
@@ -597,6 +599,8 @@ MonoBehaviour:
   Paths:
   - Name: ConfirmInteractable
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &8201509140274442540
 GameObject:
@@ -750,6 +754,8 @@ MonoBehaviour:
   Paths:
   - Name: ConfirmTextColor
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &8201509140375971982
 GameObject:
@@ -1365,6 +1371,8 @@ MonoBehaviour:
   Paths:
   - Name: HigherPanelColor
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &8201509140533136454
 GameObject:
@@ -2223,7 +2231,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8201509140919342060}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2262,6 +2270,8 @@ MonoBehaviour:
   Paths:
   - Name: IsCustomConfiguration
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &8201509140919342048
 MonoBehaviour:
@@ -3582,8 +3592,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 70.7265, y: -35.6344}
-  m_SizeDelta: {x: 141.453, y: 71.2688}
+  m_AnchoredPosition: {x: 70.7265, y: -53.4516}
+  m_SizeDelta: {x: 141.453, y: 106.9032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141597216437
 CanvasRenderer:
@@ -3969,8 +3979,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 494.7265, y: -35.6344}
-  m_SizeDelta: {x: 706.547, y: 71.2688}
+  m_AnchoredPosition: {x: 494.7265, y: -53.4516}
+  m_SizeDelta: {x: 706.547, y: 106.9032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141792705707
 CanvasRenderer:
@@ -4212,6 +4222,8 @@ MonoBehaviour:
   Paths:
   - Name: LowerPanelColor
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &8201509141858192860
 MonoBehaviour:
@@ -4236,11 +4248,10 @@ GameObject:
   - component: {fileID: 8201509141932385884}
   - component: {fileID: 8201509141932385878}
   - component: {fileID: 8201509141932385879}
-  - component: {fileID: 8201509141932385872}
   - component: {fileID: 8201509141932385873}
   - component: {fileID: 8201509141932385874}
   - component: {fileID: 8201509141932385875}
-  - component: {fileID: 8201509141932385877}
+  - component: {fileID: 8119393222886475343}
   m_Layer: 5
   m_Name: ConfigurationPanel
   m_TagString: Untagged
@@ -4307,23 +4318,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8201509141932385872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8201509141932385885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MemberName: IsActive
-  Paths:
-  - Name: ConfigurationPanelVisible
-    LocalizeName: 
-  localize: {fileID: 0}
 --- !u!114 &8201509141932385873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4369,7 +4363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ede65e4243fbaf488f41110026e7cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8201509141932385877
+--- !u!114 &8119393222886475343
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4378,19 +4372,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8201509141932385885}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8306c2affd528ff4cbbce0a1323b6e80, type: 3}
+  m_Script: {fileID: 11500000, guid: e327ce22b9f780a40a80241bb94a9883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   DataContextContainer: {fileID: 8201509141932385885}
-  BindingsObjects:
-  - {fileID: 2687826856145650492}
-  - {fileID: 8201509140264241790}
-  - {fileID: 2687826855584655811}
-  - {fileID: 8201509140919342060}
-  - {fileID: 8201509141858192857}
-  - {fileID: 8201509140503145490}
-  - {fileID: 8201509140274442540}
-  - {fileID: 8201509140264532572}
+  BindingsObjects: []
+  ListBindingsObjects: []
 --- !u!1 &8201509141945572813
 GameObject:
   m_ObjectHideFlags: 0
@@ -4774,6 +4761,8 @@ MonoBehaviour:
   Paths:
   - Name: IsLowerNoteComplete
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!224 &2687826855584655812 stripped
 RectTransform:
@@ -4923,6 +4912,8 @@ MonoBehaviour:
   Paths:
   - Name: IsHigherNoteComplete
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &8201509140655026123
 MonoBehaviour:

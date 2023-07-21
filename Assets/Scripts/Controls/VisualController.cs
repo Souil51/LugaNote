@@ -61,10 +61,13 @@ public class VisualController : MonoBehaviour, IController
 
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
+    public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
-    public void Configure(Canvas canvas)
+    public GameObject Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
+
+        return null;
     }
 
     // Update is called once per frame

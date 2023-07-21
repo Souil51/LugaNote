@@ -1,3 +1,4 @@
+using Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 public delegate void NoteDownEventHandler(object sender, NoteEventArgs e);
 public delegate void ConfigurationEventHandled(object sender, ConfigurationEventArgs e);
+public delegate void ConfigurationDestroyedEventHandled(object sender, GameObjectEventArgs e);
 
 /// <summary>
 /// Used to manage Controllers of any types (midi, keyboard, UI...)
@@ -14,6 +16,7 @@ public interface IController
 {
     event NoteDownEventHandler NoteDown;
     event ConfigurationEventHandled Configuration;
+    event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
     PianoNote HigherNote { get; }
     PianoNote LowerNote { get; }
@@ -38,7 +41,7 @@ public interface IController
     public bool IsControllerUIVisible { get; }
     public bool IsConfigurable { get; }
 
-    void Configure(Canvas canvas);
+    GameObject Configure();
 
     void ShowControllerUI();
     void HideControllerUI();

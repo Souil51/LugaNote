@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 23326647}
   - component: {fileID: 23326646}
   m_Layer: 5
-  m_Name: visualControllerVisibility
+  m_Name: Bind visualControllerVisibility
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,6 +230,8 @@ MonoBehaviour:
   Paths:
   - Name: UIButtonVisible
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &28690515
 GameObject:
@@ -571,7 +573,7 @@ GameObject:
   - component: {fileID: 278443308}
   - component: {fileID: 278443307}
   m_Layer: 5
-  m_Name: visualVisibilityText
+  m_Name: Bind visualVisibilityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -593,6 +595,8 @@ MonoBehaviour:
   Paths:
   - Name: VisualKeysVisibilityText
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &278443308
 MonoBehaviour:
@@ -833,7 +837,7 @@ GameObject:
   - component: {fileID: 396585577}
   - component: {fileID: 396585576}
   m_Layer: 5
-  m_Name: TMPTimeLeft
+  m_Name: Bind TMPTimeLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -875,6 +879,8 @@ MonoBehaviour:
   Paths:
   - Name: TimeLeft
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &396585574
 MonoBehaviour:
@@ -1001,6 +1007,8 @@ MonoBehaviour:
   Paths:
   - Name: UIVisible
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &412764554
 GameObject:
@@ -1114,7 +1122,7 @@ GameObject:
   - component: {fileID: 420099171}
   - component: {fileID: 420099170}
   m_Layer: 5
-  m_Name: EndScore
+  m_Name: Bind EndScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1136,6 +1144,8 @@ MonoBehaviour:
   Paths:
   - Name: Points
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &420099171
 MonoBehaviour:
@@ -1365,7 +1375,7 @@ GameObject:
   - component: {fileID: 466785389}
   - component: {fileID: 466785388}
   m_Layer: 5
-  m_Name: TMPPoints
+  m_Name: Bind TMPPoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1387,6 +1397,8 @@ MonoBehaviour:
   Paths:
   - Name: Points
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &466785385
 MonoBehaviour:
@@ -1533,6 +1545,8 @@ MonoBehaviour:
   Paths:
   - Name: UIVisible
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &470014277
 GameObject:
@@ -1547,7 +1561,7 @@ GameObject:
   - component: {fileID: 470014279}
   - component: {fileID: 470014281}
   m_Layer: 5
-  m_Name: PlayButtonLabel
+  m_Name: Bind PlayButtonLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1686,6 +1700,8 @@ MonoBehaviour:
   Paths:
   - Name: PlayAgainString
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!1 &493406672
 GameObject:
@@ -2376,7 +2392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024db3cb3dd1fdc439ed3fa99aed39a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 5
 --- !u!4 &634484456
 Transform:
   m_ObjectHideFlags: 0
@@ -3687,7 +3703,7 @@ GameObject:
   - component: {fileID: 1135942126}
   - component: {fileID: 1135942125}
   m_Layer: 5
-  m_Name: PanelResume
+  m_Name: Bind PanelResume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3721,6 +3737,8 @@ MonoBehaviour:
   Paths:
   - Name: IsPaused
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &1135942127
 MonoBehaviour:
@@ -4837,7 +4855,7 @@ GameObject:
   - component: {fileID: 1504950758}
   - component: {fileID: 1504950757}
   m_Layer: 5
-  m_Name: PlayButtonLabel
+  m_Name: Bind PlayButtonLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4877,8 +4895,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MemberName: text
   Paths:
-  - Name: PlayAgainString
+  - Name: ResumeString
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &1504950758
 MonoBehaviour:
@@ -5026,9 +5046,8 @@ GameObject:
   - component: {fileID: 1573321356}
   - component: {fileID: 1573321355}
   - component: {fileID: 1573321354}
-  - component: {fileID: 1573321353}
   m_Layer: 5
-  m_Name: BodyText
+  m_Name: Bind BodyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5054,23 +5073,6 @@ RectTransform:
   m_AnchoredPosition: {x: 251.605, y: -170.576}
   m_SizeDelta: {x: 503.21, y: 341.152}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1573321353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1573321351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MemberName: text
-  Paths:
-  - Name: Points
-    LocalizeName: 
-  localize: {fileID: 0}
 --- !u!114 &1573321354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6291,7 +6293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -6693,7 +6695,7 @@ GameObject:
   - component: {fileID: 2118976303}
   - component: {fileID: 2118976302}
   - component: {fileID: 2118976301}
-  - component: {fileID: 2118976300}
+  - component: {fileID: 2118976305}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -6701,28 +6703,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2118976300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118976299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8306c2affd528ff4cbbce0a1323b6e80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DataContextContainer: {fileID: 767779330}
-  BindingsObjects:
-  - {fileID: 466785383}
-  - {fileID: 396585571}
-  - {fileID: 420099169}
-  - {fileID: 2125437385}
-  - {fileID: 470014277}
-  - {fileID: 1135942124}
-  - {fileID: 278443306}
-  - {fileID: 23326642}
 --- !u!114 &2118976301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6806,6 +6786,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2118976305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118976299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e327ce22b9f780a40a80241bb94a9883, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DataContextContainer: {fileID: 767779330}
+  BindingsObjects: []
+  ListBindingsObjects: []
 --- !u!1 &2125437385
 GameObject:
   m_ObjectHideFlags: 0
@@ -6821,7 +6816,7 @@ GameObject:
   - component: {fileID: 2125437390}
   - component: {fileID: 2125437391}
   m_Layer: 5
-  m_Name: PanelEnd
+  m_Name: Bind PanelEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6902,6 +6897,8 @@ MonoBehaviour:
   Paths:
   - Name: EndPanelVisible
     LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
   localize: {fileID: 0}
 --- !u!114 &2125437390
 MonoBehaviour:

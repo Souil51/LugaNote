@@ -11,10 +11,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Profiling.HierarchyFrameDataView;
 
-public class MidiConfigurationHelper : ViewModelBase
+public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 {
     public delegate void ConfigurationEndedEventHandler(object sender, MidiConfigurationReturn e);
     public event ConfigurationEndedEventHandler ConfigurationEnded;
+
+    public delegate void ConfigurationDestroyedEventHandler(object sender, GameObjectEventArgs e);
+    public event ConfigurationDestroyedEventHandler ConfigurationDestroyed;
 
     private enum ConfigurationState { Initializing, Started, WaitingLowerNote, WaitingHigherNote, Ended, Canceled }
 
@@ -243,6 +246,7 @@ public class MidiConfigurationHelper : ViewModelBase
         if(_currentState == ConfigurationState.Canceled || _currentState == ConfigurationState.Ended)
         {
             // gameObject.SetActive(false);
+            ConfigurationDestroyed?.Invoke(this, new GameObjectEventArgs(this.gameObject));
             Destroy(gameObject);
         }
     }
