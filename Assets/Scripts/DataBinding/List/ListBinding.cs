@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEditorInternal.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,27 +88,40 @@ namespace Assets.Scripts.DataBinding
             if (_list == null)
                 InitListInfo(value);
 
+            string[] propertySplit = Paths.First().Name.Split('.');
+            PropertyInfo prop = value.GetType().GetProperty(propertySplit[propertySplit.Length - 1]);
+            if (prop != null)
+            {
+                object typedValue = prop.GetValue(value);
+
+                if (ListBinding.IsIList(typedValue)) // Is the value a IList ?
+                {
+                    _list = (IList)typedValue;
+                }
+            }
+
             if (_list != null)
             {
                 // here create the right amount of UI Items
                 if (_uiItems.Count == 0) // first loading, no items so we create all
                 {
-                    int idx = 0;
-                    foreach (var listItem in _list)
+                    for(int i = 0; i < _list.Count; i++)
                     {
                         // Get the template
-                        var template = TemplateSelector != null ? _templateSelector.GetTemplate(idx) : UIItem;
+                        var template = TemplateSelector != null ? _templateSelector.GetTemplate(i) : UIItem;
 
                         GameObject newItem = GameObject.Instantiate(template); // Clone the template
-                        newItem.transform.SetParent(this.transform);
+                        newItem.transform.SetParent(this.transform, false);
+                        // newItem.transform.localScale = template.transform.localScale;
                         newItem.SetActive(true);
 
                         var viewModel = newItem.GetComponent<ListItemViewModel>();
-                        viewModel.SetItem(_list[idx]);
+                        if (viewModel == null)
+                            throw new Exception("UI Item doesn't have ListItemViewModel component");
 
+                        var viewManager = newItem.GetComponent<ViewManager>();
+                        
                         _uiItems.Add(viewModel);
-
-                        idx++;
                     }
                 }
                 else if (_list.Count > _uiItems.Count) // else reuse ui items and add some
@@ -119,20 +133,35 @@ namespace Assets.Scripts.DataBinding
                         var template = TemplateSelector != null ? _templateSelector.GetTemplate(_uiItems.Count) : UIItem;
 
                         GameObject newItem = GameObject.Instantiate(template); // Clone the template
-                        newItem.transform.SetParent(this.transform);
+                        newItem.transform.SetParent(this.transform, false);
                         newItem.SetActive(true);
 
                         _uiItems.Add(newItem.GetComponent<ListItemViewModel>());
                     }
                 }
-                else if (_list.Count > _uiItems.Count) // or reuse° items and destroy some
+                else if (_list.Count < _uiItems.Count) // or reuse° items and destroy some
                 {
                     int numberToRemove = _uiItems.Count - _list.Count;
                     for (int i = 0; i < numberToRemove; i++)
                     {
-                        Destroy(_uiItems[_uiItems.Count - 1]);
+                        Destroy(_uiItems[_uiItems.Count - 1].gameObject);
                         _uiItems.RemoveAt(_uiItems.Count - 1);
                     }
+                }
+
+                // We have the right count of UI Element cloned, we can assign items
+                for(int i = 0; i < _uiItems.Count; i++) 
+                {
+                    var viewModel = _uiItems[i].GetComponent<ListItemViewModel>();
+                    if (viewModel == null)
+                        throw new Exception("UI Item doesn't have ListItemViewModel component");
+
+                    var viewManager = _uiItems[i].GetComponent<ViewManager>();
+                    // We need to : set the item, init de DataContext of the ViewManager and init the viewModel
+                    // Else, the ViewManager Awake function is called after the ViewModel first Binding
+                    viewModel.SetItem(_list[i]);
+                    viewManager.InitialiserDataContext();
+                    viewModel.InitialiserNotifyPropertyChanged(_list[i]);
                 }
             }
         }
@@ -150,7 +179,7 @@ namespace Assets.Scripts.DataBinding
                     var template = TemplateSelector != null ? _templateSelector.GetTemplate(e.NewStartingIndex) : UIItem;
 
                     GameObject newItem = GameObject.Instantiate(template); // Clone the template
-                    newItem.transform.SetParent(this.transform);
+                    newItem.transform.SetParent(this.transform, false);
                     newItem.SetActive(true);
 
                     if (newItemIndex < 0)
@@ -179,6 +208,8 @@ namespace Assets.Scripts.DataBinding
 
         public static bool IsIList(object value)
         {
+            if (value == null) return false;
+
             return IsIList(value.GetType());
         }
 
@@ -221,6 +252,8 @@ namespace Assets.Scripts.DataBinding
 
         public static bool IsObservableCollection(object obj)
         {
+            if(obj == null) return false;
+
             Type objectType = obj.GetType();
             Type observableCollectionType = typeof(ObservableCollection<>);
 

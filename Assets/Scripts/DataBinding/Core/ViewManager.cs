@@ -30,15 +30,6 @@ public class ViewManager : MonoBehaviour
 
     private void Awake()
     {
-        var allSimpleBindings = GetComponentsInChildren<SimpleBinding>(true).Select(x => x.gameObject).Distinct().ToList();
-
-        Bindings = new List<SimpleBinding>();
-        ListBindings =  new List<ListBinding>();
-
-        allSimpleBindings.ForEach(x => Bindings.AddRange(x.GetComponents<SimpleBinding>()));
-        ListBindingsObjects.ForEach(x => ListBindings.AddRange(x.GetComponents<ListBinding>()));
-
-        DataContext = DataContextContainer.GetComponent<IViewModel>();
         InitialiserDataContext();
     }
 
@@ -50,8 +41,19 @@ public class ViewManager : MonoBehaviour
     /// <summary>
     /// Get the DataContext change sevents
     /// </summary>
-    private void InitialiserDataContext()
+    public void InitialiserDataContext()
     {
+        var allSimpleBindings = GetComponentsInChildren<SimpleBinding>(true).Select(x => x.gameObject).Distinct().ToList();
+        var allListBindings = GetComponentsInChildren<ListBinding>(true).Select(x => x.gameObject).Distinct().ToList();
+
+        Bindings = new List<SimpleBinding>();
+        ListBindings = new List<ListBinding>();
+
+        allSimpleBindings.ForEach(x => Bindings.AddRange(x.GetComponents<SimpleBinding>()));
+        allListBindings.ForEach(x => ListBindings.AddRange(x.GetComponents<ListBinding>()));
+
+        DataContext = DataContextContainer.GetComponent<IViewModel>();
+
         DataContext.PropertyChanged += BoundProperty_PropertyChanged;
         DataContext.GameObjectCreated += DataContext_GameObjectCreated;
         DataContext.GameObjectDestroyed += DataContext_GameObjectDestroyed; ;

@@ -1,10 +1,12 @@
 using Assets;
 using Assets.Scripts.Data;
 using Assets.Scripts.Game;
+using Assets.Scripts.Game.Model;
 using Assets.Scripts.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -73,6 +75,28 @@ public class MenuController : ViewModelBase
         }
     }
 
+    private bool _scorePanelVisible = false;
+    public bool ScorePanelVisible
+    {
+        get => _scorePanelVisible;
+        private set
+        {
+            _scorePanelVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private List<LeaderboardScore> _displayedScores;
+    public List<LeaderboardScore> DisplayedScores
+    {
+        get => _displayedScores;
+        private set
+        {
+            _displayedScores = value;
+            OnPropertyChanged();
+        }
+    }
+
     private MenuState CurrentState = MenuState.Loaded;
 
     #endregion
@@ -106,6 +130,9 @@ public class MenuController : ViewModelBase
 
         ChangeState(MenuState.Idle);
 
+        //var gameModeData = SaveManager.Save.GetGameModeData(GameModeType.Trebble, IntervalMode.Note);
+        //DisplayedScores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
+
         InitialiserNotifyPropertyChanged();
 
         ControllerLabel = _controller.Label;
@@ -125,6 +152,11 @@ public class MenuController : ViewModelBase
         {
             SoundManager.PlayNote(PianoNote.C4);
         }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            DisplayedScores = new List<LeaderboardScore>() { new LeaderboardScore(1, 99, DateTime.Now) };
+        }
     }
 
 
@@ -135,11 +167,11 @@ public class MenuController : ViewModelBase
     {
         bool stateChanged = false;
 
-        if(CurrentState == MenuState.Loaded && newState == MenuState.Idle)
+        if (CurrentState == MenuState.Loaded && newState == MenuState.Idle)
         {
             stateChanged = true;
         }
-        else if(CurrentState == MenuState.Idle && newState == MenuState.Configuration)
+        else if (CurrentState == MenuState.Idle && newState == MenuState.Configuration)
         {
             var goConfiguration = _controller.Configure();
 
@@ -149,8 +181,8 @@ public class MenuController : ViewModelBase
             }
 
             stateChanged = true;
-        } 
-        else if(CurrentState == MenuState.Configuration && newState == MenuState.Idle)
+        }
+        else if (CurrentState == MenuState.Configuration && newState == MenuState.Idle)
         {
             stateChanged = true;
         }
@@ -176,7 +208,7 @@ public class MenuController : ViewModelBase
 
     public void StartControllerConfiguration()
     {
-        if(CurrentState == MenuState.Idle)
+        if (CurrentState == MenuState.Idle)
             ChangeState(MenuState.Configuration);
     }
 
@@ -262,17 +294,40 @@ public class MenuController : ViewModelBase
 
     public void ViewScore_Trebble()
     {
-
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note);
+        ScorePanelVisible = true;
     }
 
     public void ViewScore_Bass()
     {
-
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note);
+        ScorePanelVisible = true;
     }
 
     public void ViewScore_TrebbleBass()
     {
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note);
+        ScorePanelVisible = true;
+    }
 
+    public void ViewScore_Close()
+    {
+        ScorePanelVisible = false;
+    }
+
+    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode)
+    {
+        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode);
+        var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
+
+        List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
+
+        for(int i = 0; i < scores.Count; i++)
+        {
+            leaderboard.Add(new LeaderboardScore(i + 1, scores[i].Value, scores[i].Date));
+        }
+
+        return leaderboard;
     }
 
     #endregion

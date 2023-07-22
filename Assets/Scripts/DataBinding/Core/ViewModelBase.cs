@@ -34,7 +34,7 @@ public class ViewModelBase : MonoBehaviour, INotifyPropertyChanged, IViewModel
     }
 
     // Add binding on all public property of the GameController/ViewModel
-    protected void InitialiserNotifyPropertyChanged(object viewModel = null)
+    public void InitialiserNotifyPropertyChanged(object viewModel = null)
     {
         if(viewModel == null)
             viewModel = this;
