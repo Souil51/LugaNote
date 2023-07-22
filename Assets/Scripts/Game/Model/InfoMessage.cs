@@ -10,9 +10,20 @@ public class InfoMessage : MonoBehaviour
 
     [SerializeField] private Animator _animator;
 
+    private void Awake()
+    {
+        _animator.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        // _animator.enabled = false;
+    }
+
     public void Disappear()
     {
-        _animator.Play("InfoDisappearAnimation");
+        if(_animator.enabled)
+            _animator.Play("InfoDisappearAnimation");
     }
 
     public void Anim_Disappear()

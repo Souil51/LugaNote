@@ -74,8 +74,6 @@ public class KeyboardController : MonoBehaviour, IController
     public event ConfigurationEventHandled Configuration;
     public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
-    private MidiConfigurationHelper _configurationHelper;
-
     public KeyboardController()
     {
         _higherNote = keys.Last().Value;
@@ -140,8 +138,6 @@ public class KeyboardController : MonoBehaviour, IController
 
     private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
     {
-        _configurationHelper.ConfigurationEnded -= Config_ConfigurationEnded;
-
         if (e.StatusCode)
         {
             this._lowerNote = e.LowerNote;
@@ -154,6 +150,7 @@ public class KeyboardController : MonoBehaviour, IController
     public GameObject Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
+        ConfigurationDestroyed?.Invoke(this, new Assets.GameObjectEventArgs(null));
 
         return null;
     }

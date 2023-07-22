@@ -135,6 +135,8 @@ public class MenuController : ViewModelBase
 
         InitialiserNotifyPropertyChanged();
 
+        HideInfo();
+
         ControllerLabel = _controller.Label;
         IsMidiConfigurationVisible = _controller.IsConfigurable;
     }

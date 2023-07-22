@@ -266,6 +266,10 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
             changed = true;
         }
+        else if(newState == GameState.Navigating)
+        {
+            TimeScaleManager.UnpauseGame();
+        }
 
         if (changed)
             State = newState;
@@ -321,6 +325,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     private void ViewModel_NavigateToMenu(object sender, EventArgs e)
     {
         ChangeState(GameState.Starting);
+        ChangeState(GameState.Navigating);
         NavigateToMenu();
     }
 

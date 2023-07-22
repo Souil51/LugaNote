@@ -66,6 +66,7 @@ public class VisualController : MonoBehaviour, IController
     public GameObject Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
+        ConfigurationDestroyed?.Invoke(this, new Assets.GameObjectEventArgs(null));
 
         return null;
     }
