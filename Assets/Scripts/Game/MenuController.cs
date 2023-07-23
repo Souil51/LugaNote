@@ -128,6 +128,19 @@ public class MenuController : ViewModelBase
         Info.Disappeared += Info_Disappeared;
         SoundManager.LoadAllNotes();
 
+        Save save = SaveManager.Save;
+        var currentControllerType = ControllerFactory.Instance.GetCurrentType();
+        var controllerData = save.GetControllerData();
+        if (controllerData == null || controllerData.ControllerType != currentControllerType)
+        {
+            if(_controller.IsConfigurable)
+                save.SetControllerData(currentControllerType, _controller.LowerNote, _controller.HigherNote);
+            else
+                save.SetControllerData(currentControllerType, MusicHelper.LowerNote, MusicHelper.HigherNote);
+
+            SaveManager.SaveGame();
+        }
+
         ChangeState(MenuState.Idle);
 
         //var gameModeData = SaveManager.Save.GetGameModeData(GameModeType.Trebble, IntervalMode.Note);
@@ -184,7 +197,12 @@ public class MenuController : ViewModelBase
 
             stateChanged = true;
         }
-        else if (CurrentState == MenuState.Configuration && newState == MenuState.Idle)
+        else if(CurrentState == MenuState.Idle && newState == MenuState.ViewScore)
+        {
+            stateChanged = true;
+        }
+        else if ((CurrentState == MenuState.Configuration || CurrentState == MenuState.ViewScore)
+            && newState == MenuState.Idle)
         {
             stateChanged = true;
         }
@@ -236,6 +254,9 @@ public class MenuController : ViewModelBase
             }
 
             ShowInfo(info);
+            Save save = SaveManager.Save;
+            save.SetControllerData(ControllerFactory.Instance.GetCurrentType(), _controller.LowerNote, _controller.HigherNote);
+            SaveManager.SaveGame();
         }
 
         ChangeState(MenuState.Idle);
@@ -298,23 +319,27 @@ public class MenuController : ViewModelBase
     {
         DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note);
         ScorePanelVisible = true;
+        ChangeState(MenuState.ViewScore);
     }
 
     public void ViewScore_Bass()
     {
         DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note);
         ScorePanelVisible = true;
+        ChangeState(MenuState.ViewScore);
     }
 
     public void ViewScore_TrebbleBass()
     {
         DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note);
         ScorePanelVisible = true;
+        ChangeState(MenuState.ViewScore);
     }
 
     public void ViewScore_Close()
     {
         ScorePanelVisible = false;
+        ChangeState(MenuState.Idle);
     }
 
     private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode)

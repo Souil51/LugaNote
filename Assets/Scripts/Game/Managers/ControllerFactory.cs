@@ -73,5 +73,10 @@ namespace Assets.Scripts.Game
 
             return controller;
         }
+
+        public ControllerType GetCurrentType()
+        {
+            return Type;
+        }
     }
 }

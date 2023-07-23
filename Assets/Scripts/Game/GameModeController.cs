@@ -26,7 +26,7 @@ public class GameModeController : ViewModelBase
 
     private void Awake()
     {
-        _gameModeData = SaveManager.Save.GetGameModeData(GameModeType, IntervalMode);
+        _gameModeData = SaveManager.  Save.GetGameModeData(GameModeType, IntervalMode);
 
         InitialiserNotifyPropertyChanged();
     }

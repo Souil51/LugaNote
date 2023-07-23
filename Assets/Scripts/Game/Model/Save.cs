@@ -10,6 +10,7 @@ namespace Assets.Scripts.Game.Model
     public class Save
     {
         public List<GameModeData> _datas;
+        public ControllerSaveData _controllerData;
 
         public Save()
         {
@@ -35,6 +36,16 @@ namespace Assets.Scripts.Game.Model
             {
                 saveGameModeData.AddScore(score, date);
             }
+        }
+
+        public ControllerSaveData GetControllerData()
+        {
+            return _controllerData;
+        }
+
+        public void SetControllerData(ControllerType controllerType, PianoNote midiLowerNote, PianoNote midiHigherNote)
+        {
+            _controllerData = new ControllerSaveData(controllerType, midiLowerNote, midiHigherNote);
         }
     }
 }

@@ -1,3 +1,5 @@
+using Assets.Scripts.Data;
+using Assets.Scripts.Game.Model;
 using Assets.Scripts.Utils;
 using MidiJack;
 using System;
@@ -74,6 +76,13 @@ public class MidiController : MonoBehaviour, IController
 
     private MidiConfigurationHelper _configurationHelper;
 
+    private List<ControllerType> _midiControllerTypeList = new List<ControllerType>()
+    {
+        ControllerType.MIDI,
+        ControllerType.KeyboardAndMidi,
+        ControllerType.KeyboardVisualMidi
+    };
+
     public MidiController()
     {
         _higherNote = PianoNote.C8;
@@ -86,6 +95,15 @@ public class MidiController : MonoBehaviour, IController
 
     private void Awake()
     {
+        // Read the save file to get last MIDI configuration
+        Save save = SaveManager.Save;
+        var controllerData = save.GetControllerData();
+        if (controllerData != null && (_midiControllerTypeList.Contains(controllerData.ControllerType)))
+        {
+            _lowerNote = controllerData.MidiLowerNote;
+            _higherNote = controllerData.MidiHigherNote;
+        }
+
         _notesWithOffset = Notes;
         _notesDownWithOffset = NotesDown;
         if (C4Offset != 0)
