@@ -1,9 +1,12 @@
+using Assets.Scripts.Utils;
 using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Drawing;
 using UnityEngine;
+using Color = UnityEngine.Color;
 
 /// <summary>
 /// Note script
@@ -11,6 +14,9 @@ using UnityEngine;
 /// </summary>
 public class Note : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer SpriteGoodGuess;
+    [SerializeField] private SpriteRenderer SpriteBadGuess;
+
     public delegate void DestroyEventHandler(object sender, EventArgs args);
     public event DestroyEventHandler DestroyEvent;
 
@@ -110,6 +116,18 @@ public class Note : MonoBehaviour
     public void ChangeColor(Color color)
     {
         _sprtRenderer.color = color;
+    }
+
+    public void ShowGoodGuess()
+    {
+        ChangeColor(UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_GREEN));
+        SpriteGoodGuess.gameObject.SetActive(true);
+    }
+
+    public void ShowBadGuess()
+    {
+        ChangeColor(UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_RED));
+        SpriteBadGuess.gameObject.SetActive(true);
     }
 
     public void Destroy()

@@ -36,7 +36,7 @@ public class GameInputManager : MonoBehaviour
             {
                 if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
                 {
-                    SoundManager.PlayNote(GameController.Instance.Controller.NotesDownWithOffset[0]);
+                    Debug.Log(firstNote.PianoNote);
                     Debug.Log(GameController.Instance.Controller.NotesDownWithOffset[0]);
                     bool? guessValue = null;
                     // Normal mode : the note has to be the exact same note
@@ -51,14 +51,16 @@ public class GameInputManager : MonoBehaviour
                             )
                         )
                     {
+                        SoundManager.PlayNote(GameController.Instance.Controller.NotesDownWithOffset[0]);
                         // Good guess
-                        firstNote.ChangeColor(StaticResource.COLOR_GOOD_GUESS);
+                        firstNote.ShowGoodGuess();
                         guessValue = true;
                     }
                     else
                     {
+                        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
                         // Bad guess
-                        firstNote.ChangeColor(StaticResource.COLOR_BAD_GUESS);
+                        firstNote.ShowBadGuess();
                         guessValue = false;
                     }
 

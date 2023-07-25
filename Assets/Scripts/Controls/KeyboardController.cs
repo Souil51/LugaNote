@@ -99,7 +99,7 @@ public class KeyboardController : MonoBehaviour, IController
         {
             if (Input.GetKeyDown(kvp.Key))
             {
-                SoundManager.PlayNote(kvp.Value);
+                // SoundManager.PlayNote(kvp.Value);
                 _notesDown.Add(kvp.Value);
             }
 

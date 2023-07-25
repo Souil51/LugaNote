@@ -102,12 +102,61 @@ public class StaffLine : MonoBehaviour
         this.SetAlteration(Alteration.Natural);
     }
 
+    public void SpawnNoteWithRandomAlteration(float scale, float fromX, float toX)
+    {
+        this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural);
+    }
+
+    public void SpawnNote(float scale, float fromX, float toX)
+    {
+        this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural);
+    }
+
+    public void SpawnNoteWithAlteration(float scale, float fromX, float toX, Alteration alteration)
+    {
+        this.SpawnNote(scale, fromX, toX, false, true, alteration);
+    }
+
     /// <summary>
     /// Instantiate a note on the line starting position to the line ending position
     /// </summary>
-    public void SpawnNote(float scale,  float fromX, float toX)
+    private void SpawnNote(float scale,  float fromX, float toX, bool withRandomAlteration, bool forceAlteration, Alteration forcedAlteration)
     {
-        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Alteration);
+        var alteration = Alteration.Natural;
+
+        string resourceToLoad = "";
+
+        if (forceAlteration)
+        {
+            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, forcedAlteration);
+            alteration = forcedAlteration;
+        }
+        else if (!withRandomAlteration)
+        {
+            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Alteration);
+            alteration = this.Alteration;
+        }
+        else
+        {
+            bool sharpable = !MusicHelper.NotNaturallySharpableNotes.Contains(this.NaturalNote);
+            bool flatable = !MusicHelper.NotNaturallyFlatableNotes.Contains(this.NaturalNote);
+
+            if (sharpable && flatable) // If sharpable or flatable -> random in the Alteration Enum range
+            {
+                int rand = Random.Range(0, 3);
+                alteration = (Alteration)rand;
+            }
+            else if (sharpable || flatable) // Else, random to know if we use alteration or natural not
+            {
+                int rand = Random.Range(0, 2);
+                if (rand == 1)
+                {
+                    alteration = sharpable ? Alteration.Sharp : Alteration.Flat;
+                }
+            }
+
+            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, alteration);
+        }
 
         GameObject go = (GameObject)Instantiate(Resources.Load(resourceToLoad));
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
@@ -119,7 +168,7 @@ public class StaffLine : MonoBehaviour
         var note = go.GetComponent<Note>();
 
         // Initialize note with this line alteration
-        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, this.Alteration);
+        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         note.DestroyEvent += Note_DestroyEvent;

@@ -10,6 +10,7 @@ public class GameModeController : ViewModelBase
 {
     [SerializeField] private GameModeType GameModeType;
     [SerializeField] private IntervalMode IntervalMode;
+    [SerializeField] private bool WithRandomAlteration;
 
     private GameModeData _gameModeData;
 
@@ -26,7 +27,7 @@ public class GameModeController : ViewModelBase
 
     private void Awake()
     {
-        _gameModeData = SaveManager.  Save.GetGameModeData(GameModeType, IntervalMode);
+        _gameModeData = SaveManager.  Save.GetGameModeData(GameModeType, IntervalMode, WithRandomAlteration);
 
         InitialiserNotifyPropertyChanged();
     }

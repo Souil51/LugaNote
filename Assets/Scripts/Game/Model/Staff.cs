@@ -114,7 +114,7 @@ public class Staff : MonoBehaviour
         return index;
     }
 
-    public int SpawnNote(List<PianoNote> notes)
+    public int SpawnNote(List<PianoNote> notes, bool withRandomAlteration = false)
     {
         var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
         /*var _availableLines = new List<StaffLine>();
@@ -122,7 +122,21 @@ public class Staff : MonoBehaviour
         _availableLines.Add(Lines.Last());*/
 
         int index = Random.Range(0, _availableLines.Count);
-        _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+
+        if(withRandomAlteration)
+            _availableLines[index].SpawnNoteWithRandomAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+        else
+            _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+
+        return index;
+    }
+
+    public int SpawnNote(List<PianoNote> notes, Alteration alteration)
+    {
+        var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
+
+        int index = Random.Range(0, _availableLines.Count);
+        _availableLines[index].SpawnNoteWithAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, alteration);
 
         return index;
     }

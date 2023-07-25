@@ -22,9 +22,9 @@ namespace Assets.Scripts.Game.Model
             _datas.Add(modeData);
         }
 
-        public GameModeData GetGameModeData(GameModeType gameModeType, IntervalMode intervalMode)
+        public GameModeData GetGameModeData(GameModeType gameModeType, IntervalMode intervalMode, bool withRandomAlteration)
         {
-            var gameMode = new GameMode(0, gameModeType, intervalMode);
+            var gameMode = new GameMode(0, gameModeType, intervalMode, withRandomAlteration);
             return _datas.FirstOrDefault(x => x.GameMode.Equals(gameMode));
         }
 

@@ -21,7 +21,9 @@ public enum MidiConfigurationType { Touches88 = 0, Touches61 = 1, Custom = 3 }
 public enum SceneSessionKey 
 {
     [Description("GameMode")]
-    GameMode = 0
+    GameMode = 0,
+    [Description("ReplacementMode")]
+    ReplacementMode
 }
 
 /// <summary>

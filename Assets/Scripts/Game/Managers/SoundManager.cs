@@ -5,6 +5,23 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     private static Dictionary<PianoNote, AudioClip> _allNotesAudioClip;
+    private static Dictionary<string, AudioClip> _commonSoundAudioClip;
+
+    public static void LoadAllSounds()
+    {
+        _commonSoundAudioClip = new Dictionary<string, AudioClip>();
+
+        LoadAllNotes();
+
+        var commonSoundsList = Resources.LoadAll("sounds/common", typeof(AudioClip));
+        foreach(var clip in commonSoundsList)
+        {
+            if(clip is AudioClip audioClip)
+            {
+                _commonSoundAudioClip.Add(audioClip.name, audioClip);
+            }
+        }
+    }
 
     public static void LoadAllNotes()
     {
@@ -21,6 +38,14 @@ public class SoundManager : MonoBehaviour
         if (_allNotesAudioClip == null) LoadAllNotes();
 
         PlaySound(GetNoteClip(note));
+    }
+
+    public static void PlaySound(string audioClip)
+    {
+        if (_commonSoundAudioClip.ContainsKey(audioClip))
+        {
+            PlaySound(_commonSoundAudioClip[audioClip]);
+        }
     }
 
     public static void PlaySound(AudioClip audioClip)

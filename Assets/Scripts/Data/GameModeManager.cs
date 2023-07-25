@@ -15,16 +15,19 @@ namespace Assets.Scripts.Data
             {
                 return new List<GameMode>()
                 {
-                    new GameMode(1, GameModeType.Trebble, IntervalMode.Note),
-                    new GameMode(2, GameModeType.Bass, IntervalMode.Note),
-                    new GameMode(3, GameModeType.TrebbleBass, IntervalMode.Note),
+                    new GameMode(1, GameModeType.Trebble, IntervalMode.Note, false),
+                    new GameMode(2, GameModeType.Bass, IntervalMode.Note, false),
+                    new GameMode(3, GameModeType.TrebbleBass, IntervalMode.Note, false),
+                    new GameMode(4, GameModeType.Trebble, IntervalMode.Note, true),
+                    new GameMode(5, GameModeType.Bass, IntervalMode.Note, true),
+                    new GameMode(6, GameModeType.TrebbleBass, IntervalMode.Note, true)
                 };
             }
         }
 
-        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode)
+        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode, bool withRandomAlteration)
         {
-            var gameMode = new GameMode(0, gameModeType, intervalMode);
+            var gameMode = new GameMode(0, gameModeType, intervalMode, withRandomAlteration);
             var existingGameMode = GameModes.Where(x => x.Equals(gameMode)).FirstOrDefault();
 
             return existingGameMode;

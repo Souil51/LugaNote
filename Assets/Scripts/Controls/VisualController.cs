@@ -82,7 +82,7 @@ public class VisualController : MonoBehaviour, IController
         {
             if (!_lastUpdateButtonsNoteDown.Contains(buttonNote))
             {
-                SoundManager.PlayNote(buttonNote);
+                // SoundManager.PlayNote(buttonNote);
                 _notesDown.Add(buttonNote);
 
                 _notes.Add(buttonNote);// For note's holding, just add if Down and remove if Up

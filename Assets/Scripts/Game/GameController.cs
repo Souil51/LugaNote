@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// 
@@ -152,7 +153,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            GameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note);
+            GameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, false);
         }
 
         // Generate the staff lines
@@ -218,7 +219,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             IsGameStarted = false;
 
             Points = 0;
-            TimeLeft = 20f;
+            TimeLeft = 60f;
 
             if (_notesCoroutine != null)
                 StopCoroutine(_notesCoroutine);
@@ -297,6 +298,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     #region Events callbacks
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
     {
+        Screen.orientation = ScreenOrientation.LandscapeRight;
+
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
             GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
@@ -309,9 +312,27 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     private void InputHandler_Guess(object sender, GuessEventArgs e)
     {
         var firstnote = GetFirstNote();
+
+        if (e.Result)
+        {
+            Points++;
+
+            // Mode a note from the good guess to the score
+            var notePoint = Instantiate(Resources.Load(StaticResource.PREFAB_NOTE_NO_LINE)) as GameObject;
+            notePoint.transform.position = firstnote.transform.position;
+            // var pos = new Vector3(ScreenManager.ScreenWidth / 2f, ScreenManager.ScreenHeight / 2f, 1);
+            var pos = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.95f));
+
+            notePoint.transform.DOScale(0.1f, 1f).SetUpdate(true);
+
+            notePoint.transform.DOMove(pos, 1f).SetUpdate(true).OnKill(() =>
+            {
+                Destroy(notePoint);
+            });
+        };
+
         firstnote.SetInactive();
-        firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
-        if (e.Result) Points++;
+        // firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
     }
 
     private void InputHandler_Pause(object sender, EventArgs e)
@@ -372,6 +393,22 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     #endregion
 
     #region Coroutines
+
+    // TEST
+    // For testing all notes in order with alterations
+    private List<PianoNote> _listeTEST = new List<PianoNote>()
+    {
+        PianoNote.C4,
+        PianoNote.D4,
+        PianoNote.E4,
+        PianoNote.F4,
+        PianoNote.G4,
+        PianoNote.A4,
+        PianoNote.B4,
+    };
+
+    // TEST
+
     /// <summary>
     /// Coroutine : Spawn notes on staff every 0.5f (for timescale = 1f)
     /// </summary>
@@ -385,7 +422,50 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     {
                         for (int i = 0; i < Staffs.Where(x => x.gameObject.activeSelf).ToList().Count; i++)
                         {
-                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(Controller.AvailableNotes);
+                            // For testing all notes in order with alterations
+                            /*for(int j = 0; j < _listeTEST.Count; j++)
+                            {
+                                if (_listeTEST[j] == PianoNote.C4)
+                                {
+                                    for(int k = 0; k < 2; k++)
+                                    {
+                                        if(k == 0)
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Natural);
+                                        else
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Sharp);
+
+                                        yield return new WaitForSeconds(0.5f / Staffs.Count);
+                                    }
+                                }
+                                else if (_listeTEST[j] == PianoNote.B4)
+                                {
+                                    for (int k = 0; k < 2; k++)
+                                    {
+                                        if(k == 0)
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Flat);
+                                        else if(k == 1)
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Natural);
+                                        
+                                        yield return new WaitForSeconds(0.5f / Staffs.Count);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int k = 0; k < 3; k++)
+                                    {
+                                        if(k == 0)
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Flat);
+                                        else if(k == 1)
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Natural);
+                                        else
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Sharp);
+
+                                        yield return new WaitForSeconds(0.5f / Staffs.Count);
+                                    }
+                                }
+                            }*/
+
+                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAlteration);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }

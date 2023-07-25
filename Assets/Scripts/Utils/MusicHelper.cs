@@ -183,7 +183,7 @@ public class MusicHelper
     public static List<PianoNote> NotNaturallySharpableNotes => _notNaturallySharpableNotes;
 
     // These not can be Sharp but will not be often Sharp (C to B or F to E)
-    private static List<PianoNote> _notNaturallyFlatbleNotes = new List<PianoNote>()
+    private static List<PianoNote> _notNaturallyFlatableNotes = new List<PianoNote>()
     {
         PianoNote.F1,
         PianoNote.F2,
@@ -201,7 +201,7 @@ public class MusicHelper
         PianoNote.C7,
     };
 
-    public static List<PianoNote> NotNaturallyFlatbleNotes => _notNaturallyFlatbleNotes;
+    public static List<PianoNote> NotNaturallyFlatableNotes => _notNaturallyFlatableNotes;
 
     /// <summary>
     /// Convert a sharp note to a natural note or return this same note if already natural
@@ -334,9 +334,27 @@ public class MusicHelper
 
         if (alteration == Alteration.Sharp && NotNaturallySharpableNotes.Contains(note))
             result = false;
-        else if (alteration == Alteration.Flat && NotNaturallyFlatbleNotes.Contains(note))
+        else if (alteration == Alteration.Flat && NotNaturallyFlatableNotes.Contains(note))
             result = false;
 
         return result;
+    }
+
+    /// <summary>
+    /// Compare 2 notes with alteration or not
+    /// A sharp is equal to a flat of the next note
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsSameNote(PianoNote note1,  PianoNote note2)
+    {
+        if (note1 == note2)
+            return true;
+
+        if (MusicHelper.SharpNotes.Contains(note1))
+        {
+            
+        }
+
+        return false;
     }
 }

@@ -38,13 +38,21 @@ public static class StaticResource
 
     public static string RESOURCES_SOUND_NOTE_BASE => "sounds/notes/key_";
 
+    public static string RESOURCES_SOUND_BAD_GUESS => "bad_guess";
+
     /// <summary>
     /// Useful values
     /// </summary>
     public static Color COLOR_GOOD_GUESS => Color.green;
     public static Color COLOR_BAD_GUESS => Color.red;
 
-    public static string COLOR_HEX_DARKGREEN => "3BFF5B";
+    public static string COLOR_HEX_DARKGREEN => "23A138";
+    public static string COLOR_HEX_GREEN => "38ff59";
+
+    public static string COLOR_HEX_DARKRED => "991A1A";
+    public static string COLOR_HEX_RED => "FF3838";
+
+    public static string COLOR_HEX_LIGHT_BLUE => "0984E3";
 
     public static int PIANO_KEY_COUNT => 88;
 

@@ -97,6 +97,99 @@ public class MenuController : ViewModelBase
         }
     }
 
+    private Color _withAlterationColor;
+    public Color WithAlterationColor
+    {
+        get => _withAlterationColor;
+        private set 
+        {
+            _withAlterationColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _withoutAlterationColor;
+    public Color WithoutAlterationColor
+    {
+        get => _withoutAlterationColor;
+        private set
+        {
+            _withoutAlterationColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _withAlterationTextColor;
+    public Color WithAlterationTextColor
+    {
+        get => _withAlterationTextColor;
+        private set
+        {
+            _withAlterationTextColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _withoutAlterationTextColor;
+    public Color WithoutAlterationTextColor
+    {
+        get => _withoutAlterationTextColor;
+        private set
+        {
+            _withoutAlterationTextColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+    private Color _replacementModeColor;
+    public Color ReplacementModeColor
+    {
+        get => _replacementModeColor;
+        private set
+        {
+            _replacementModeColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _noReplacementModeColor;
+    public Color NoReplacementModeColor
+    {
+        get => _noReplacementModeColor;
+        private set
+        {
+            _noReplacementModeColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _replacementModeTextColor;
+    public Color ReplacementModeTextColor
+    {
+        get => _replacementModeTextColor;
+        private set
+        {
+            _replacementModeTextColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Color _noReplacementModeTextColor;
+    public Color NoReplacementModeTextColor
+    {
+        get => _noReplacementModeTextColor;
+        private set
+        {
+            _noReplacementModeTextColor = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+    private bool WithAlteration = false;
+    private bool ReplacementMode = true;
     private MenuState CurrentState = MenuState.Loaded;
 
     #endregion
@@ -126,7 +219,7 @@ public class MenuController : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
-        SoundManager.LoadAllNotes();
+        SoundManager.LoadAllSounds();
 
         Save save = SaveManager.Save;
         var currentControllerType = ControllerFactory.Instance.GetCurrentType();
@@ -141,10 +234,19 @@ public class MenuController : ViewModelBase
             SaveManager.SaveGame();
         }
 
-        ChangeState(MenuState.Idle);
+        var lastGameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+        if (lastGameMode != null)
+            UpdateAlterationButtons(lastGameMode.WithRandomAlteration);
+        else
+            UpdateAlterationButtons(false);
 
-        //var gameModeData = SaveManager.Save.GetGameModeData(GameModeType.Trebble, IntervalMode.Note);
-        //DisplayedScores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
+        bool lastReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
+        if(lastGameMode == null) // use last game mode to know if it's first load
+            UpdateReplacementModeButtons(true);
+        else
+            UpdateReplacementModeButtons(lastReplacementMode);
+
+        ChangeState(MenuState.Idle);
 
         InitialiserNotifyPropertyChanged();
 
@@ -213,6 +315,50 @@ public class MenuController : ViewModelBase
         }
     }
 
+    private void UpdateAlterationButtons(bool withAlteration)
+    {
+        WithAlteration = withAlteration;
+
+        if (!WithAlteration)
+        {
+            WithoutAlterationColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
+            WithAlterationColor = Color.white;
+
+            WithoutAlterationTextColor = Color.white;
+            WithAlterationTextColor = Color.black;
+        }
+        else
+        {
+            WithoutAlterationColor = Color.white;
+            WithAlterationColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
+
+            WithoutAlterationTextColor = Color.black;
+            WithAlterationTextColor = Color.white;
+        }
+    }
+
+    private void UpdateReplacementModeButtons(bool replacementMode)
+    {
+        ReplacementMode = replacementMode;
+
+        if (!ReplacementMode)
+        {
+            NoReplacementModeColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
+            ReplacementModeColor = Color.white;
+
+            NoReplacementModeTextColor = Color.white;
+            ReplacementModeTextColor = Color.black;
+        }
+        else
+        {
+            NoReplacementModeColor = Color.white;
+            ReplacementModeColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
+
+            NoReplacementModeTextColor = Color.black;
+            ReplacementModeTextColor = Color.white;
+        }
+    }
+
     private void ShowInfo(string info, float duration = 2f)
     {
         InfoText = info;
@@ -269,6 +415,8 @@ public class MenuController : ViewModelBase
 
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
     {
+        Screen.orientation = ScreenOrientation.LandscapeRight;
+
         if (e.Scene.name == StaticResource.SCENE_MAIN_MENU)
         {
             Transition.SetPositionClose();
@@ -292,8 +440,9 @@ public class MenuController : ViewModelBase
     {
         if (CurrentState != MenuState.Idle) return;
 
-        var gameMode = GameModeManager.GetGameMode(GameModeType.Trebble, IntervalMode.Note);
+        var gameMode = GameModeManager.GetGameMode(GameModeType.Trebble, IntervalMode.Note, WithAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), ReplacementMode);
         Transition.Close();
     }
 
@@ -301,8 +450,9 @@ public class MenuController : ViewModelBase
     {
         if (CurrentState != MenuState.Idle) return;
 
-        var gameMode = GameModeManager.GetGameMode(GameModeType.Bass, IntervalMode.Note);
+        var gameMode = GameModeManager.GetGameMode(GameModeType.Bass, IntervalMode.Note, WithAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), ReplacementMode);
         Transition.Close();
     }
 
@@ -310,28 +460,29 @@ public class MenuController : ViewModelBase
     {
         if (CurrentState != MenuState.Idle) return;
 
-        var gameMode = GameModeManager.GetGameMode(GameModeType.TrebbleBass, IntervalMode.Note);
+        var gameMode = GameModeManager.GetGameMode(GameModeType.TrebbleBass, IntervalMode.Note, WithAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), ReplacementMode);
         Transition.Close();
     }
 
     public void ViewScore_Trebble()
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note);
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note, false);
         ScorePanelVisible = true;
         ChangeState(MenuState.ViewScore);
     }
 
     public void ViewScore_Bass()
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note);
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note, false);
         ScorePanelVisible = true;
         ChangeState(MenuState.ViewScore);
     }
 
     public void ViewScore_TrebbleBass()
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note);
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note, false);
         ScorePanelVisible = true;
         ChangeState(MenuState.ViewScore);
     }
@@ -342,9 +493,29 @@ public class MenuController : ViewModelBase
         ChangeState(MenuState.Idle);
     }
 
-    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode)
+    public void Alteration_WithAlteration()
     {
-        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode);
+        UpdateAlterationButtons(true);
+    }
+
+    public void Alteration_WithoutAlteration()
+    {
+        UpdateAlterationButtons(false);
+    }
+
+    public void ReplacementMode_Replacement()
+    {
+        UpdateReplacementModeButtons(true);
+    }
+
+    public void ReplacementMode_NoReplacement()
+    {
+        UpdateReplacementModeButtons(false);
+    }
+
+    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, bool withRandomAlteration)
+    {
+        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, withRandomAlteration);
         var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
 
         List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
