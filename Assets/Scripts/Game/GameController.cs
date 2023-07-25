@@ -21,7 +21,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private Transition Transition;
     [SerializeField] private List<Staff> Staffs;
     [SerializeField] private ControllerType ControllerType; // Replace this with Dependancy Injection for Controller ?
-    [SerializeField] private bool ReplacementMode; // Can a note replace the same note on other octave ?
     [SerializeField] private GameInputManager InputHandler;
     [SerializeField] private TimeScaleManager TimeScaleManager;
     [SerializeField] private GameViewModel ViewModel;
@@ -92,7 +91,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     public List<Staff> GameStaffs => Staffs;
     public bool IsStopped => Time.timeScale != 0f;
-    public bool GameReplacementMode => ReplacementMode;
+
+    private bool _gameReplacementMode = true;
+    public bool GameReplacementMode => _gameReplacementMode;
     public bool IsPaused => TimeScaleManager.IsPaused;
 
     public bool HasControllerUI => _controller.HasUI;
@@ -303,6 +304,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
             GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+            _gameReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
 
             Transition.SetPositionClose();
             StartCoroutine(Co_WaitForLoading());

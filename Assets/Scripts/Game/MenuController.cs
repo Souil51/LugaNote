@@ -6,8 +6,10 @@ using Assets.Scripts.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,12 +17,14 @@ using UnityEngine.SceneManagement;
 /// Main menu script
 /// Handle main menu UI events and scene transition
 /// </summary>
-public class MenuController : ViewModelBase
+public class MenuController : MonoBehaviour, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     #region Properties
     [SerializeField] private MidiConfigurationHelper Configuration;
     [SerializeField] private Canvas MainCanvas;
-    [SerializeField] private InfoMessage Info;
+    [SerializeField] private MenuViewModel ViewModel;
 
     [SerializeField] private List<GameModeController> GameModes;
 
@@ -30,166 +34,22 @@ public class MenuController : ViewModelBase
     public Transition Transition;
 
     private IController _controller;
+    public IController Controller;
 
-    private bool _isInfoVisible = false;
-    public bool IsInfoVisible
-    {
-        get => _isInfoVisible;
-        private set
-        {
-            _isInfoVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _infoText = string.Empty;
-    public string InfoText
-    {
-        get => _infoText;
-        private set
-        {
-            _infoText = value;
-            OnPropertyChanged();
-        }
-    }
+    private static MenuController _instance;
+    public static MenuController Instance => _instance;
 
     private string _controllerLabel = "MIDI controller (88 keys)";
-    public string ControllerLabel
-    {
-        get => _controllerLabel;
-        private set
-        {
-            _controllerLabel = value;
-            OnPropertyChanged();
-        }
-    }
+    public string ControllerLabel => _controllerLabel;
 
-    private bool _isMidiConfigurationVisible;
-    public bool IsMidiConfigurationVisible
-    {
-        get => _isMidiConfigurationVisible;
-        private set
-        {
-            _isMidiConfigurationVisible = value;
-            OnPropertyChanged();
-        }
-    }
+    public bool IsMidiConfigurationVisible => _controller.IsConfigurable;
 
-    private bool _scorePanelVisible = false;
-    public bool ScorePanelVisible
-    {
-        get => _scorePanelVisible;
-        private set
-        {
-            _scorePanelVisible = value;
-            OnPropertyChanged();
-        }
-    }
+    private bool _withAlteration = false;
+    public bool WithAlteration => _withAlteration;
 
-    private List<LeaderboardScore> _displayedScores;
-    public List<LeaderboardScore> DisplayedScores
-    {
-        get => _displayedScores;
-        private set
-        {
-            _displayedScores = value;
-            OnPropertyChanged();
-        }
-    }
+    private bool _replacementMode = true;
+    public bool ReplaceReplacementMode => _replacementMode;
 
-    private Color _withAlterationColor;
-    public Color WithAlterationColor
-    {
-        get => _withAlterationColor;
-        private set 
-        {
-            _withAlterationColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _withoutAlterationColor;
-    public Color WithoutAlterationColor
-    {
-        get => _withoutAlterationColor;
-        private set
-        {
-            _withoutAlterationColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _withAlterationTextColor;
-    public Color WithAlterationTextColor
-    {
-        get => _withAlterationTextColor;
-        private set
-        {
-            _withAlterationTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _withoutAlterationTextColor;
-    public Color WithoutAlterationTextColor
-    {
-        get => _withoutAlterationTextColor;
-        private set
-        {
-            _withoutAlterationTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-
-
-    private Color _replacementModeColor;
-    public Color ReplacementModeColor
-    {
-        get => _replacementModeColor;
-        private set
-        {
-            _replacementModeColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _noReplacementModeColor;
-    public Color NoReplacementModeColor
-    {
-        get => _noReplacementModeColor;
-        private set
-        {
-            _noReplacementModeColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _replacementModeTextColor;
-    public Color ReplacementModeTextColor
-    {
-        get => _replacementModeTextColor;
-        private set
-        {
-            _replacementModeTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _noReplacementModeTextColor;
-    public Color NoReplacementModeTextColor
-    {
-        get => _noReplacementModeTextColor;
-        private set
-        {
-            _noReplacementModeTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-
-    private bool WithAlteration = false;
-    private bool ReplacementMode = true;
     private MenuState CurrentState = MenuState.Loaded;
 
     #endregion
@@ -197,6 +57,9 @@ public class MenuController : ViewModelBase
     #region Unity methods
     private void Awake()
     {
+        if (MenuController.Instance == null)
+            MenuController._instance = this;
+
         GameSceneManager.Instance.SceneLoaded += GameSceneManager_SceneLoaded;
 
         _controller = ControllerFactory.Instance.GetController();
@@ -207,6 +70,12 @@ public class MenuController : ViewModelBase
     private void OnEnable()
     {
         Transition.Closed += Transition_Closed;
+
+        ViewModel.OpenMidiConfiguration += ViewModel_OpenMidiConfiguration;
+        ViewModel.ToggleAlteration += ViewModel_ToggleAlteration;
+        ViewModel.ToggleReplacementMode += ViewModel_ToggleReplacementMode;
+        ViewModel.OpenScores += ViewModel_OpenScores;
+        ViewModel.CloseScores += ViewModel_CloseScores;
     }
 
     private void OnDisable()
@@ -214,11 +83,16 @@ public class MenuController : ViewModelBase
         GameSceneManager.Instance.SceneLoaded -= GameSceneManager_SceneLoaded;
         Transition.Closed -= Transition_Closed;
         _controller.Configuration -= controller_Configuration;
+
+        ViewModel.OpenMidiConfiguration -= ViewModel_OpenMidiConfiguration;
+        ViewModel.ToggleAlteration -= ViewModel_ToggleAlteration;
+        ViewModel.ToggleReplacementMode -= ViewModel_ToggleReplacementMode;
+        ViewModel.OpenScores -= ViewModel_OpenScores;
+        ViewModel.CloseScores -= ViewModel_CloseScores;
     }
 
     private void Start()
     {
-        Info.Disappeared += Info_Disappeared;
         SoundManager.LoadAllSounds();
 
         Save save = SaveManager.Save;
@@ -248,12 +122,11 @@ public class MenuController : ViewModelBase
 
         ChangeState(MenuState.Idle);
 
-        InitialiserNotifyPropertyChanged();
+        ViewModel.HideInfo();
 
-        HideInfo();
-
-        ControllerLabel = _controller.Label;
-        IsMidiConfigurationVisible = _controller.IsConfigurable;
+        _controllerLabel = _controller.Label;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
+        ViewModel.InitializeViewModel();
     }
 
     // Update is called once per frame
@@ -272,11 +145,9 @@ public class MenuController : ViewModelBase
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            DisplayedScores = new List<LeaderboardScore>() { new LeaderboardScore(1, 99, DateTime.Now) };
+            // DisplayedScores = new List<LeaderboardScore>() { new LeaderboardScore(1, 99, DateTime.Now) };
         }
     }
-
-
 
     #endregion
 
@@ -294,7 +165,7 @@ public class MenuController : ViewModelBase
 
             if (goConfiguration != null)
             {
-                OnGameObjectCreated(this, new GameObjectEventArgs(goConfiguration));
+                ViewModel.CallGameObjectCreated(this, new GameObjectEventArgs(goConfiguration));
             }
 
             stateChanged = true;
@@ -317,65 +188,17 @@ public class MenuController : ViewModelBase
 
     private void UpdateAlterationButtons(bool withAlteration)
     {
-        WithAlteration = withAlteration;
-
-        if (!WithAlteration)
-        {
-            WithoutAlterationColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-            WithAlterationColor = Color.white;
-
-            WithoutAlterationTextColor = Color.white;
-            WithAlterationTextColor = Color.black;
-        }
-        else
-        {
-            WithoutAlterationColor = Color.white;
-            WithAlterationColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-
-            WithoutAlterationTextColor = Color.black;
-            WithAlterationTextColor = Color.white;
-        }
+        _withAlteration = withAlteration;
     }
 
     private void UpdateReplacementModeButtons(bool replacementMode)
     {
-        ReplacementMode = replacementMode;
-
-        if (!ReplacementMode)
-        {
-            NoReplacementModeColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-            ReplacementModeColor = Color.white;
-
-            NoReplacementModeTextColor = Color.white;
-            ReplacementModeTextColor = Color.black;
-        }
-        else
-        {
-            NoReplacementModeColor = Color.white;
-            ReplacementModeColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-
-            NoReplacementModeTextColor = Color.black;
-            ReplacementModeTextColor = Color.white;
-        }
+        _replacementMode = replacementMode;
     }
 
     private void ShowInfo(string info, float duration = 2f)
     {
-        InfoText = info;
-        IsInfoVisible = true;
-
-        StartCoroutine(Co_Info(duration));
-    }
-
-    private void HideInfo()
-    {
-        Info.Disappear();
-    }
-
-    public void StartControllerConfiguration()
-    {
-        if (CurrentState == MenuState.Idle)
-            ChangeState(MenuState.Configuration);
+        ViewModel.ShowInfo(info, duration);
     }
 
     #region Events callbacks
@@ -384,7 +207,8 @@ public class MenuController : ViewModelBase
         if (e.Result)
         {
             string info = "";
-            ControllerLabel = _controller.Label;
+            _controllerLabel = _controller.Label;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
 
             if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 88)
             {
@@ -410,7 +234,7 @@ public class MenuController : ViewModelBase
 
     private void _controller_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
     {
-        OnGameObjectDestroyed(sender, e);
+        ViewModel.CallGameObjectDestroyed(sender, e);
     }
 
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
@@ -428,11 +252,6 @@ public class MenuController : ViewModelBase
     {
         GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
     }
-
-    private void Info_Disappeared(object sender, System.EventArgs e)
-    {
-        IsInfoVisible = false;
-    }
     #endregion
 
     #region UI event
@@ -442,7 +261,7 @@ public class MenuController : ViewModelBase
 
         var gameMode = GameModeManager.GetGameMode(GameModeType.Trebble, IntervalMode.Note, WithAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), ReplacementMode);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();
     }
 
@@ -452,7 +271,7 @@ public class MenuController : ViewModelBase
 
         var gameMode = GameModeManager.GetGameMode(GameModeType.Bass, IntervalMode.Note, WithAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), ReplacementMode);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();
     }
 
@@ -462,70 +281,34 @@ public class MenuController : ViewModelBase
 
         var gameMode = GameModeManager.GetGameMode(GameModeType.TrebbleBass, IntervalMode.Note, WithAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), ReplacementMode);
+        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();
     }
 
-    public void ViewScore_Trebble()
+    private void ViewModel_CloseScores(object sender, EventArgs e)
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note, false);
-        ScorePanelVisible = true;
-        ChangeState(MenuState.ViewScore);
-    }
-
-    public void ViewScore_Bass()
-    {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note, false);
-        ScorePanelVisible = true;
-        ChangeState(MenuState.ViewScore);
-    }
-
-    public void ViewScore_TrebbleBass()
-    {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note, false);
-        ScorePanelVisible = true;
-        ChangeState(MenuState.ViewScore);
-    }
-
-    public void ViewScore_Close()
-    {
-        ScorePanelVisible = false;
         ChangeState(MenuState.Idle);
     }
 
-    public void Alteration_WithAlteration()
+    private void ViewModel_OpenScores(object sender, GameModeEventArgs e)
     {
-        UpdateAlterationButtons(true);
+        ChangeState(MenuState.ViewScore);
     }
 
-    public void Alteration_WithoutAlteration()
+    private void ViewModel_ToggleReplacementMode(object sender, BoolEventArgs e)
     {
-        UpdateAlterationButtons(false);
+        UpdateReplacementModeButtons(e.Value);
     }
 
-    public void ReplacementMode_Replacement()
+    private void ViewModel_ToggleAlteration(object sender, BoolEventArgs e)
     {
-        UpdateReplacementModeButtons(true);
+        UpdateAlterationButtons(e.Value);
     }
 
-    public void ReplacementMode_NoReplacement()
+    private void ViewModel_OpenMidiConfiguration(object sender, EventArgs e)
     {
-        UpdateReplacementModeButtons(false);
-    }
-
-    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, bool withRandomAlteration)
-    {
-        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, withRandomAlteration);
-        var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
-
-        List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
-
-        for(int i = 0; i < scores.Count; i++)
-        {
-            leaderboard.Add(new LeaderboardScore(i + 1, scores[i].Value, scores[i].Date));
-        }
-
-        return leaderboard;
+        if (CurrentState == MenuState.Idle)
+            ChangeState(MenuState.Configuration);
     }
 
     #endregion
@@ -540,13 +323,5 @@ public class MenuController : ViewModelBase
         Transition.Open_1();
     }
 
-    /// <summary>
-    /// Hide the info panel after X seconds
-    /// </summary>
-    private IEnumerator Co_Info(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        HideInfo();
-    }
     #endregion
 }

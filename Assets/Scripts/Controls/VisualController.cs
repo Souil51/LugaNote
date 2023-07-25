@@ -23,8 +23,8 @@ public class VisualController : MonoBehaviour, IController
     public PianoNote HigherNote => PianoNote.C8;
     public PianoNote LowerNote => PianoNote.A0;
 
-    private PianoNote HigherVisibleNote => PianoNote.B3;
-    private PianoNote LowerVisibleNote => PianoNote.C3;
+    private PianoNote HigherVisibleNote => PianoNote.B4;
+    private PianoNote LowerVisibleNote => PianoNote.C4;
 
     public int C4Offset => 0;
 
@@ -42,7 +42,7 @@ public class VisualController : MonoBehaviour, IController
 
     public string Label => "Touch screen";
 
-    public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerNote, (int)HigherNote - (int)LowerNote + 1).Select(x => (PianoNote)x).ToList();
+    public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerVisibleNote, (int)HigherVisibleNote - (int)LowerVisibleNote + 1).Select(x => (PianoNote)x).ToList();
 
     private bool _isControllerUIVisible;
     public bool IsControllerUIVisible => _isControllerUIVisible;

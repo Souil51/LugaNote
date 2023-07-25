@@ -47,7 +47,7 @@ public class GameInputManager : MonoBehaviour
                             (
                                 (!GameController.Instance.GameReplacementMode && GameController.Instance.Controller.NotesDownWithOffset[0] == firstNote.PianoNote)
                                 ||
-                                ((int)(GameController.Instance.Controller.NotesDownWithOffset[0]) % 12 == (int)(firstNote.PianoNote) % 12)
+                                (GameController.Instance.GameReplacementMode && (int)(GameController.Instance.Controller.NotesDownWithOffset[0]) % 12 == (int)(firstNote.PianoNote) % 12)
                             )
                         )
                     {
