@@ -154,7 +154,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            GameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, false);
+            GameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, false);
         }
 
         // Generate the staff lines
@@ -416,13 +416,17 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     /// </summary>
     public IEnumerator Co_SpawnNotes()
     {
+        var staffs = Staffs.Where(x => x.gameObject.activeSelf).ToList();
+
         while (true)
         {
             switch (GameMode.IntervalMode) 
             {
                 case IntervalMode.Note:
+                case IntervalMode.Interval:
+                case IntervalMode.Chord:
                     {
-                        for (int i = 0; i < Staffs.Where(x => x.gameObject.activeSelf).ToList().Count; i++)
+                        for (int i = 0; i < staffs.Count; i++)
                         {
                             // For testing all notes in order with alterations
                             /*for(int j = 0; j < _listeTEST.Count; j++)
@@ -467,10 +471,13 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                                 }
                             }*/
 
-                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAlteration);
+                            staffs[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAlteration);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }
+                    break;
+                default:
+                    yield return new WaitForSeconds(0.5f / Staffs.Count);
                     break;
             }
         }

@@ -13,11 +13,6 @@ namespace Assets.Scripts.Game.Model
     /// </summary>
     public class LeaderboardScore : Score
     {
-        public LeaderboardScore(int index, int value, DateTime date) : base(value, date)
-        {
-            Index = index;
-        }
-
         private int _index;
         public int Index
         {
@@ -27,6 +22,11 @@ namespace Assets.Scripts.Game.Model
                 _index = value;
                 OnPropertyChanged();
             }
+        }
+
+        public LeaderboardScore(int index, int value, DateTime date) : base(value, date)
+        {
+            Index = index;
         }
     }
 }

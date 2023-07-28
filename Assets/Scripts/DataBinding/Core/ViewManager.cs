@@ -1,6 +1,8 @@
 using Assets;
 using Assets.Scripts.DataBinding;
+using JetBrains.Annotations;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -144,14 +146,43 @@ public class ViewManager : MonoBehaviour
         else // Else it is a property of a ViewModel property
         {
             string[] propertySplit = propertyName.Split('.');
+            string propertyToGet = propertySplit[propertySplit.Length - 1];
 
-            PropertyInfo prop = sender.GetType().GetProperty(propertySplit[propertySplit.Length - 1]);
-
-            if (prop != null)
+            // The symbol $ is used to bind an array index
+            // This way we can handle Arrays binding without using list
+            if (propertyToGet.Contains("$"))
             {
-                object value = prop.GetValue(sender);
+                string[] arraySplit = propertyToGet.Split("$");
+                string arrayPropName = arraySplit[0];
+                int arrayIndex = -1;
+                int.TryParse(arraySplit[1], out arrayIndex);
 
-                simpleBinding.ChangeValue(value, propertyName);
+                PropertyInfo prop = senderType.GetProperty(arrayPropName);
+
+                if(prop != null && arrayIndex >= 0) // The prop exists et the index is a positive int
+                {
+                    object value = prop.GetValue(sender);
+                    if (ListBinding.IsIList(value))
+                    {
+                        var list = (IList)value;
+                        if(list.Count > arrayIndex) // ChangeValue using the value in the index of the array
+                        {
+                            object arrayValue = list[arrayIndex];
+                            simpleBinding.ChangeValue(arrayValue, propertyName);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                PropertyInfo prop = sender.GetType().GetProperty(propertyToGet);
+
+                if (prop != null)
+                {
+                    object value = prop.GetValue(sender);
+
+                    simpleBinding.ChangeValue(value, propertyName);
+                }
             }
         }
     }

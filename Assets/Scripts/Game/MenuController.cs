@@ -50,6 +50,15 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private bool _replacementMode = true;
     public bool ReplaceReplacementMode => _replacementMode;
 
+    private Level _selectedLevel = 0;
+    public Level SelectedLevel => _selectedLevel;
+
+    private IntervalMode _intervalMode;
+    public IntervalMode IntervalMode => _intervalMode;
+
+    private GameModeType _gameModeType;
+    public GameModeType GameModeType => _gameModeType;
+
     private MenuState CurrentState = MenuState.Loaded;
 
     #endregion
@@ -72,10 +81,13 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         Transition.Closed += Transition_Closed;
 
         ViewModel.OpenMidiConfiguration += ViewModel_OpenMidiConfiguration;
-        ViewModel.ToggleAlteration += ViewModel_ToggleAlteration;
-        ViewModel.ToggleReplacementMode += ViewModel_ToggleReplacementMode;
         ViewModel.OpenScores += ViewModel_OpenScores;
         ViewModel.CloseScores += ViewModel_CloseScores;
+        ViewModel.SelectedLevelChanged += ViewModel_SelectedLevelChanged;
+        ViewModel.SelectedAlterationsChanged += ViewModel_SelectedAlterationsChanged;
+        ViewModel.SelectedReplacementChanged += ViewModel_SelectedReplacementChanged;
+        ViewModel.SelectedIntervalChanged += ViewModel_SelectedIntervalChanged;
+        ViewModel.SelectedKeyChanged += ViewModel_SelectedKeyChanged;
     }
 
     private void OnDisable()
@@ -85,10 +97,14 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _controller.Configuration -= controller_Configuration;
 
         ViewModel.OpenMidiConfiguration -= ViewModel_OpenMidiConfiguration;
-        ViewModel.ToggleAlteration -= ViewModel_ToggleAlteration;
-        ViewModel.ToggleReplacementMode -= ViewModel_ToggleReplacementMode;
         ViewModel.OpenScores -= ViewModel_OpenScores;
         ViewModel.CloseScores -= ViewModel_CloseScores;
+
+        ViewModel.SelectedLevelChanged -= ViewModel_SelectedLevelChanged;
+        ViewModel.SelectedAlterationsChanged -= ViewModel_SelectedAlterationsChanged;
+        ViewModel.SelectedReplacementChanged -= ViewModel_SelectedReplacementChanged;
+        ViewModel.SelectedIntervalChanged -= ViewModel_SelectedIntervalChanged;
+        ViewModel.SelectedKeyChanged -= ViewModel_SelectedKeyChanged;
     }
 
     private void Start()
@@ -109,16 +125,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         }
 
         var lastGameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
-        if (lastGameMode != null)
-            UpdateAlterationButtons(lastGameMode.WithRandomAlteration);
-        else
-            UpdateAlterationButtons(false);
-
         bool lastReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
-        if(lastGameMode == null) // use last game mode to know if it's first load
-            UpdateReplacementModeButtons(true);
-        else
-            UpdateReplacementModeButtons(lastReplacementMode);
+
+        ViewModel.InitOptions(lastGameMode, lastReplacementMode);
 
         ChangeState(MenuState.Idle);
 
@@ -186,16 +195,6 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    private void UpdateAlterationButtons(bool withAlteration)
-    {
-        _withAlteration = withAlteration;
-    }
-
-    private void UpdateReplacementModeButtons(bool replacementMode)
-    {
-        _replacementMode = replacementMode;
-    }
-
     private void ShowInfo(string info, float duration = 2f)
     {
         ViewModel.ShowInfo(info, duration);
@@ -252,34 +251,46 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     {
         GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
     }
+
+    private void ViewModel_SelectedLevelChanged(object sender, LevelEventArgs e)
+    {
+        _selectedLevel = e.Level;
+    }
+
+    private void ViewModel_SelectedKeyChanged(object sender, GameModeTypeEventArgs e)
+    {
+        _gameModeType = e.GameModeType;
+    }
+
+    private void ViewModel_SelectedIntervalChanged(object sender, IntervalEventArgs e)
+    {
+        _intervalMode = e.Interval;
+    }
+
+    private void ViewModel_SelectedReplacementChanged(object sender, BoolEventArgs e)
+    {
+        _replacementMode = e.Value;
+    }
+
+    private void ViewModel_SelectedAlterationsChanged(object sender, BoolEventArgs e)
+    {
+        _withAlteration = e.Value;
+    }
+
     #endregion
 
     #region UI event
-    public void ChangeScene_Trebble()
+    
+    public void UI_Play()
     {
         if (CurrentState != MenuState.Idle) return;
 
-        var gameMode = GameModeManager.GetGameMode(GameModeType.Trebble, IntervalMode.Note, WithAlteration);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
-        Transition.Close();
+        ChangeScene();
     }
 
-    public void ChangeScene_Bass()
+    private void ChangeScene()
     {
-        if (CurrentState != MenuState.Idle) return;
-
-        var gameMode = GameModeManager.GetGameMode(GameModeType.Bass, IntervalMode.Note, WithAlteration);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
-        GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
-        Transition.Close();
-    }
-
-    public void ChangeScene_TrebbleBass()
-    {
-        if (CurrentState != MenuState.Idle) return;
-
-        var gameMode = GameModeManager.GetGameMode(GameModeType.TrebbleBass, IntervalMode.Note, WithAlteration);
+        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _withAlteration);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();
@@ -293,16 +304,6 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private void ViewModel_OpenScores(object sender, GameModeEventArgs e)
     {
         ChangeState(MenuState.ViewScore);
-    }
-
-    private void ViewModel_ToggleReplacementMode(object sender, BoolEventArgs e)
-    {
-        UpdateReplacementModeButtons(e.Value);
-    }
-
-    private void ViewModel_ToggleAlteration(object sender, BoolEventArgs e)
-    {
-        UpdateAlterationButtons(e.Value);
     }
 
     private void ViewModel_OpenMidiConfiguration(object sender, EventArgs e)

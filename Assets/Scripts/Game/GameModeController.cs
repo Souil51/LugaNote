@@ -11,6 +11,7 @@ public class GameModeController : ViewModelBase
     [SerializeField] private GameModeType GameModeType;
     [SerializeField] private IntervalMode IntervalMode;
     [SerializeField] private bool WithRandomAlteration;
+    [SerializeField] private Level Level;
 
     private GameModeData _gameModeData;
 
@@ -27,7 +28,7 @@ public class GameModeController : ViewModelBase
 
     private void Awake()
     {
-        _gameModeData = SaveManager.  Save.GetGameModeData(GameModeType, IntervalMode, WithRandomAlteration);
+        _gameModeData = SaveManager.Save.GetGameModeData(GameModeType, IntervalMode, Level, WithRandomAlteration);
 
         InitialiserNotifyPropertyChanged();
     }

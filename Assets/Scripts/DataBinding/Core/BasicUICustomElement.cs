@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class BasicUICustomElement : MonoBehaviour, IUICustomElement
 {
+    /*
+     * WHEN ADDING PROPERTY HERE DON'T FORGET TO HANDLE THE TYPE IN SimpleBinding.cs -> ChangeValueOfType
+     */
     private bool _isActive;
     public bool IsActive 
     {
@@ -28,6 +31,21 @@ public class BasicUICustomElement : MonoBehaviour, IUICustomElement
                 image.color = value;
             }
             _imageColor = value;
+        }
+    }
+
+    private Sprite _imageSprite;
+    public Sprite ImageSprite
+    {
+        get => _imageSprite;
+        set
+        {
+            var image = GetComponent<Image>();
+            if(image != null)
+            {
+                image.sprite = value;
+            }
+            _imageSprite = value;
         }
     }
 }

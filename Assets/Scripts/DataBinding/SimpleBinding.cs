@@ -122,7 +122,11 @@ public class SimpleBinding : MonoBehaviour
             {
                 if(value is UnityEngine.Color)
                 {
-                    convertedValue = (UnityEngine.Color) value;
+                    convertedValue = (Color)value;
+                }
+                else if(value is Sprite)
+                {
+                    convertedValue = (Sprite)value;
                 }
                 else if(value != null)
                 {

@@ -16,6 +16,8 @@ public enum IntervalMode { Note = 0, Interval = 1, Chord = 2 }
 public enum GameState { Loaded = 5, Starting = 0, Started = 1, Ended = 2, Paused = 3, Navigating = 4 }
 public enum MenuState { Loaded = 0, Idle = 1, Configuration = 2, ViewScore = 3 }
 
+public enum Level { C4 = 0, C5, C3_C4, C5_C6, C3_C6}
+
 public enum MidiConfigurationType { Touches88 = 0, Touches61 = 1, Custom = 3 }
 
 public enum SceneSessionKey 

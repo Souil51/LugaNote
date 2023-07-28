@@ -2,6 +2,7 @@ using Assets;
 using Assets.Scripts.Data;
 using Assets.Scripts.Game.Model;
 using Assets.Scripts.Utils;
+using Newtonsoft.Json.Bson;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,21 +13,35 @@ using UnityEngine;
 public class MenuViewModel : ViewModelBase
 {
     [SerializeField] private InfoMessage Info;
+    [SerializeField] private RadioButtonsGroupViewModel LevelButtons;
+    [SerializeField] private RadioButtonsGroupViewModel AlterationsButtons;
+    [SerializeField] private RadioButtonsGroupViewModel ReplacementButtons;
+    [SerializeField] private RadioButtonsGroupViewModel IntervalButtons;
+    [SerializeField] private RadioButtonsGroupViewModel KeyButtons;
 
     public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
     public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
-
-    public delegate void ToggleAlterationsEventHandler(object sender, BoolEventArgs e);
-    public event ToggleAlterationsEventHandler ToggleAlteration;
-
-    public delegate void ToggleReplacementModeEventHandler(object sender, BoolEventArgs e);
-    public event ToggleReplacementModeEventHandler ToggleReplacementMode;
 
     public delegate void OpenScoresModeEventHandler(object sender, GameModeEventArgs e);
     public event OpenScoresModeEventHandler OpenScores;
 
     public delegate void CloseScoresModeEventHandler(object sender, EventArgs e);
     public event CloseScoresModeEventHandler CloseScores;
+
+    public delegate void SelectedLevelChangedEventHandler(object sender, LevelEventArgs e);
+    public event SelectedLevelChangedEventHandler SelectedLevelChanged;
+
+    public delegate void SelectedAlterationsChangedEventHandler(object sender, BoolEventArgs e);
+    public event SelectedAlterationsChangedEventHandler SelectedAlterationsChanged;
+
+    public delegate void SelectedReplacementChangedEventHandler(object sender, BoolEventArgs e);
+    public event SelectedReplacementChangedEventHandler SelectedReplacementChanged;
+
+    public delegate void SelectedIntervalChangedEventHandler(object sender, IntervalEventArgs e);
+    public event SelectedIntervalChangedEventHandler SelectedIntervalChanged;
+
+    public delegate void SelectedKeyChangedEventHandler(object sender, GameModeTypeEventArgs e);
+    public event SelectedKeyChangedEventHandler SelectedKeyChanged;
 
     private bool _isInfoVisible = false;
     public bool IsInfoVisible
@@ -94,94 +109,6 @@ public class MenuViewModel : ViewModelBase
         }
     }
 
-    private Color _withAlterationColor;
-    public Color WithAlterationColor
-    {
-        get => _withAlterationColor;
-        private set
-        {
-            _withAlterationColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _withoutAlterationColor;
-    public Color WithoutAlterationColor
-    {
-        get => _withoutAlterationColor;
-        private set
-        {
-            _withoutAlterationColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _withAlterationTextColor;
-    public Color WithAlterationTextColor
-    {
-        get => _withAlterationTextColor;
-        private set
-        {
-            _withAlterationTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _withoutAlterationTextColor;
-    public Color WithoutAlterationTextColor
-    {
-        get => _withoutAlterationTextColor;
-        private set
-        {
-            _withoutAlterationTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _replacementModeColor;
-    public Color ReplacementModeColor
-    {
-        get => _replacementModeColor;
-        private set
-        {
-            _replacementModeColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _noReplacementModeColor;
-    public Color NoReplacementModeColor
-    {
-        get => _noReplacementModeColor;
-        private set
-        {
-            _noReplacementModeColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _replacementModeTextColor;
-    public Color ReplacementModeTextColor
-    {
-        get => _replacementModeTextColor;
-        private set
-        {
-            _replacementModeTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _noReplacementModeTextColor;
-    public Color NoReplacementModeTextColor
-    {
-        get => _noReplacementModeTextColor;
-        private set
-        {
-            _noReplacementModeTextColor = value;
-            OnPropertyChanged();
-        }
-    }
-
     private void Awake()
     {
         MenuController.Instance.PropertyChanged += Instance_PropertyChanged;
@@ -190,14 +117,53 @@ public class MenuViewModel : ViewModelBase
     private void Start()
     {
         Info.Disappeared += Info_Disappeared;
+        LevelButtons.SelectedButtonChanged += LevelsButton_SelectedButtonChanged;
+        AlterationsButtons.SelectedButtonChanged += AlterationsButtons_SelectedButtonChanged;
+        ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
+        IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
+        KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
 
-        UpdateAlterationButtons(MenuController.Instance.WithAlteration);
-        UpdateReplacementModeButtons(MenuController.Instance.ReplaceReplacementMode);
+        UpdateDisplayedScores();
+    }
+       
+    private void KeyButtons_SelectedButtonChanged(object sender, IntEventArgs e)
+    {
+        SelectedKeyChanged?.Invoke(sender, new GameModeTypeEventArgs((GameModeType)e.Value));
+        UpdateDisplayedScores();
+    }
+
+    private void IntervalButtons_SelectedButtonChanged(object sender, IntEventArgs e)
+    {
+        SelectedIntervalChanged?.Invoke(sender, new IntervalEventArgs((IntervalMode)e.Value));
+        UpdateDisplayedScores();
+    }
+
+    private void ReplacementButtons_SelectedButtonChanged(object sender, IntEventArgs e)
+    {
+        SelectedReplacementChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
+        UpdateDisplayedScores();
+    }
+
+    private void AlterationsButtons_SelectedButtonChanged(object sender, IntEventArgs e)
+    {
+        SelectedAlterationsChanged?.Invoke(sender, new BoolEventArgs(e.Value == 0));
+        UpdateDisplayedScores();
+    }
+
+    private void LevelsButton_SelectedButtonChanged(object sender, IntEventArgs e)
+    {
+        SelectedLevelChanged?.Invoke(sender, new LevelEventArgs((Level)e.Value));
+        UpdateDisplayedScores();
     }
 
     private void OnDisable()
     {
         Info.Disappeared -= Info_Disappeared;
+        LevelButtons.SelectedButtonChanged -= LevelsButton_SelectedButtonChanged;
+        AlterationsButtons.SelectedButtonChanged -= AlterationsButtons_SelectedButtonChanged;
+        ReplacementButtons.SelectedButtonChanged -= ReplacementButtons_SelectedButtonChanged;
+        IntervalButtons.SelectedButtonChanged -= IntervalButtons_SelectedButtonChanged;
+        KeyButtons.SelectedButtonChanged -= KeyButtons_SelectedButtonChanged;
     }
 
     public void InitializeViewModel()
@@ -214,18 +180,31 @@ public class MenuViewModel : ViewModelBase
         ScorePanelVisible = true;
     }
 
-    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, bool withRandomAlteration)
+    private void UpdateDisplayedScores()
     {
-        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, withRandomAlteration);
-        var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
+        var key = (GameModeType)KeyButtons.SelectedIndex;
+        var interval = (IntervalMode)IntervalButtons.SelectedIndex;
+        var level = (Level)LevelButtons.SelectedIndex;
+        var alterations = AlterationsButtons.SelectedIndex == 1;
 
+        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, alterations);
+    }
+
+    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAlteration)
+    {
         List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
 
-        for (int i = 0; i < scores.Count; i++)
+        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, withRandomAlteration);
+        if(gameModeData != null)
         {
-            leaderboard.Add(new LeaderboardScore(i + 1, scores[i].Value, scores[i].Date));
-        }
+            var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
 
+            for (int i = 0; i < scores.Count; i++)
+            {
+                leaderboard.Add(new LeaderboardScore(i + 1, scores[i].Value, scores[i].Date));
+            }
+        }
+        
         return leaderboard;
     }
 
@@ -239,44 +218,17 @@ public class MenuViewModel : ViewModelBase
         OnGameObjectDestroyed(sender, args);
     }
 
-    public void UpdateAlterationButtons(bool withAlteration)
+    public void InitOptions(GameMode gameMode, bool replacementMode)
     {
-        if (!withAlteration)
+        if(gameMode != null)
         {
-            WithoutAlterationColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-            WithAlterationColor = Color.white;
-
-            WithoutAlterationTextColor = Color.white;
-            WithAlterationTextColor = Color.black;
+            KeyButtons.SelectButton((int)gameMode.GameModeType);
+            IntervalButtons.SelectButton((int)gameMode.IntervalMode);
+            LevelButtons.SelectButton((int)gameMode.Level);
+            AlterationsButtons.SelectButton(gameMode.WithRandomAlteration ? 0 : 1);
         }
-        else
-        {
-            WithoutAlterationColor = Color.white;
-            WithAlterationColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-
-            WithoutAlterationTextColor = Color.black;
-            WithAlterationTextColor = Color.white;
-        }
-    }
-
-    public void UpdateReplacementModeButtons(bool replacementMode)
-    {
-        if (!replacementMode)
-        {
-            NoReplacementModeColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-            ReplacementModeColor = Color.white;
-
-            NoReplacementModeTextColor = Color.white;
-            ReplacementModeTextColor = Color.black;
-        }
-        else
-        {
-            NoReplacementModeColor = Color.white;
-            ReplacementModeColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_BLUE);
-
-            NoReplacementModeTextColor = Color.black;
-            ReplacementModeTextColor = Color.white;
-        }
+        
+        ReplacementButtons.SelectButton(replacementMode ? 1: 0);
     }
 
     public void ShowInfo(string info, float duration = 2f)
@@ -304,53 +256,29 @@ public class MenuViewModel : ViewModelBase
 
     public void ViewScore_Trebble()
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note, false);
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false);
         ScorePanelVisible = true;
-        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.Trebble, IntervalMode.Note, false)));
+        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.Trebble, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false)));
     }
 
     public void ViewScore_Bass()
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note, false);
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false);
         ScorePanelVisible = true;
-        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.Bass, IntervalMode.Note, false)));
+        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.Bass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false)));
     }
 
     public void ViewScore_TrebbleBass()
     {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note, false);
+        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false);
         ScorePanelVisible = true;
-        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.TrebbleBass, IntervalMode.Note, false)));
+        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.TrebbleBass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false)));
     }
 
     public void ViewScore_Close()
     {
         ScorePanelVisible = false;
         CloseScores?.Invoke(this, EventArgs.Empty);
-    }
-
-    public void Alteration_WithAlteration()
-    {
-        UpdateAlterationButtons(true);
-        ToggleAlteration?.Invoke(this, new BoolEventArgs(true));
-    }
-
-    public void Alteration_WithoutAlteration()
-    {
-        UpdateAlterationButtons(false);
-        ToggleAlteration?.Invoke(this, new BoolEventArgs(false));
-    }
-
-    public void ReplacementMode_Replacement()
-    {
-        UpdateReplacementModeButtons(true);
-        ToggleReplacementMode?.Invoke(this, new BoolEventArgs(true));
-    }
-
-    public void ReplacementMode_NoReplacement()
-    {
-        UpdateReplacementModeButtons(false);
-        ToggleReplacementMode?.Invoke(this, new BoolEventArgs(false));
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -376,6 +304,50 @@ public class BoolEventArgs : EventArgs
     public BoolEventArgs(bool value)
     {
         _value = value;
+    }
+}
+
+public class IntEventArgs : EventArgs
+{
+    private int _value;
+    public int Value => _value;
+
+    public IntEventArgs(int value)
+    {
+        _value = value;
+    }
+}
+
+public class IntervalEventArgs : EventArgs
+{
+    private IntervalMode _interval;
+    public IntervalMode Interval => _interval;
+
+    public IntervalEventArgs(IntervalMode interval)
+    {
+        _interval = interval;
+    }
+}
+
+public class GameModeTypeEventArgs : EventArgs
+{
+    private GameModeType _gameModeType;
+    public GameModeType GameModeType => _gameModeType;
+
+    public GameModeTypeEventArgs(GameModeType gameModeType)
+    {
+        _gameModeType = gameModeType;
+    }
+}
+
+public class LevelEventArgs : EventArgs
+{
+    private Level _level;
+    public Level Level => _level;
+
+    public LevelEventArgs(Level level)
+    {
+        _level = level;
     }
 }
 

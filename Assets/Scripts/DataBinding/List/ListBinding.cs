@@ -29,6 +29,7 @@ namespace Assets.Scripts.DataBinding
         // Item to clone
         public GameObject UIItem; // The base template if no TemplateSelector
         public MonoBehaviour TemplateSelector;
+        public GameObject EmptyTemplate;
 
         private List<ListItemViewModel> _uiItems = new List<ListItemViewModel>();
         private Type _listType; // The unerlying type of the list (the type T of ILIst<T>)
@@ -57,6 +58,9 @@ namespace Assets.Scripts.DataBinding
             {
                 child.gameObject.SetActive(false);
             }
+
+            if(EmptyTemplate != null)
+                EmptyTemplate.SetActive(false);
 
             Type senderType = value.GetType();
             string[] propertySplit = Paths.First().Name.Split('.');// Always search for the last part of the path for the property
@@ -163,6 +167,9 @@ namespace Assets.Scripts.DataBinding
                     viewManager.InitialiserDataContext();
                     viewModel.InitialiserNotifyPropertyChanged(_list[i]);
                 }
+
+                if(EmptyTemplate != null)
+                    EmptyTemplate.SetActive(_uiItems.Count == 0);
             }
         }
 
