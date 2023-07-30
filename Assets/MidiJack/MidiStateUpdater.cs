@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+using System.Collections;
 using UnityEngine;
 
 namespace MidiJack
@@ -28,8 +29,9 @@ namespace MidiJack
     public class MidiStateUpdater : MonoBehaviour
     {
         public delegate void Callback();
+        public delegate void DeviceCallback();
 
-        public static void CreateGameObject(Callback callback)
+        public static void CreateGameObject(Callback callback, DeviceCallback deviceCallback)
         {
             var go = new GameObject("MIDI Updater");
 
@@ -38,13 +40,31 @@ namespace MidiJack
 
             var updater = go.AddComponent<MidiStateUpdater>();
             updater._callback = callback;
+            updater._deviceCallback = deviceCallback;
+
+            updater.StartDeviceCoroutine();
         }
 
         Callback _callback;
+        DeviceCallback _deviceCallback;
 
         void Update()
         {
             _callback();
+        }
+
+        void StartDeviceCoroutine()
+        {
+            StartCoroutine(Co_DeviceCallback());
+        }
+
+        IEnumerator Co_DeviceCallback()
+        {
+            while (true)
+            {
+                _deviceCallback();
+                yield return new WaitForSeconds(1f);
+            }
         }
     }
 }
