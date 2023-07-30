@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,14 +9,14 @@ using UnityEngine;
 
 public class KeyboardController : MonoBehaviour, IController
 {
-    private List<PianoNote> _notesDown = new List<PianoNote>();
-    public List<PianoNote> NotesDown => _notesDown;
+    private List<ControllerNote> _notesDown = new List<ControllerNote>();
+    public List<ControllerNote> NotesDown => _notesDown;
 
-    private List<PianoNote> _notesUp = new List<PianoNote>();
-    public List<PianoNote> NotesUp => _notesUp;
+    private List<ControllerNote> _notesUp = new List<ControllerNote>();
+    public List<ControllerNote> NotesUp => _notesUp;
 
-    private List<PianoNote> _notes = new List<PianoNote>();
-    public List<PianoNote> Notes => _notes;
+    private List<ControllerNote> _notes = new List<ControllerNote>();
+    public List<ControllerNote> Notes => _notes;
 
     private PianoNote _higherNote;
     public PianoNote HigherNote => _higherNote;
@@ -28,14 +29,14 @@ public class KeyboardController : MonoBehaviour, IController
     public PianoNote HigherNoteWithOffset => HigherNote + C4Offset;
     public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
 
-    private List<PianoNote> _notesWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesWithOffset => _notesWithOffset;
+    private List<ControllerNote> _notesWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesWithOffset => _notesWithOffset;
 
-    private List<PianoNote> _notesDownWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesDownWithOffset => _notesDownWithOffset;
+    private List<ControllerNote> _notesDownWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesDownWithOffset => _notesDownWithOffset;
 
-    private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+    private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
     public string Label => "Keyboard";
 
@@ -46,6 +47,8 @@ public class KeyboardController : MonoBehaviour, IController
     public bool HasUI => false;
 
     public bool IsConfigurable => false;
+
+    public bool IsReplacementModeForced => true;
 
     // Keyboard has only few notes
 
@@ -100,24 +103,24 @@ public class KeyboardController : MonoBehaviour, IController
             if (Input.GetKeyDown(kvp.Key))
             {
                 // SoundManager.PlayNote(kvp.Value);
-                _notesDown.Add(kvp.Value);
+                _notesDown.Add(new ControllerNote(kvp.Value, IsReplacementModeForced));
             }
 
             if (Input.GetKeyUp(kvp.Key))
             {
-                _notesUp.Add(kvp.Value);
+                _notesUp.Add(new ControllerNote(kvp.Value, IsReplacementModeForced));
             }
 
             if (Input.GetKey(kvp.Key))
             {
-                _notes.Add(kvp.Value);
+                _notes.Add(new ControllerNote(kvp.Value, IsReplacementModeForced));
             }
         }
 
         UpdateNotesWithOffset();
 
         if (_notesDown.Count > 0)
-            NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
+            NoteDown?.Invoke(this, new ControllerNoteEventArgs(_notesDown[0]));
     }
 
     /*public void Configure()
@@ -127,12 +130,12 @@ public class KeyboardController : MonoBehaviour, IController
 
     private void UpdateNotesWithOffset()
     {
-        _notesWithOffset = new List<PianoNote>(Notes);
-        _notesDownWithOffset = new List<PianoNote>(NotesDown);
+        _notesWithOffset = new List<ControllerNote>(Notes);
+        _notesDownWithOffset = new List<ControllerNote>(NotesDown);
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
         }
     }
 

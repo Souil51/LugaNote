@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.Model;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,14 @@ public class MultipleController : MonoBehaviour, IController
     private PianoNote _lowerNote;
     public PianoNote LowerNote => _lowerNote;
 
-    private List<PianoNote> _notesDown = new List<PianoNote>();
-    public List<PianoNote> NotesDown => _notesDown;
+    private List<ControllerNote> _notesDown = new List<ControllerNote>();
+    public List<ControllerNote> NotesDown => _notesDown;
 
-    private List<PianoNote> _notesUp = new List<PianoNote>();
-    public List<PianoNote> NotesUp => _notesUp;
+    private List<ControllerNote> _notesUp = new List<ControllerNote>();
+    public List<ControllerNote> NotesUp => _notesUp;
 
-    private List<PianoNote> _notes = new List<PianoNote>();
-    public List<PianoNote> Notes => _notes;
+    private List<ControllerNote> _notes = new List<ControllerNote>();
+    public List<ControllerNote> Notes => _notes;
 
     public int C4Offset => 0;
 
@@ -28,14 +29,14 @@ public class MultipleController : MonoBehaviour, IController
 
     public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
 
-    private List<PianoNote> _notesWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesWithOffset => _notesWithOffset;
+    private List<ControllerNote> _notesWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesWithOffset => _notesWithOffset;
 
-    private List<PianoNote> _notesDownWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesDownWithOffset => _notesDownWithOffset;
+    private List<ControllerNote> _notesDownWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesDownWithOffset => _notesDownWithOffset;
 
-    private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+    private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
     public string Label
     {
@@ -82,6 +83,15 @@ public class MultipleController : MonoBehaviour, IController
     private List<IController> _controllers = new List<IController>();
     private MidiConfigurationHelper _configurationHelper;
 
+    public bool IsReplacementModeForced
+    {
+        get
+        {
+            bool replacementModePossible = _controllers.Any(x => !x.IsReplacementModeForced);
+            return !replacementModePossible;
+        }
+    }
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
     public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
@@ -105,7 +115,7 @@ public class MultipleController : MonoBehaviour, IController
         UpdateNotesWithOffset();
 
         if (_notesDown.Count > 0)
-            NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
+            NoteDown?.Invoke(this, new ControllerNoteEventArgs(_notesDown[0]));
     }
     private void OnDisable()
     {
@@ -163,12 +173,12 @@ public class MultipleController : MonoBehaviour, IController
 
     private void UpdateNotesWithOffset()
     {
-        _notesWithOffset = new List<PianoNote>(Notes);
-        _notesDownWithOffset = new List<PianoNote>(NotesDown);
+        _notesWithOffset = new List<ControllerNote>(Notes);
+        _notesDownWithOffset = new List<ControllerNote>(NotesDown);
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, x.IsReplaceableByDefault)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, x.IsReplaceableByDefault)).ToList();
         }
     }
 

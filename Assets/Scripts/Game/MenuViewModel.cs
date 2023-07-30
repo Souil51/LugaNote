@@ -109,6 +109,17 @@ public class MenuViewModel : ViewModelBase
         }
     }
 
+    private bool _isMIDIDeviceConnected;
+    public bool IsMIDIDeviceConnected
+    {
+        get => _isMIDIDeviceConnected;
+        private set
+        {
+            _isMIDIDeviceConnected = value;
+            OnPropertyChanged();
+        }
+    }
+
     private void Awake()
     {
         MenuController.Instance.PropertyChanged += Instance_PropertyChanged;
@@ -122,6 +133,8 @@ public class MenuViewModel : ViewModelBase
         ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
+
+        IsMIDIDeviceConnected = MenuController.Instance.Controller.IsConfigurable;
 
         UpdateDisplayedScores();
     }

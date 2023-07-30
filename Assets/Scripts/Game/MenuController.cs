@@ -3,6 +3,7 @@ using Assets.Scripts.Data;
 using Assets.Scripts.Game;
 using Assets.Scripts.Game.Model;
 using Assets.Scripts.Utils;
+using MidiJack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     public Transition Transition;
 
     private IController _controller;
-    public IController Controller;
+    public IController Controller => _controller;
 
     private static MenuController _instance;
     public static MenuController Instance => _instance;

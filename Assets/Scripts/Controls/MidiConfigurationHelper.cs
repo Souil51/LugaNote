@@ -125,16 +125,16 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         ChangeState(ConfigurationState.Started);
     }
 
-    private void Controller_NoteDown(object sender, NoteEventArgs e)
+    private void Controller_NoteDown(object sender, ControllerNoteEventArgs e)
     {
         if (_currentState == ConfigurationState.WaitingLowerNote)
         {
-            _lowerNote = e.Note;
+            _lowerNote = e.ControllerNote.Note;
             ChangeState(ConfigurationState.WaitingHigherNote);
         }
         else if (_currentState == ConfigurationState.WaitingHigherNote)
         {
-            _higherNote = e.Note;
+            _higherNote = e.ControllerNote.Note;
             ChangeState(ConfigurationState.Ended);
         }
     }

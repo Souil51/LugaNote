@@ -1,11 +1,12 @@
 using Assets;
+using Assets.Scripts.Game.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public delegate void NoteDownEventHandler(object sender, NoteEventArgs e);
+public delegate void NoteDownEventHandler(object sender, ControllerNoteEventArgs e);
 public delegate void ConfigurationEventHandled(object sender, ConfigurationEventArgs e);
 public delegate void ConfigurationDestroyedEventHandled(object sender, GameObjectEventArgs e);
 
@@ -21,9 +22,9 @@ public interface IController
     PianoNote HigherNote { get; }
     PianoNote LowerNote { get; }
 
-    List<PianoNote> NotesDown { get; }
-    List<PianoNote> NotesUp { get; }
-    List<PianoNote> Notes { get; }
+    List<ControllerNote> NotesDown { get; }
+    List<ControllerNote> NotesUp { get; }
+    List<ControllerNote> Notes { get; }
 
     List<PianoNote> AvailableNotes { get; }
 
@@ -31,9 +32,9 @@ public interface IController
 
     public PianoNote HigherNoteWithOffset { get; }
     public PianoNote LowerNoteWithOffset { get; }
-    public List<PianoNote> NotesWithOffset { get; }
-    public List<PianoNote> NotesDownWithOffset { get; }
-    public List<PianoNote> NotesUpWithOffset { get; }
+    public List<ControllerNote> NotesWithOffset { get; }
+    public List<ControllerNote> NotesDownWithOffset { get; }
+    public List<ControllerNote> NotesUpWithOffset { get; }
 
     public string Label { get; }
 
@@ -41,20 +42,22 @@ public interface IController
     public bool IsControllerUIVisible { get; }
     public bool IsConfigurable { get; }
 
+    public bool IsReplacementModeForced { get; }
+
     GameObject Configure();
 
     void ShowControllerUI();
     void HideControllerUI();
 }
 
-public class NoteEventArgs : EventArgs
+public class ControllerNoteEventArgs : EventArgs
 {
-    private PianoNote _note;
-    public PianoNote Note => _note;
+    private ControllerNote _controllerNote;
+    public ControllerNote ControllerNote => _controllerNote;
 
-    public NoteEventArgs(PianoNote note)
+    public ControllerNoteEventArgs(ControllerNote note)
     {
-        _note = note;
+        _controllerNote = note;
     }
 }
 

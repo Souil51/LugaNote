@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.Model;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,14 @@ using UnityEngine.UI;
 
 public class VisualController : MonoBehaviour, IController
 {
-    private List<PianoNote> _notesDown = new List<PianoNote>();
-    public List<PianoNote> NotesDown => _notesDown;
+    private List<ControllerNote> _notesDown = new List<ControllerNote>();
+    public List<ControllerNote> NotesDown => _notesDown;
 
-    private List<PianoNote> _notesUp = new List<PianoNote>();
-    public List<PianoNote> NotesUp => _notesUp;
+    private List<ControllerNote> _notesUp = new List<ControllerNote>();
+    public List<ControllerNote> NotesUp => _notesUp;
 
-    private List<PianoNote> _notes = new List<PianoNote>();
-    public List<PianoNote> Notes => _notes;
+    private List<ControllerNote> _notes = new List<ControllerNote>();
+    public List<ControllerNote> Notes => _notes;
 
     // VIsual controller will show only one octave
     public PianoNote HigherNote => PianoNote.C8;
@@ -31,14 +32,14 @@ public class VisualController : MonoBehaviour, IController
     public PianoNote HigherNoteWithOffset => HigherNote + C4Offset;
     public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
 
-    private List<PianoNote> _notesWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesWithOffset => _notesWithOffset;
+    private List<ControllerNote> _notesWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesWithOffset => _notesWithOffset;
 
-    private List<PianoNote> _notesDownWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesDownWithOffset => _notesDownWithOffset;
+    private List<ControllerNote> _notesDownWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesDownWithOffset => _notesDownWithOffset;
 
-    private List<PianoNote> _notesUpWithOffset = new List<PianoNote>();
-    public List<PianoNote> NotesUpWithOffset => _notesUpWithOffset;
+    private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
+    public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
     public string Label => "Touch screen";
 
@@ -50,6 +51,8 @@ public class VisualController : MonoBehaviour, IController
     public bool HasUI => true;
 
     public bool IsConfigurable => false;
+
+    public bool IsReplacementModeForced => true;
 
     private GameObject _buttonCanvas;
 
@@ -83,9 +86,9 @@ public class VisualController : MonoBehaviour, IController
             if (!_lastUpdateButtonsNoteDown.Contains(buttonNote))
             {
                 // SoundManager.PlayNote(buttonNote);
-                _notesDown.Add(buttonNote);
+                _notesDown.Add(new ControllerNote(buttonNote, IsReplacementModeForced));
 
-                _notes.Add(buttonNote);// For note's holding, just add if Down and remove if Up
+                _notes.Add(new ControllerNote(buttonNote, IsReplacementModeForced));// For note's holding, just add if Down and remove if Up
             }
         }
 
@@ -94,16 +97,16 @@ public class VisualController : MonoBehaviour, IController
         {
             if (!_buttonsNoteDown.Contains(buttonNote))
             {
-                _notesUp.Add(buttonNote);
+                _notesUp.Add(new ControllerNote(buttonNote, IsReplacementModeForced));
 
-                _notes.Remove(buttonNote);// For note's holding, just add if Down and remove if Up
+                _notes.Remove(new ControllerNote(buttonNote, IsReplacementModeForced));// For note's holding, just add if Down and remove if Up
             }
         }
 
         UpdateNotesWithOffset();
 
         if (_notesDown.Count > 0)
-            NoteDown?.Invoke(this, new NoteEventArgs(_notesDown[0]));
+            NoteDown?.Invoke(this, new ControllerNoteEventArgs(_notesDown[0]));
 
         _lastUpdateButtonsNoteDown = new List<PianoNote>(_buttonsNoteDown);
     }
@@ -118,12 +121,12 @@ public class VisualController : MonoBehaviour, IController
 
     private void UpdateNotesWithOffset()
     {
-        _notesWithOffset = new List<PianoNote>(Notes);
-        _notesDownWithOffset = new List<PianoNote>(NotesDown);
+        _notesWithOffset = new List<ControllerNote>(Notes);
+        _notesDownWithOffset = new List<ControllerNote>(NotesDown);
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => x + C4Offset).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => x + C4Offset).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
         }
     }
 

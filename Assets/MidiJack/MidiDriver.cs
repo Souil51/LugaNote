@@ -320,11 +320,38 @@ namespace MidiJack
         #else
         [DllImport("MidiJackPlugin", EntryPoint = "MidiJackDequeueIncomingData")]
         public static extern ulong DequeueIncomingData();
-        #endif
 
-#endregion
+        /* MODIFICATIONS TEST */
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCountEndpoints")]
+        static extern int CountEndpoints();
+        [DllImport("MidiJackPlugin")]
+        static extern System.IntPtr MidiJackGetEndpointName(uint id);
+        static string GetEndpointName(uint id)
+        {
+            return Marshal.PtrToStringAnsi(MidiJackGetEndpointName(id));
+        }
+        List<string> allDevices = new List<string>();
+        Dictionary<string, bool> allDevicesBound = new Dictionary<string, bool>();
+        void GetDeviceNames()
+        {
+            allDevices = new List<string>();
+            var endpointCount = CountEndpoints();
+            for (uint i = 0; i < endpointCount; i++)
+            {
+                string name = GetEndpointName(i);
+                allDevices.Add(name);
+                if (!allDevicesBound.ContainsKey(name))
+                {
+                    allDevicesBound.Add(name, false);
+                }
+            }
+        }
+        /* MODIFICATIONS TEST */
+#endif
 
-#region Singleton Class Instance
+        #endregion
+
+        #region Singleton Class Instance
 
         static MidiDriver _instance;
 

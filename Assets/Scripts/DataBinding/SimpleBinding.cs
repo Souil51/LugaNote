@@ -1,4 +1,5 @@
 using Assets;
+using Assets.Scripts.DataBinding.Converter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,26 @@ public class SimpleBinding : MonoBehaviour
     public string MemberName;
     // Differents Path for ViewModel properties
     public List<BindingPath> Paths;
+    public MonoBehaviour Converter;
     // THe UI element
     private ICanvasElement _canvasElement;
     private IUICustomElement _customElement;
     private Selectable _selectableElement;
     // Used for the localization
     public LocalizeStringEvent localize;
+    private IBindingConverter _converter;
 
     private void Awake()
     {
         InitComponent();
+
+        if(Converter != null)
+        {
+            if(!(Converter is IBindingConverter))
+                throw new Exception("Converter does not implement IBindingConverter");
+
+            _converter = Converter.GetComponent<IBindingConverter>();
+        }
 
         if(Paths.Where(x => x.LastValue != null).ToList().Count == 0)
         {
@@ -88,6 +99,11 @@ public class SimpleBinding : MonoBehaviour
             if (propInfo != null)
                 propInfo.PropertyType.GetProperty(splitName[1]);
         }*/
+
+        if(Converter != null)
+        {
+            value = _converter.GetConvertedValue(value, null);
+        }
 
         if (!ChangeValueOfType(_canvasElement, value, propertyName))
             if (!ChangeValueOfType(_customElement, value, propertyName))

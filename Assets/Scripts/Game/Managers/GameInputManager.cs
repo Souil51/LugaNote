@@ -39,29 +39,34 @@ public class GameInputManager : MonoBehaviour
                     Debug.Log(firstNote.PianoNote);
                     Debug.Log(GameController.Instance.Controller.NotesDownWithOffset[0]);
                     bool? guessValue = null;
-                    // Normal mode : the note has to be the exact same note
-                    // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
-                    if (
-                            GameController.Instance.Controller.NotesDownWithOffset.Count == 1
-                            &&
-                            (
-                                (!GameController.Instance.GameReplacementMode && GameController.Instance.Controller.NotesDownWithOffset[0] == firstNote.PianoNote)
-                                ||
-                                (GameController.Instance.GameReplacementMode && (int)(GameController.Instance.Controller.NotesDownWithOffset[0]) % 12 == (int)(firstNote.PianoNote) % 12)
+
+                    if (GameController.Instance.Controller.NotesDownWithOffset.Count == 1)
+                    {
+                        var firstControllerNote = GameController.Instance.Controller.NotesDownWithOffset[0];
+                        bool replaceNote = firstControllerNote.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
+
+                        // Normal mode : the note has to be the exact same note
+                        // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
+                        if (
+                                (
+                                    (!replaceNote && firstControllerNote.Note == firstNote.PianoNote)
+                                    ||
+                                    (replaceNote && (int)firstControllerNote.Note % 12 == (int)(firstNote.PianoNote) % 12)
+                                )
                             )
-                        )
-                    {
-                        SoundManager.PlayNote(GameController.Instance.Controller.NotesDownWithOffset[0]);
-                        // Good guess
-                        firstNote.ShowGoodGuess();
-                        guessValue = true;
-                    }
-                    else
-                    {
-                        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
-                        // Bad guess
-                        firstNote.ShowBadGuess();
-                        guessValue = false;
+                        {
+                            SoundManager.PlayNote(firstControllerNote.Note);
+                            // Good guess
+                            firstNote.ShowGoodGuess();
+                            guessValue = true;
+                        }
+                        else
+                        {
+                            SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
+                            // Bad guess
+                            firstNote.ShowBadGuess();
+                            guessValue = false;
+                        }
                     }
 
                     if (guessValue.HasValue)
