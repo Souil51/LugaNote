@@ -41,6 +41,18 @@ namespace MidiJack
             set { MidiDriver.Instance.knobDelegate = value; }
         }
 
+        public static MidiDriver.DeviceConnectedDelegate deviceConnectedDelegate
+        {
+            get { return MidiDriver.Instance.deviceConnectedDelegate; }
+            set { MidiDriver.Instance.deviceConnectedDelegate = value; }
+        }
+
+        public static MidiDriver.DeviceDisconnectedDelegate deviceDisconnectedDelegate
+        {
+            get { return MidiDriver.Instance.deviceDisconnectedDelegate; }
+            set { MidiDriver.Instance.deviceDisconnectedDelegate = value; }
+        }
+
         // Returns the key state (on: velocity, off: zero).
         public static float GetKey(MidiChannel channel, int noteNumber)
         {
