@@ -109,10 +109,14 @@ namespace MidiJack
         public delegate void NoteOnDelegate(MidiChannel channel, int note, float velocity);
         public delegate void NoteOffDelegate(MidiChannel channel, int note);
         public delegate void KnobDelegate(MidiChannel channel, int knobNumber, float knobValue);
+        public delegate void DeviceConnectedDelegate(string deviceName);
+        public delegate void DeviceDisconnectedDelegate(string deviceName);
 
         public NoteOnDelegate noteOnDelegate { get; set; }
         public NoteOffDelegate noteOffDelegate { get; set; }
         public KnobDelegate knobDelegate { get; set; }
+        public DeviceConnectedDelegate deviceConnectedDelegate { get; set; }
+        public DeviceDisconnectedDelegate deviceDisconnectedDelegate { get; set; }
 
         #endregion
 
@@ -380,7 +384,12 @@ namespace MidiJack
                     && allDevicesBound[allDevicesBound.Keys.ToList()[i]])
                 {
                     Debug.Log("Unplug detection " + allDevicesBound.Keys.ToList()[i]);
+
+                    if (deviceDisconnectedDelegate != null)
+                        deviceDisconnectedDelegate(allDevicesBound.Keys.ToList()[i]);
+
                     allDevicesBound[allDevicesBound.Keys.ToList()[i]] = false;
+                    
                 }
             }
 
@@ -392,6 +401,9 @@ namespace MidiJack
                     OpenDevice(0);
                     allDevicesBound[allDevices[(int)i]] = true;
                     Debug.Log("Open device " + allDevices[(int)i]);
+
+                    if (deviceConnectedDelegate != null)
+                        deviceConnectedDelegate(allDevices[(int)i]);
                 }
             }
         }
