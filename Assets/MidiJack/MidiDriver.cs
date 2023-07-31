@@ -269,14 +269,90 @@ namespace MidiJack
             #endif
         }
 
+        /* Devices */
+
+#if !UNITY_ANDROID
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCountEndpoints")]
+        static extern int CountEndpoints();
+
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackOpenDevice")]
+        static extern void OpenDevice(uint index);
+
+        [DllImport("MidiJackPlugin")]
+        static extern System.IntPtr MidiJackGetEndpointName(uint id);
+
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseAllDevices")]
+        static extern void CloseDevices();
+
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseDevice")]
+        static extern void CloseDevice(uint index);
+
+        static string GetEndpointName(uint id)
+        {
+            return Marshal.PtrToStringAnsi(MidiJackGetEndpointName(id));
+        }
+
+        List<string> allDevices = new List<string>();
+        Dictionary<string, bool> allDevicesBound = new Dictionary<string, bool>();
+
+        void GetDeviceNames()
+        {
+            allDevices = new List<string>();
+            var endpointCount = CountEndpoints();
+            for (uint i = 0; i < endpointCount; i++)
+            {
+                string name = GetEndpointName(i);
+                allDevices.Add(name);
+                if (!allDevicesBound.ContainsKey(name))
+                {
+                    allDevicesBound.Add(name, false);
+                }
+            }
+        }
+#endif
+
+        void DeviceCallback()
+        {
+            Debug.Log("DeviceCallback");
+
+#if !UNITY_ANDROID
+            GetDeviceNames();
+            int devicesCount = allDevicesBound.Count;
+
+            // Unplug detection
+            for (int i = 0; i < allDevicesBound.Keys.ToList().Count; i++)
+            {
+                if (!allDevices.Contains(allDevicesBound.Keys.ToList()[i])
+                    && allDevicesBound[allDevicesBound.Keys.ToList()[i]])
+                {
+                    Debug.Log("Unplug detection " + allDevicesBound.Keys.ToList()[i]);
+                    allDevicesBound[allDevicesBound.Keys.ToList()[i]] = false;
+                }
+            }
+
+            // plug detection
+            for (uint i = 0; i < allDevices.Count; i++)
+            {
+                if (!allDevicesBound[allDevices[(int)i]])
+                {
+                    OpenDevice(0);
+                    allDevicesBound[allDevices[(int)i]] = true;
+                    Debug.Log("Open device " + allDevices[(int)i]);
+                }
+            }
+#endif
+        }
+        /* Devices */
+
         #endregion
 
         #region Native Plugin Interface
 
-        #if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 
         private void HandleMidiMessage(object sender, MidiMessage message)
         {
+        Debug.Log("HandleMidiMessage");
             // Split the first byte.
             var statusCode = message.status >> 4;
             var channelNumber = message.status & 0xf;
@@ -320,89 +396,18 @@ namespace MidiJack
         public ulong DequeueIncomingData(){
             return 0;
         }
-        #else
+#else
 
         [DllImport("MidiJackPlugin", EntryPoint = "MidiJackDequeueIncomingData")]
         public static extern ulong DequeueIncomingData();
 
-        /* Devices */
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCountEndpoints")]
-        static extern int CountEndpoints();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackOpenDevice")]
-        static extern void OpenDevice(uint index);
-
-        [DllImport("MidiJackPlugin")]
-        static extern System.IntPtr MidiJackGetEndpointName(uint id);
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseAllDevices")]
-        static extern void CloseDevices();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseDevice")]
-        static extern void CloseDevice(uint index);
-
-        static string GetEndpointName(uint id)
-        {
-            return Marshal.PtrToStringAnsi(MidiJackGetEndpointName(id));
-        }
-
-        List<string> allDevices = new List<string>();
-        Dictionary<string, bool> allDevicesBound = new Dictionary<string, bool>();
-
-        void GetDeviceNames()
-        {
-            var lastAllDevices = new List<string>(allDevices);
-
-            allDevices = new List<string>();
-            var endpointCount = CountEndpoints();
-            for (uint i = 0; i < endpointCount; i++)
-            {
-                string name = GetEndpointName(i);
-                allDevices.Add(name);
-                if (!allDevicesBound.ContainsKey(name))
-                {
-                    allDevicesBound.Add(name, false);
-                }
-            }
-        }
-
-        void DeviceCallback()
-        {
-            Debug.Log("DeviceCallback");
-
-            GetDeviceNames();
-            int devicesCount = allDevicesBound.Count;
-
-            // Unplug detection
-            for (int i = 0; i < allDevicesBound.Keys.ToList().Count; i++)
-            {
-                if (!allDevices.Contains(allDevicesBound.Keys.ToList()[i])
-                    && allDevicesBound[allDevicesBound.Keys.ToList()[i]])
-                {
-                    Debug.Log("Unplug detection " + allDevicesBound.Keys.ToList()[i]);
-                    allDevicesBound[allDevicesBound.Keys.ToList()[i]] = false;
-                }
-            }
-
-            // plug detection
-            for (uint i = 0; i < allDevices.Count; i++)
-            {
-                if (!allDevicesBound[allDevices[(int)i]])
-                {
-                    OpenDevice(0);
-                    allDevicesBound[allDevices[(int)i]] = true;
-                    Debug.Log("Open device " + allDevices[(int)i]);
-                }
-            }
-        }
-        /* Devices */
 #endif
 
-        #endregion
+#endregion
 
-        #region Singleton Class Instance
+            #region Singleton Class Instance
 
-        static MidiDriver _instance;
+            static MidiDriver _instance;
 
         public static MidiDriver Instance {
             get {
@@ -414,6 +419,7 @@ namespace MidiJack
                             new MidiStateUpdater.Callback(_instance.Update),
                             new MidiStateUpdater.DeviceCallback(_instance.DeviceCallback));
 #if UNITY_ANDROID && !UNITY_EDITOR
+                        Debug.Log("ANDROID");
                         _instance.midiDroid = new MidiDroid();
                         _instance.midiDroid.Start();
                         _instance.midiDroid.callback.DroidMidiEvent += _instance.HandleMidiMessage;

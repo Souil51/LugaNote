@@ -9,7 +9,6 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 {

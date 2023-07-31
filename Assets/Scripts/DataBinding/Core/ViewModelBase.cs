@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 /// <summary>
 /// The base of a viemodel for DataBinding

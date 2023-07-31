@@ -10,11 +10,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
-using UnityEditorInternal.Profiling.Memory.Experimental;
-using UnityEditorInternal.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 namespace Assets.Scripts.DataBinding
 {

@@ -3,11 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Localization.PropertyVariants.TrackedProperties;
-using UnityEngine.UI;
 
 public class VisualController : MonoBehaviour, IController
 {

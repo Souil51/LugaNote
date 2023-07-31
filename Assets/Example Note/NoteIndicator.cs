@@ -5,6 +5,7 @@ public class NoteIndicator : MonoBehaviour
 {
     public int noteNumber;
 
+
     void Update()
     {
         transform.localScale = Vector3.one * (0.1f + MidiMaster.GetKey(noteNumber));
