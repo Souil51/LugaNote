@@ -27,7 +27,7 @@ namespace MidiJack
 #endif
             callback = new MidiDroidCallback();
             mdPlugin.Call("setMidiCallback", callback);
-            mdPlugin.Call("findADevice");
+            // mdPlugin.Call("findADevice");
             /*
             string currentDeviceName = UnityEngine.PlayerPrefs.GetString("MidiDroidDevice", "");
             if(currentDeviceName.Length > 0)
@@ -130,7 +130,15 @@ namespace MidiJack
         }
         #endregion
 
-        private int IndexOfDeviceNamed(string midiDroidDevice)
+        public void FindADevice()
+        {
+            if (mdPlugin != null)
+            {
+                mdPlugin.Call("findADevice");
+            }
+        }
+
+        public int IndexOfDeviceNamed(string midiDroidDevice)
         {
             int result = -1;
             getDeviceList();
@@ -146,6 +154,8 @@ namespace MidiJack
 
         public void TryOpenDeviceAt(int deviceIndex)
         {
+            Debug.Log("TryOpenDeviceAt " + deviceIndex);
+            Debug.Log("Device list " + _deviceNames);
             mdPlugin.Call("openDeviceAtIndex", deviceIndex);
             currentDevice = deviceIndex;
         //    UnityEngine.PlayerPrefs.SetString("MidiDroidDevice", deviceNames[deviceIndex]);
@@ -169,7 +179,7 @@ namespace MidiJack
             TryOpenDeviceAt(nextDevice);
         }
 
-        public void getDeviceList()
+        public List<string> getDeviceList()
         {
             _deviceNames = new List<string>();
 
@@ -192,6 +202,8 @@ namespace MidiJack
                 // null String[] returned
             }
             obj.Dispose();
+
+            return new List<string>(_deviceNames);
         }
     }
 

@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 using System;
 using System.Linq;
 using Unity.VisualScripting;
+using System.Reflection;
 
 namespace MidiJack
 {
@@ -59,6 +60,9 @@ namespace MidiJack
 
         // Last update frame number
         int _lastFrame;
+
+        List<string> allDevices = new List<string>();
+        Dictionary<string, bool> allDevicesBound = new Dictionary<string, bool>();
 
         #endregion
 
@@ -273,55 +277,15 @@ namespace MidiJack
             #endif
         }
 
-        /* Devices */
-
-#if !UNITY_ANDROID
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCountEndpoints")]
-        static extern int CountEndpoints();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackOpenDevice")]
-        static extern void OpenDevice(uint index);
-
-        [DllImport("MidiJackPlugin")]
-        static extern System.IntPtr MidiJackGetEndpointName(uint id);
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseAllDevices")]
-        static extern void CloseDevices();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseDevice")]
-        static extern void CloseDevice(uint index);
-
-        static string GetEndpointName(uint id)
-        {
-            return Marshal.PtrToStringAnsi(MidiJackGetEndpointName(id));
-        }
-
-        List<string> allDevices = new List<string>();
-        Dictionary<string, bool> allDevicesBound = new Dictionary<string, bool>();
-
-        void GetDeviceNames()
-        {
-            allDevices = new List<string>();
-            var endpointCount = CountEndpoints();
-            for (uint i = 0; i < endpointCount; i++)
-            {
-                string name = GetEndpointName(i);
-                allDevices.Add(name);
-                if (!allDevicesBound.ContainsKey(name))
-                {
-                    allDevicesBound.Add(name, false);
-                }
-            }
-        }
-#endif
-
         void DeviceCallback()
         {
             Debug.Log("DeviceCallback");
 
-#if !UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
+            GetAndroidDevices();
+#else
             GetDeviceNames();
-            int devicesCount = allDevicesBound.Count;
+#endif
 
             // Unplug detection
             for (int i = 0; i < allDevicesBound.Keys.ToList().Count; i++)
@@ -335,7 +299,6 @@ namespace MidiJack
                         deviceDisconnectedDelegate(allDevicesBound.Keys.ToList()[i]);
 
                     allDevicesBound[allDevicesBound.Keys.ToList()[i]] = false;
-                    
                 }
             }
 
@@ -344,7 +307,17 @@ namespace MidiJack
             {
                 if (!allDevicesBound[allDevices[(int)i]])
                 {
-                    OpenDevice(0);
+#if UNITY_ANDROID && !UNITY_EDITOR
+                    // int indexToOpen = _instance.midiDroid.IndexOfDeviceNamed(allDevices[(int)i]);
+                    // _instance.midiDroid.TryOpenDeviceAt(indexToOpen);
+                    _instance.midiDroid.FindADevice();
+#else
+                    OpenDevice(i);
+#endif
+
+                    // int indexToOpen = _instance.midiDroid.IndexOfDeviceNamed(allDevices[(int)i]);
+                    // _instance.midiDroid.TryOpenDeviceAt(indexToOpen);
+
                     allDevicesBound[allDevices[(int)i]] = true;
                     Debug.Log("Open device " + allDevices[(int)i]);
 
@@ -352,16 +325,11 @@ namespace MidiJack
                         deviceConnectedDelegate(allDevices[(int)i]);
                 }
             }
-#else
-           _instance.midiDroid.getDeviceList();
-#endif
-            
         }
-        /* Devices */
 
         #endregion
 
-        #region Native Plugin Interface
+        #region Platform specific
 
 #if UNITY_ANDROID && !UNITY_EDITOR
 
@@ -407,23 +375,70 @@ namespace MidiJack
             }
         }
 
+        private void GetAndroidDevices()
+        {
+            if(_instance.midiDroid == null) return;
+
+            allDevices = _instance.midiDroid.getDeviceList();
+            foreach (string deviceName in allDevices)
+            {
+                Debug.Log(deviceName);
+                if (!allDevicesBound.ContainsKey(deviceName))
+                {
+                    allDevicesBound.Add(deviceName, false);
+                }
+            }
+        }
+
         private MidiDroid midiDroid;
         public ulong DequeueIncomingData(){
             return 0;
         }
 #else
-        
-
         [DllImport("MidiJackPlugin", EntryPoint = "MidiJackDequeueIncomingData")]
         public static extern ulong DequeueIncomingData();
 
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCountEndpoints")]
+        static extern int CountEndpoints();
+
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackOpenDevice")]
+        static extern void OpenDevice(uint index);
+
+        [DllImport("MidiJackPlugin")]
+        static extern System.IntPtr MidiJackGetEndpointName(uint id);
+
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseAllDevices")]
+        static extern void CloseDevices();
+
+        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseDevice")]
+        static extern void CloseDevice(uint index);
+
+        static string GetEndpointName(uint id)
+        {
+            return Marshal.PtrToStringAnsi(MidiJackGetEndpointName(id));
+        }
+
+        void GetDeviceNames()
+        {
+            allDevices = new List<string>();
+            var endpointCount = CountEndpoints();
+            for (uint i = 0; i < endpointCount; i++)
+            {
+                string name = GetEndpointName(i);
+                allDevices.Add(name);
+                if (!allDevicesBound.ContainsKey(name))
+                {
+                    allDevicesBound.Add(name, false);
+                }
+            }
+        }
 #endif
 
-#endregion
+        #endregion
 
-            #region Singleton Class Instance
+        #region Singleton Class Instance
 
-            static MidiDriver _instance;
+        static MidiDriver _instance;
 
         public static MidiDriver Instance {
             get {

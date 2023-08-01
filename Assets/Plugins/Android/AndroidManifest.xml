@@ -11,7 +11,17 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+			<intent-filter>
+				<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+			</intent-filter>
             <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
         </activity>
+		<activity android:name="USBPermissionRequest" android:theme="@android:style/Theme.NoDisplay" >
+			<intent-filter>
+				<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+			</intent-filter>
+		</activity>
     </application>
 </manifest>
