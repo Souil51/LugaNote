@@ -352,7 +352,10 @@ namespace MidiJack
                         deviceConnectedDelegate(allDevices[(int)i]);
                 }
             }
+#else
+           _instance.midiDroid.getDeviceList();
 #endif
+            
         }
         /* Devices */
 
@@ -409,6 +412,7 @@ namespace MidiJack
             return 0;
         }
 #else
+        
 
         [DllImport("MidiJackPlugin", EntryPoint = "MidiJackDequeueIncomingData")]
         public static extern ulong DequeueIncomingData();

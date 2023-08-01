@@ -10,7 +10,7 @@ namespace MidiJack
 
         public MidiDroidCallback() : base("mmmlabs.com.mididroid.MidiCallback") { }
 
-        // Got this override from a french google translate of a chinese blog post (the only google result with the error "no proxy method") and it miraculously works ???
+        // Got this override from a google translate of a chinese blog post (the only google result with the error "no proxy method") and it works ???
         public override AndroidJavaObject Invoke(string methodName, object[] args)
         {
             var deviceIndex = (int)args[0]; // Type = Int32 

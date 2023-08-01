@@ -8,14 +8,14 @@ namespace MidiJack
 {
     public class MidiDroid
     {
-
-        List<string> deviceNames;
+        private List<string> _deviceNames;
+        public List<string> DeviceName => _deviceNames;
 
         // Android Glue
         AndroidJavaClass _class;
         AndroidJavaObject mdPlugin { get { return _class.GetStatic<AndroidJavaObject>("instance"); } }
         public MidiDroidCallback callback;
-
+        
         int currentDevice = -1;
 
         public void Start()
@@ -134,9 +134,9 @@ namespace MidiJack
         {
             int result = -1;
             getDeviceList();
-            for (int i = 0; i < deviceNames.Count; i++)
+            for (int i = 0; i < _deviceNames.Count; i++)
             {
-                if(deviceNames[i] == midiDroidDevice)
+                if(_deviceNames[i] == midiDroidDevice)
                 {
                     result = i;
                 }
@@ -155,13 +155,13 @@ namespace MidiJack
         {
             getDeviceList();
 
-            if (deviceNames.Count == 0)
+            if (_deviceNames.Count == 0)
             {
                 throw new Exception("No Devices available to open");
             }
 
             int nextDevice = currentDevice + 1;
-            if(nextDevice >= deviceNames.Count)
+            if(nextDevice >= _deviceNames.Count)
             {
                 nextDevice = 0;
             }
@@ -171,7 +171,7 @@ namespace MidiJack
 
         public void getDeviceList()
         {
-            deviceNames = new List<string>();
+            _deviceNames = new List<string>();
 
             //some methods to set the object that you want to call the method on
             AndroidJavaObject obj = mdPlugin.Call<AndroidJavaObject>("getDevices");
@@ -183,7 +183,7 @@ namespace MidiJack
                 foreach (System.String str in result)
                 {
                     // Do something with the strings
-                    deviceNames.Add(str);
+                    _deviceNames.Add(str);
                 }
             }
             else
