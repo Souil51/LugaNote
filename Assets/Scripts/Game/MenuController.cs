@@ -48,7 +48,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private bool _withAlteration = false;
     public bool WithAlteration => _withAlteration;
 
-    private bool _replacementMode = true;
+    private bool _replacementMode = false;
     public bool ReplaceReplacementMode => _replacementMode;
 
     private Level _selectedLevel = 0;

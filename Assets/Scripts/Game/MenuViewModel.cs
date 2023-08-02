@@ -238,10 +238,10 @@ public class MenuViewModel : ViewModelBase
             KeyButtons.SelectButton((int)gameMode.GameModeType);
             IntervalButtons.SelectButton((int)gameMode.IntervalMode);
             LevelButtons.SelectButton((int)gameMode.Level);
-            AlterationsButtons.SelectButton(gameMode.WithRandomAlteration ? 0 : 1);
+            AlterationsButtons.SelectButton(gameMode.WithRandomAlteration ? 1 : 0);
         }
         
-        ReplacementButtons.SelectButton(replacementMode ? 1: 0);
+        ReplacementButtons.SelectButton(replacementMode ? 1 : 0);
     }
 
     public void ShowInfo(string info, float duration = 2f)

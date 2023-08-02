@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 /// <summary>
@@ -200,6 +202,71 @@ public class MusicHelper
         PianoNote.C6,
         PianoNote.C7,
     };
+
+    public static List<PianoNote> Notes3rdOctave => _notes3rdOctave;
+    private static List<PianoNote> _notes3rdOctave = new List<PianoNote>()
+    {
+        PianoNote.E3,
+        PianoNote.F3,
+        PianoNote.FSharp3,
+        PianoNote.G3,
+        PianoNote.GSharp3,
+        PianoNote.A3,
+        PianoNote.ASharp3,
+        PianoNote.B3
+    };
+
+    public static List<PianoNote> Notes4thOctave => _notes4thOctave;
+    private static List<PianoNote> _notes4thOctave = new List<PianoNote>()
+    {
+        PianoNote.C4,
+        PianoNote.CSharp4,
+        PianoNote.D4,
+        PianoNote.DSharp4,
+        PianoNote.E4,
+        PianoNote.F4,
+        PianoNote.FSharp4,
+        PianoNote.G4,
+        PianoNote.GSharp4,
+        PianoNote.A4,
+        PianoNote.ASharp4,
+        PianoNote.B4,
+    };
+
+    public static List<PianoNote> Notes5thOctave => _notes5thOctave;
+    private static List<PianoNote> _notes5thOctave = new List<PianoNote>()
+    {
+        PianoNote.C5,
+        PianoNote.CSharp5,
+        PianoNote.D5,
+        PianoNote.DSharp5,
+        PianoNote.E5,
+        PianoNote.F5,
+        PianoNote.FSharp5,
+        PianoNote.G5,
+        PianoNote.GSharp5,
+        PianoNote.A5,
+        PianoNote.ASharp5,
+        PianoNote.B5,
+    };
+
+    public static List<PianoNote> Notes6thOctave => _notes6thOctave;
+    private static List<PianoNote> _notes6thOctave = new List<PianoNote>()
+    {
+        PianoNote.C6,
+        PianoNote.CSharp6,
+        PianoNote.D6,
+        PianoNote.DSharp6,
+        PianoNote.E6,
+        PianoNote.F6,
+        PianoNote.FSharp6,
+    };
+
+    public static List<PianoNote> Notes3rdAnd4thOctave => Notes3rdOctave.Concat(Notes4thOctave).ToList();
+
+    public static List<PianoNote> Notes5thAnd6thOctave => Notes5thOctave.Concat(Notes6thOctave).ToList();
+
+    public static List<PianoNote> Notes3thTo6thOctave => Notes3rdOctave.Concat(Notes4thOctave).Concat(Notes5thOctave).Concat(Notes6thOctave).ToList();
 
     public static List<PianoNote> NotNaturallyFlatableNotes => _notNaturallyFlatableNotes;
 
