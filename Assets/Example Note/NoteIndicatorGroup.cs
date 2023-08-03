@@ -1,5 +1,8 @@
-﻿using TMPro;
+﻿using MidiJack;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Android;
 
 public class NoteIndicatorGroup : MonoBehaviour
 {
@@ -18,5 +21,25 @@ public class NoteIndicatorGroup : MonoBehaviour
             text.text = "ANDROID";
 #endif
         }
+
+        MidiMaster.noteOnDelegate += NoteOn;
+    }
+
+    void NoteOn(MidiChannel channel, int note, float velocity)
+    {
+        AskPermission();
+    }
+
+    private void AskPermission()
+    {
+#if UNITY_ANDROID
+
+#endif
+
+        // AndroidJavaObject context = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
+
+        AndroidJavaObject context = new AndroidJavaClass("com.helagos.androidutilspermission.AndroidUtils");
+
+        int i = 0;
     }
 }

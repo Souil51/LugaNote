@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.unity3d.player"
     xmlns:tools="http://schemas.android.com/tools">
+	<uses-permission android:name="android.permission.USB_PERMISSION" />
+	<uses-feature android:name="android.hardware.usb.host" />
 	<application
 		tools:replace="android:label" android:label="@string/app_name">
         <activity android:name="com.unity3d.player.UnityPlayerActivity"
@@ -10,18 +12,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-			<intent-filter>
-				<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
-			</intent-filter>
-            <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+            </intent-filter>    
         </activity>
-		<activity android:name="USBPermissionRequest" android:theme="@android:style/Theme.NoDisplay" >
+		<meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+		<receiver android:name="com.helagos.androidutilspermission.USBReceiver">
 			<intent-filter>
-				<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+				<action android:name="android.hardware.usb.action.USB_PERMISSION" />
 			</intent-filter>
-		</activity>
+		</receiver>
     </application>
 </manifest>

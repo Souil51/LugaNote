@@ -279,7 +279,7 @@ namespace MidiJack
 
         void DeviceCallback()
         {
-            Debug.Log("DeviceCallback");
+            // Debug.Log("DeviceCallback");
 
 #if UNITY_ANDROID && !UNITY_EDITOR
             GetAndroidDevices();
