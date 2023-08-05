@@ -15,10 +15,5 @@
             </intent-filter>    
         </activity>
 		<meta-data android:name="unityplayer.UnityActivity" android:value="true" />
-		<receiver android:name="com.helagos.androidutilspermission.USBReceiver">
-			<intent-filter>
-				<action android:name="android.hardware.usb.action.USB_PERMISSION" />
-			</intent-filter>
-		</receiver>
     </application>
 </manifest>

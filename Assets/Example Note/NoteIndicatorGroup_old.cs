@@ -169,13 +169,13 @@ public class NoteIndicatorGroup_old : MonoBehaviour
 
     public void TestRequestPermission()
     {
-        if (!AndroidUtils.IsPermitted(AndroidPermission.ACCESS_FINE_LOCATION))//test request permission
+        /*if (!AndroidUtils.IsPermitted(AndroidPermission.ACCESS_FINE_LOCATION))//test request permission
             AndroidUtils.RequestPermission(
             AndroidPermission.ACCESS_FINE_LOCATION,
             () => { },
             () => { },
             () => { }
-            );
+            );*/
     }
 }
 

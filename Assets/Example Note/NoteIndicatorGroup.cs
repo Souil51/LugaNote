@@ -36,9 +36,10 @@ public class NoteIndicatorGroup : MonoBehaviour
 
 #endif
 
-        // AndroidJavaObject context = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
-
-        AndroidJavaObject context = new AndroidJavaClass("com.helagos.androidutilspermission.AndroidUtils");
+        /*Debug.Log("Instantiating AndroidUtils");
+        AndroidJavaObject androidUtils = new AndroidJavaObject("com.helagos.androidutilspermission.AndroidUtils");
+        androidUtils.Call("requestPermission", "android.hardware.usb.action.USB_PERMISSION");
+        Debug.Log("RequestPermission called");*/
 
         int i = 0;
     }

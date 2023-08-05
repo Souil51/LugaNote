@@ -13,6 +13,18 @@ public class LocationPermissionHandler : MonoBehaviour
         currentActivity = new AndroidJavaClass("com.unity3d.player.UnityPlayer")
             .GetStatic<AndroidJavaObject>("currentActivity");
 
+
+
+
+
+        /*Debug.Log("Instantiating AndroidUtils");
+        AndroidJavaObject androidUtils = new AndroidJavaObject("com.helagos.androidutilspermission.AndroidUtils");
+        androidUtils.Call("requestPermission", "android.hardware.usb.action.USB_PERMISSION");
+        Debug.Log("RequestPermission called");*/
+
+
+
+
         // Create an instance of the USBReceiver class
         AndroidJavaObject usbReceiverInstance = new AndroidJavaObject("com.helagos.androidutilspermission.USBReceiver");
 
@@ -38,7 +50,12 @@ public class LocationPermissionHandler : MonoBehaviour
     private void RequestUSBPermission()
     {
         Debug.Log("RequestUSBPermission call");
-        AndroidJavaObject usbManager = currentActivity.Call<AndroidJavaObject>("getSystemService", "usb");
+
+        AndroidJavaObject androidUtils = new AndroidJavaObject("com.helagos.androidutilspermission.USBPermissionManager");
+        // androidUtils.Call("registerUSBReceiver");
+        androidUtils.Call("requestUSBPermission");
+
+        /*AndroidJavaObject usbManager = currentActivity.Call<AndroidJavaObject>("getSystemService", "usb");
 
         AndroidJavaObject usbDeviceList = usbManager.Call<AndroidJavaObject>("getDeviceList");
         if (usbDeviceList != null && !usbDeviceList.Call<bool>("isEmpty"))
@@ -58,7 +75,7 @@ public class LocationPermissionHandler : MonoBehaviour
                     // AndroidJavaObject permissionIntent = new AndroidJavaObject("android.app.PendingIntent", currentActivity.Call<AndroidJavaObject>("getApplicationContext"), 0, new AndroidJavaObject("android.content.Intent"));
                     // AndroidJavaObject intent = new AndroidJavaObject("android.content.Intent");
                     // AndroidJavaObject permissionIntent = intent.CallStatic<AndroidJavaObject>("getBroadcast", currentActivity, 0, intent, 0);
-                    AndroidJavaObject intent = new AndroidJavaObject("android.content.Intent");
+                    AndroidJavaObject intent = new AndroidJavaObject("android.content.Intent", "android.hardware.usb.action.USB_PERMISSION");
                     AndroidJavaObject pendingIntentClass = new AndroidJavaClass("android.app.PendingIntent");
                     AndroidJavaObject permissionIntent = pendingIntentClass.CallStatic<AndroidJavaObject>("getBroadcast", currentActivity, 0, intent, 0);
 
@@ -66,7 +83,7 @@ public class LocationPermissionHandler : MonoBehaviour
                     usbManager.Call("requestPermission", device, permissionIntent);
                 }
             }
-        }
+        }*/
     }
 
     public void OnUSBPermissionResult(bool granted)

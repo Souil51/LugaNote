@@ -22,7 +22,7 @@ public class AndroidUtils : MonoBehaviour
     public static UnityAction onDenyCallback;
     public static UnityAction onDenyAndNeverAskAgainCallback;
 
-   public static bool IsPermitted(AndroidPermission permission)
+   /*public static bool IsPermitted(AndroidPermission permission)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         using (var androidUtils = new AndroidJavaClass("com.helagos.androidutilspermission.AndroidUtils"))
@@ -31,8 +31,8 @@ public class AndroidUtils : MonoBehaviour
         }
 #endif
         return true;
-    }
-    public static void RequestPermission(AndroidPermission permission, UnityAction onAllow = null, UnityAction onDeny = null, UnityAction onDenyAndNeverAskAgain = null)
+    }*/
+    /*public static void RequestPermission(AndroidPermission permission, UnityAction onAllow = null, UnityAction onDeny = null, UnityAction onDenyAndNeverAskAgain = null)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
         onAllowCallback = onAllow;
@@ -43,11 +43,11 @@ public class AndroidUtils : MonoBehaviour
             androidUtils.GetStatic<AndroidJavaObject>("currentActivity").Call("requestPermission", GetPermissionStrr(permission));
         }
 #endif
-    }
-    private static string GetPermissionStrr(AndroidPermission permission)
+    }*/
+    /*private static string GetPermissionStrr(AndroidPermission permission)
     {
         return "android.permission." + permission.ToString();
-    }
+    }*/
     /*public static void ShowToast(string message)
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -60,22 +60,25 @@ public class AndroidUtils : MonoBehaviour
     }*/
 
     //this function will be called when the permission has been approved
-    private void OnAllow()
+    public void OnAllow(string value)
     {
+        Debug.Log("AndroidsUtils OnAllow " + value);
         if (onAllowCallback != null)
             onAllowCallback();
         ResetAllCallBacks();
     }
     //this function will be called when the permission has been denied
-    private void OnDeny()
+    public void OnDeny(string value)
     {
+        Debug.Log("AndroidsUtils OnDeny " + value);
         if (onDenyCallback != null)
             onDenyCallback();
         ResetAllCallBacks();
     }
     //this function will be called when the permission has been denied and user tick to checkbox never ask again
-    private void OnDenyAndNeverAskAgain()
+    public void OnDenyAndNeverAskAgain(string value)
     {
+        Debug.Log("AndroidsUtils OnDenyAndNeverAskAgain " + value);
         if (onDenyAndNeverAskAgainCallback != null)
             onDenyAndNeverAskAgainCallback();
         ResetAllCallBacks();
