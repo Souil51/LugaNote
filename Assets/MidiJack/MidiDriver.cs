@@ -28,14 +28,18 @@ using System;
 using System.Linq;
 using Unity.VisualScripting;
 using System.Reflection;
+using Assets.Scripts.Game.Model;
+using Newtonsoft.Json;
+using System.IO;
+using Assets.MidiJack;
 
 namespace MidiJack
 {
-    public class MidiDriver
+    public abstract class MidiDriver
     {
         #region Internal Data
 
-        class ChannelState
+        protected class ChannelState
         {
             // Note state array
             // X<0    : Released on this frame
@@ -56,13 +60,15 @@ namespace MidiJack
         }
 
         // Channel state array
-        ChannelState[] _channelArray;
+        protected ChannelState[] _channelArray;
 
         // Last update frame number
-        int _lastFrame;
+        protected int _lastFrame;
 
-        List<string> allDevices = new List<string>();
-        Dictionary<string, bool> allDevicesBound = new Dictionary<string, bool>();
+        protected List<string> allDevices = new List<string>();
+        protected List<BoundDevice> allDevicesBound = new List<BoundDevice>();
+
+        protected static string _persistentPermissionFilePath = Application.persistentDataPath + "/persistentPermissions.json";
 
         #endregion
 
@@ -126,13 +132,13 @@ namespace MidiJack
 
         #region Editor Support
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
 
         // Update timer
-        const float _updateInterval = 1.0f / 30;
-        float _lastUpdateTime;
+        protected const float _updateInterval = 1.0f / 30;
+        protected float _lastUpdateTime;
 
-        bool CheckUpdateInterval()
+        protected bool CheckUpdateInterval()
         {
             var current = Time.realtimeSinceStartup;
             if (current - _lastUpdateTime > _updateInterval || current < _lastUpdateTime) {
@@ -143,7 +149,7 @@ namespace MidiJack
         }
 
         // Total message count
-        int _totalMessageCount;
+        protected int _totalMessageCount;
 
         public int TotalMessageCount {
             get {
@@ -153,19 +159,19 @@ namespace MidiJack
         }
 
         // Message history
-        Queue<MidiMessage> _messageHistory;
+        protected Queue<MidiMessage> _messageHistory;
 
         public Queue<MidiMessage> History {
             get { return _messageHistory; }
         }
 
-        #endif
+#endif
 
         #endregion
 
         #region Public Methods
 
-        MidiDriver()
+        protected MidiDriver()
         {
             _channelArray = new ChannelState[17];
             for (var i = 0; i < 17; i++)
@@ -198,7 +204,7 @@ namespace MidiJack
             }
         }
 
-        void Update()
+        protected virtual void Update()
         {
             // Update the note state array.
             foreach (var cs in _channelArray)
@@ -212,255 +218,107 @@ namespace MidiJack
                         cs._noteArray[i] = 0; // Key up -> Off.
                 }
             }
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-                return;
-#endif
-
-            // Process the message queue.
-            while (true)
-            {
-                // Pop from the queue.
-                var data = DequeueIncomingData();
-                if (data == 0) break;
-
-                // Parse the message.
-                var message = new MidiMessage(data);
-
-                // Split the first byte.
-                var statusCode = message.status >> 4;
-                var channelNumber = message.status & 0xf;
-
-                // Note on message?
-                if (statusCode == 9)
-                {
-                    var velocity = 1.0f / 127 * message.data2 + 1;
-                    _channelArray[channelNumber]._noteArray[message.data1] = velocity;
-                    _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = velocity;
-                    if (noteOnDelegate != null)
-                        noteOnDelegate((MidiChannel)channelNumber, message.data1, velocity - 1);
-                }
-
-                // Note off message?
-                if (statusCode == 8 || (statusCode == 9 && message.data2 == 0))
-                {
-                    _channelArray[channelNumber]._noteArray[message.data1] = -1;
-                    _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = -1;
-                    if (noteOffDelegate != null)
-                        noteOffDelegate((MidiChannel)channelNumber, message.data1);
-                }
-
-                // CC message?
-                if (statusCode == 0xb)
-                {
-                    // Normalize the value.
-                    var level = 1.0f / 127 * message.data2;
-                    // Update the channel if it already exists, or add a new channel.
-                    _channelArray[channelNumber]._knobMap[message.data1] = level;
-                    // Do again for All-ch.
-                    _channelArray[(int)MidiChannel.All]._knobMap[message.data1] = level;
-                    if (knobDelegate != null)
-                        knobDelegate((MidiChannel)channelNumber, message.data1, level);
-                }
-
-                #if UNITY_EDITOR
-                // Record the message.
-                _totalMessageCount++;
-                _messageHistory.Enqueue(message);
-                #endif
-            }
-
-            #if UNITY_EDITOR
-            // Truncate the history.
-            while (_messageHistory.Count > 8)
-                _messageHistory.Dequeue();
-            #endif
         }
 
-        void DeviceCallback()
-        {
-            // Debug.Log("DeviceCallback");
+        protected virtual void DeviceCallback() { }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            GetAndroidDevices();
-#else
-            GetDeviceNames();
-#endif
-
-            // Unplug detection
-            for (int i = 0; i < allDevicesBound.Keys.ToList().Count; i++)
-            {
-                if (!allDevices.Contains(allDevicesBound.Keys.ToList()[i])
-                    && allDevicesBound[allDevicesBound.Keys.ToList()[i]])
-                {
-                    Debug.Log("Unplug detection " + allDevicesBound.Keys.ToList()[i]);
-
-                    if (deviceDisconnectedDelegate != null)
-                        deviceDisconnectedDelegate(allDevicesBound.Keys.ToList()[i]);
-
-                    allDevicesBound[allDevicesBound.Keys.ToList()[i]] = false;
-                }
-            }
-
-            // plug detection
-            for (uint i = 0; i < allDevices.Count; i++)
-            {
-                if (!allDevicesBound[allDevices[(int)i]])
-                {
-#if UNITY_ANDROID && !UNITY_EDITOR
-                    // int indexToOpen = _instance.midiDroid.IndexOfDeviceNamed(allDevices[(int)i]);
-                    // _instance.midiDroid.TryOpenDeviceAt(indexToOpen);
-                    _instance.midiDroid.FindADevice();
-#else
-                    OpenDevice(i);
-#endif
-
-                    // int indexToOpen = _instance.midiDroid.IndexOfDeviceNamed(allDevices[(int)i]);
-                    // _instance.midiDroid.TryOpenDeviceAt(indexToOpen);
-
-                    allDevicesBound[allDevices[(int)i]] = true;
-                    Debug.Log("Open device " + allDevices[(int)i]);
-
-                    if (deviceConnectedDelegate != null)
-                        deviceConnectedDelegate(allDevices[(int)i]);
-                }
-            }
-        }
+        protected virtual void Init() { }
 
         #endregion
 
         #region Platform specific
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-
-        private void HandleMidiMessage(object sender, MidiMessage message)
-        {
-        Debug.Log("HandleMidiMessage");
-            // Split the first byte.
-            var statusCode = message.status >> 4;
-            var channelNumber = message.status & 0xf;
-
-            // Note on message?
-            if (statusCode == 9)
-            {
-                Debug.LogFormat("Getting {0} On", message.data1);
-                var velocity = 1.0f / 127 * message.data2 + 1;
-                _channelArray[channelNumber]._noteArray[message.data1] = velocity;
-                _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = velocity;
-                if (noteOnDelegate != null)
-                    noteOnDelegate((MidiChannel)channelNumber, message.data1, velocity - 1);
-            }
-
-            // Note off message?
-            if (statusCode == 8 || (statusCode == 9 && message.data2 == 0))
-            {
-                Debug.LogFormat("Getting {0} Off", message.data1);
-                _channelArray[channelNumber]._noteArray[message.data1] = -1;
-                _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = -1;
-                if (noteOffDelegate != null)
-                    noteOffDelegate((MidiChannel)channelNumber, message.data1);
-            }
-
-            // CC message?
-            if (statusCode == 0xb)
-            {
-                // Normalize the value.
-                var level = 1.0f / 127 * message.data2;
-                // Update the channel if it already exists, or add a new channel.
-                _channelArray[channelNumber]._knobMap[message.data1] = level;
-                // Do again for All-ch.
-                _channelArray[(int)MidiChannel.All]._knobMap[message.data1] = level;
-                if (knobDelegate != null)
-                    knobDelegate((MidiChannel)channelNumber, message.data1, level);
-            }
-        }
-
-        private void GetAndroidDevices()
-        {
-            if(_instance.midiDroid == null) return;
-
-            allDevices = _instance.midiDroid.getDeviceList();
-            foreach (string deviceName in allDevices)
-            {
-                Debug.Log(deviceName);
-                if (!allDevicesBound.ContainsKey(deviceName))
-                {
-                    allDevicesBound.Add(deviceName, false);
-                }
-            }
-        }
-
-        private MidiDroid midiDroid;
-        public ulong DequeueIncomingData(){
-            return 0;
-        }
-#else
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackDequeueIncomingData")]
-        public static extern ulong DequeueIncomingData();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCountEndpoints")]
-        static extern int CountEndpoints();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackOpenDevice")]
-        static extern void OpenDevice(uint index);
-
-        [DllImport("MidiJackPlugin")]
-        static extern System.IntPtr MidiJackGetEndpointName(uint id);
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseAllDevices")]
-        static extern void CloseDevices();
-
-        [DllImport("MidiJackPlugin", EntryPoint = "MidiJackCloseDevice")]
-        static extern void CloseDevice(uint index);
-
-        static string GetEndpointName(uint id)
-        {
-            return Marshal.PtrToStringAnsi(MidiJackGetEndpointName(id));
-        }
-
-        void GetDeviceNames()
-        {
-            allDevices = new List<string>();
-            var endpointCount = CountEndpoints();
-            for (uint i = 0; i < endpointCount; i++)
-            {
-                string name = GetEndpointName(i);
-                allDevices.Add(name);
-                if (!allDevicesBound.ContainsKey(name))
-                {
-                    allDevicesBound.Add(name, false);
-                }
-            }
-        }
-#endif
-
         #endregion
 
+        protected static void AddAndSavePersistentPermissions(string deviceName)
+        {
+            string jsonString = "";
+            if (!File.Exists(_persistentPermissionFilePath))
+            {
+                File.Create(_persistentPermissionFilePath);
+                jsonString = JsonConvert.SerializeObject(new List<string>());
+
+                using (StreamWriter sw = new StreamWriter(_persistentPermissionFilePath))
+                {
+                    sw.Write(jsonString);
+                }
+            }
+
+            var persistentList = new List<string>();
+            using (StreamReader sr = new StreamReader(_persistentPermissionFilePath))
+            {
+                string szJson = sr.ReadToEnd();
+                if (!String.IsNullOrEmpty(szJson))
+                    persistentList = JsonConvert.DeserializeObject<List<string>>(szJson);
+            }
+
+            persistentList.Add(deviceName);
+            jsonString = JsonConvert.SerializeObject(persistentList);
+
+            using (StreamWriter sw = new StreamWriter(_persistentPermissionFilePath))
+            {
+                sw.Write(jsonString);
+            }
+        }
+
+        protected static List<string> GetPersistentPermissions()
+        {
+            List<string> persistentList = new List<string>();
+            if (File.Exists(_persistentPermissionFilePath))
+            {
+                using (StreamReader sr = new StreamReader(_persistentPermissionFilePath))
+                {
+                    string szJson = sr.ReadToEnd();
+                    if(!String.IsNullOrEmpty(szJson))
+                        persistentList = JsonConvert.DeserializeObject<List<string>>(szJson);
+                }
+            }
+
+            return persistentList;
+        }
+
+        
         #region Singleton Class Instance
 
-        static MidiDriver _instance;
+        protected static MidiDriver _instance;
 
         public static MidiDriver Instance {
             get {
                 if (_instance == null) {
-                    _instance = new MidiDriver();
+#if UNITY_ANDROID && !UNITY_EDITOR
+                    _instance = new AndroidMidiDriver();
+#else
+                    _instance = new UnityMidiDriver();
+#endif
                     if (Application.isPlaying)
                     {
                         MidiStateUpdater.CreateGameObject(
                             new MidiStateUpdater.Callback(_instance.Update),
                             new MidiStateUpdater.DeviceCallback(_instance.DeviceCallback));
-#if UNITY_ANDROID && !UNITY_EDITOR
-                        Debug.Log("ANDROID");
-                        _instance.midiDroid = new MidiDroid();
-                        _instance.midiDroid.Start();
-                        _instance.midiDroid.callback.DroidMidiEvent += _instance.HandleMidiMessage;
-#endif
+
+                        _instance.Init();
                     }
                 }
                 return _instance;
             }
         }
 
-        #endregion
+#endregion
+    }
+
+    public class BoundDevice
+    {
+        public string Name;
+        public bool IsBound;
+        public bool AndroidPermissionRequested;
+        public bool JustConnected;
+
+        public BoundDevice(string deviceName)
+        {
+            Name = deviceName;
+            IsBound = false;
+            AndroidPermissionRequested = false;
+            JustConnected = false;
+        }
     }
 }

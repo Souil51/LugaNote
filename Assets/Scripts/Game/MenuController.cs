@@ -89,6 +89,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.SelectedReplacementChanged += ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged += ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged += ViewModel_SelectedKeyChanged;
+
+        MidiMaster.deviceConnectedDelegate += MidiMaster_DeviceConnected;
+        MidiMaster.deviceDisconnectedDelegate += MidiMaster_DeviceDisconnected;
     }
 
     private void OnDisable()
@@ -106,6 +109,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.SelectedReplacementChanged -= ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged -= ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged -= ViewModel_SelectedKeyChanged;
+
+        MidiMaster.deviceConnectedDelegate -= MidiMaster_DeviceConnected;
+        MidiMaster.deviceDisconnectedDelegate -= MidiMaster_DeviceDisconnected;
     }
 
     private void Start()
@@ -278,10 +284,23 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _withAlteration = e.Value;
     }
 
+    private void MidiMaster_DeviceConnected(string deviceName)
+    {
+        Debug.Log("MidiMaster_DeviceConnected");
+
+        var save = SaveManager.Save;
+        save.AddDeviceData(deviceName);
+    }
+
+    private void MidiMaster_DeviceDisconnected(string deviceName)
+    {
+        Debug.Log("MidiMaster_DeviceDisconnected");
+    }
+
     #endregion
 
     #region UI event
-    
+
     public void UI_Play()
     {
         if (CurrentState != MenuState.Idle) return;

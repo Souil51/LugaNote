@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Assets.Scripts.Game.Model
     {
         public List<GameModeData> _datas;
         public ControllerSaveData _controllerData;
+        public List<DeviceData> _devicesDatas;
 
         public Save()
         {
@@ -46,6 +48,40 @@ namespace Assets.Scripts.Game.Model
         public void SetControllerData(ControllerType controllerType, PianoNote midiLowerNote, PianoNote midiHigherNote)
         {
             _controllerData = new ControllerSaveData(controllerType, midiLowerNote, midiHigherNote);
+        }
+
+        public List<DeviceData> GetDevicesDatas()
+        {
+            return _devicesDatas;
+        }
+
+        public DeviceData GetDeviceData(string name)
+        {
+            return _devicesDatas?.FirstOrDefault(x => x.Name == name);
+        }
+
+        public DeviceData AddDeviceData(string name)
+        {
+            DeviceData newDevice = _devicesDatas?.FirstOrDefault(x => x.Name == name);
+
+            if (newDevice == null)
+            {
+                newDevice = new DeviceData(name);
+                _devicesDatas?.Add(newDevice);
+            }
+
+            return newDevice;
+        }
+
+        public void UpdateDeviceData(string name, bool androidPermissionRequested, bool androidPermissionResult)
+        {
+            var device = _devicesDatas?.FirstOrDefault(x => x.Name == name);
+
+            if (device != null)
+            {
+                device.AndroidPermissionRequested = androidPermissionRequested;
+                device.AndroidPermission = androidPermissionResult;
+            }
         }
     }
 }
