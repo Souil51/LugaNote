@@ -35,6 +35,8 @@ using Assets.MidiJack;
 
 namespace MidiJack
 {
+    // Abstract class to extends
+    // It allow to not have many #if #else #endif precompiler command for Android/Non-Android process
     public abstract class MidiDriver
     {
         #region Internal Data
@@ -226,11 +228,9 @@ namespace MidiJack
 
         #endregion
 
-        #region Platform specific
+        #region Persistent permissions file
 
-        #endregion
-
-        protected static void AddAndSavePersistentPermissions(string deviceName)
+        private static void CreatePersistentPermissionsFile()
         {
             string jsonString = "";
             if (!File.Exists(_persistentPermissionFilePath))
@@ -243,17 +243,16 @@ namespace MidiJack
                     sw.Write(jsonString);
                 }
             }
+        }
 
-            var persistentList = new List<string>();
-            using (StreamReader sr = new StreamReader(_persistentPermissionFilePath))
-            {
-                string szJson = sr.ReadToEnd();
-                if (!String.IsNullOrEmpty(szJson))
-                    persistentList = JsonConvert.DeserializeObject<List<string>>(szJson);
-            }
+        protected static void AddAndSavePersistentPermissions(string deviceName)
+        {
+            CreatePersistentPermissionsFile();
 
+            var persistentList = GetPersistentPermissions();
+            
             persistentList.Add(deviceName);
-            jsonString = JsonConvert.SerializeObject(persistentList);
+            string jsonString = JsonConvert.SerializeObject(persistentList);
 
             using (StreamWriter sw = new StreamWriter(_persistentPermissionFilePath))
             {
@@ -277,7 +276,8 @@ namespace MidiJack
             return persistentList;
         }
 
-        
+        #endregion
+
         #region Singleton Class Instance
 
         protected static MidiDriver _instance;
@@ -285,6 +285,7 @@ namespace MidiJack
         public static MidiDriver Instance {
             get {
                 if (_instance == null) {
+                    // Instantiate the correct MidiDriver for Android or others platforms
 #if UNITY_ANDROID && !UNITY_EDITOR
                     _instance = new AndroidMidiDriver();
 #else

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using static MidiJack.MidiDriver;
 
-// This script have to be on a GameObject named AndroidUtils in the scene when Android Permission request occur
+// This script have to be on a GameObject named AndroidUtils in the scene when Android Permission request occurs
 // The Java android_utils.jar classes will send message to Unity for the USB permission result
 public class AndroidUtils : MonoBehaviour
 {

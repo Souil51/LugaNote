@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets
+namespace DataBinding.Core
 {
     /// <summary>
     /// Binding path for dateBinding

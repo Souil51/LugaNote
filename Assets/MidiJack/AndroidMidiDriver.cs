@@ -12,6 +12,8 @@ using MidiJack;
 
 namespace Assets.MidiJack
 {
+    // MidiDriver for Android
+    // Main difference with the Unity one : devive listing and permissions prompt
     public class AndroidMidiDriver : MidiDriver
     {
         private MidiDroid midiDroid;
@@ -80,12 +82,6 @@ namespace Assets.MidiJack
                     string deviceName = allDevices[(int)i];
                     if(!boundDevice.AndroidPermissionRequested)
                     {
-                        Debug.Log("List of allDeviceBound");
-                        foreach(var device in allDevicesBound)
-                        {
-                            Debug.Log(device.Name + " - " + device.AndroidPermissionRequested + " - " + device.IsBound);
-                        }
-
                         USBPermissionHandler.RequestUSBPermission(deviceName);
                     }
                     else

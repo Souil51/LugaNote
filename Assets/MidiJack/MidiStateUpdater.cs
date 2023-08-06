@@ -45,8 +45,8 @@ namespace MidiJack
             updater.StartDeviceCoroutine();
         }
 
-        Callback _callback;
-        DeviceCallback _deviceCallback;
+        Callback _callback; // MIDI info callback, called every frames to get notes
+        DeviceCallback _deviceCallback;// MIDI device callback, called every seconds to detect device connection/disconnection
 
         void Update()
         {

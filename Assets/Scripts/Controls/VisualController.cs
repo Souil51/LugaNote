@@ -1,4 +1,5 @@
 using Assets.Scripts.Game.Model;
+using DataBinding.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +67,7 @@ public class VisualController : MonoBehaviour, IController
     public GameObject Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
-        ConfigurationDestroyed?.Invoke(this, new Assets.GameObjectEventArgs(null));
+        ConfigurationDestroyed?.Invoke(this, new GameObjectEventArgs(null));
 
         return null;
     }

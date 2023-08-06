@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DataBinding.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.DataBinding
+namespace DataBinding.Core.Lists
 {
     public class ListItemViewModel : ViewModelBase
     {

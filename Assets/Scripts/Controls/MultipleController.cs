@@ -1,4 +1,5 @@
 using Assets.Scripts.Game.Model;
+using DataBinding.Core;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -152,7 +153,7 @@ public class MultipleController : MonoBehaviour, IController
         Configuration?.Invoke(this, e);
     }
 
-    private void MidiController_ConfigurationDestroyed(object sender, Assets.GameObjectEventArgs e)
+    private void MidiController_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
     {
         ConfigurationDestroyed?.Invoke(sender, e);
     }

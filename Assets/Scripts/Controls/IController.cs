@@ -1,5 +1,6 @@
 using Assets;
 using Assets.Scripts.Game.Model;
+using DataBinding.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;

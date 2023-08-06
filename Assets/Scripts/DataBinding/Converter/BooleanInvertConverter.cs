@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.DataBinding.Converter
+namespace DataBinding.Converter
 {
     public class BooleanInvertConverter : MonoBehaviour, IBindingConverter
     {

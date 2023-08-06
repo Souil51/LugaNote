@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataBinding.Core;
+using DataBinding.Core.Lists;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Assets.Scripts.DataBinding
+namespace DataBinding.Tests
 {
     public class ListBinding_Bis : MonoBehaviour
     {

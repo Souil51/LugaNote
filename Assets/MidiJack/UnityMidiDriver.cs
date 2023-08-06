@@ -12,6 +12,7 @@ using MidiJack;
 
 namespace Assets.MidiJack
 {
+    // MidiDriver for Unity (Windows) platform
     public class UnityMidiDriver : MidiDriver
     {
         [DllImport("MidiJackPlugin", EntryPoint = "MidiJackDequeueIncomingData")]

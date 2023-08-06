@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Assets.Scripts.Game.Model;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Game.Model
+namespace Assets.Scripts.Game.Save
 {
     [Serializable]
     public class Save

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Game.Model;
+﻿using Assets.Scripts.Data;
+using Assets.Scripts.Game.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
-namespace Assets.Scripts.Data
+namespace Assets.Scripts.Game.Save
 {
     public class SaveManager
     {

@@ -1,6 +1,8 @@
 using Assets.Scripts.Data;
 using Assets.Scripts.Game.Model;
+using Assets.Scripts.Game.Save;
 using Assets.Scripts.Utils;
+using DataBinding.Core;
 using MidiJack;
 using System;
 using System.Collections;
@@ -172,7 +174,7 @@ public class MidiController : MonoBehaviour, IController
         return go;
     }
 
-    private void _configurationHelper_ConfigurationDestroyed(object sender, Assets.GameObjectEventArgs e)
+    private void _configurationHelper_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
     {
         _configurationHelper.ConfigurationDestroyed -= _configurationHelper_ConfigurationDestroyed;
 

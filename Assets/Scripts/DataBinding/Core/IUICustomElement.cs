@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IUICustomElement
+namespace DataBinding.Core
 {
-    bool IsActive { get; set; }
+    public interface IUICustomElement
+    {
+        bool IsActive { get; set; }
+    }
 }

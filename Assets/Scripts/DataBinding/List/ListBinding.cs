@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataBinding.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.DataBinding
+namespace DataBinding.Core.Lists
 {
     /// <summary>
     /// Handles a list DataBinding

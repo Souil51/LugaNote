@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using UnityEngine;
 
-namespace Assets
+namespace DataBinding.Core
 {
     public interface IViewModel : INotifyPropertyChanged 
     {

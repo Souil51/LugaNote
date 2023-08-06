@@ -41,6 +41,6 @@ public class NoteIndicatorGroup : MonoBehaviour
         androidUtils.Call("requestPermission", "android.hardware.usb.action.USB_PERMISSION");
         Debug.Log("RequestPermission called");*/
 
-        int i = 0;
+        // int i = 0;
     }
 }

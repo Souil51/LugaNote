@@ -1,4 +1,5 @@
 using Assets.Scripts.Game.Model;
+using DataBinding.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -153,7 +154,7 @@ public class KeyboardController : MonoBehaviour, IController
     public GameObject Configure()
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
-        ConfigurationDestroyed?.Invoke(this, new Assets.GameObjectEventArgs(null));
+        ConfigurationDestroyed?.Invoke(this, new GameObjectEventArgs(null));
 
         return null;
     }
