@@ -31,7 +31,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private float TwoStaffScale;
     [SerializeField] private float StaffSeparatorYPosition;
     
-    private GameMode GameMode;
+    private GameMode _gameMode;
+    public GameMode GameMode => _gameMode;
 
     public GameState State
     {
@@ -155,7 +156,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            GameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, false);
+            _gameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, false);
         }
 
         // Generate the staff lines
@@ -288,6 +289,17 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         return firstNote;
     }
 
+    public List<Note> GetFirstNotes()
+    {
+        var firstNotes = new List<Note>();
+        var nearestNotesCreationTime = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault()?.CreationTimestamp;
+        if(nearestNotesCreationTime.HasValue)
+        {
+            firstNotes = Staffs.SelectMany(x => x.Notes).Where(x => x.CreationTimestamp == nearestNotesCreationTime.Value).ToList();
+        }
+        return firstNotes;
+    }
+
     private void NavigateToMenu()
     {
         ViewModel.HideAll();
@@ -304,7 +316,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {
-            GameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
+            _gameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
             _gameReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
 
             Transition.SetPositionClose();

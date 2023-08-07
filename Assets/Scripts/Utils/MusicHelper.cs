@@ -273,20 +273,15 @@ public class MusicHelper
         {
             case Level.C3_C4:
                 return Notes3rdAnd4thOctave;
-                break;
             case Level.C5:
                 return Notes5thOctave;
-                break;
             case Level.C5_C6:
                 return Notes5thAnd6thOctave;
-                break;
             case Level.C3_C6:
                 return Notes3thTo6thOctave;
-                break;
             case Level.C4:
             default:
                 return Notes4thOctave;
-                break;
         }
     }
 

@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,17 +14,22 @@ public class GameInputManager : MonoBehaviour
     public delegate void PauseEventHandler(object sender, EventArgs e);
     public event PauseEventHandler Pause;
 
+    // Used to store pending notes when playing intervals/chords mode
+    private List<ControllerNote> _noteBuffer = new List<ControllerNote>();
+    private int maxNoteCount = 1;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        maxNoteCount = (int)GameController.Instance.GameMode.IntervalMode + 1;
     }
 
     // Update is called once per frame
     void Update()
     {
         // Guessing system
-        var firstNote = GameController.Instance.GetFirstNote();
+        var firstSingleNote = GameController.Instance.GetFirstNote();
+        var firstNotes = GameController.Instance.GetFirstNotes();
 
         if (!GameController.Instance.IsGameEnded)
         {
@@ -32,47 +38,111 @@ public class GameInputManager : MonoBehaviour
                 Pause?.Invoke(this, EventArgs.Empty);
             }
 
-            if (firstNote != null && !GameController.Instance.IsPaused)
+            if (firstNotes.Count > 0 && !GameController.Instance.IsPaused)
             {
-                if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
+                foreach (var note in GameController.Instance.Controller.NotesDownWithOffset)
                 {
-                    Debug.Log(firstNote.PianoNote);
-                    Debug.Log(GameController.Instance.Controller.NotesDownWithOffset[0]);
+                    if (!_noteBuffer.Contains(note))
+                    {
+                        _noteBuffer.Add(note);
+                    }
+                }
+
+                foreach (var note in GameController.Instance.Controller.NotesUpWithOffset)
+                {
+                    if (_noteBuffer.Contains(note))
+                    {
+                        _noteBuffer.Remove(note);
+                    }
+                }
+
+                if(_noteBuffer.Count > maxNoteCount)
+                {
+                    Debug.Log("Too much note -> bad guess");
+                    // Bad guess
+                    SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
+                    firstNotes.ForEach(x => x.ShowBadGuess());
+                    Guess?.Invoke(this, new GuessEventArgs(false));
+                    _noteBuffer.Clear();
+                }
+
+                if(_noteBuffer.Count == maxNoteCount)
+                {
+                    Debug.Log("Note count match");
+                    // Good guess ?
+
+                //}
+
+                //if (GameController.Instance.Controller.NotesDownWithOffset.Count > 0)
+                //{
+                    Debug.Log(string.Join(", ", firstNotes.Select(x => x.PianoNote.ToString())));
+                    Debug.Log(firstSingleNote);
+
+                    // Debug.Log(GameController.Instance.Controller.NotesDownWithOffset[0]);
                     bool? guessValue = null;
 
-                    if (GameController.Instance.Controller.NotesDownWithOffset.Count == 1)
-                    {
-                        var firstControllerNote = GameController.Instance.Controller.NotesDownWithOffset[0];
-                        bool replaceNote = firstControllerNote.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
+                    //if (GameController.Instance.Controller.NotesDownWithOffset.Count == 1)
+                    //{
+                    var firstPianoNotes = firstNotes.Select(x => x.PianoNote).ToList();
+                    var firstPianoNotesForReplace = firstNotes.Select(x => (PianoNote)((int)x.PianoNote % 12)).ToList();
 
-                        // Normal mode : the note has to be the exact same note
-                        // Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
-                        if (
-                                (
-                                    (!replaceNote && firstControllerNote.Note == firstNote.PianoNote)
-                                    ||
-                                    (replaceNote && (int)firstControllerNote.Note % 12 == (int)(firstNote.PianoNote) % 12)
-                                )
-                            )
-                        {
-                            SoundManager.PlayNote(firstControllerNote.Note);
-                            // Good guess
-                            firstNote.ShowGoodGuess();
-                            guessValue = true;
-                        }
-                        else
-                        {
-                            SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
-                            // Bad guess
-                            firstNote.ShowBadGuess();
-                            guessValue = false;
-                        }
+                    bool oneBadNote = false;
+                    foreach (var note in _noteBuffer)
+                    {
+                        bool replaceNote = note.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
+                        var firstControllerNote = note.Note;
+                        var noteFound = firstNotes.FirstOrDefault(x => x.PianoNote == note.Note);
+
+                        if (!oneBadNote)
+                            oneBadNote = noteFound == null || (!(!replaceNote && firstControllerNote == firstNotes[0].PianoNote) && !(replaceNote && (int)firstControllerNote % 12 == (int)(firstNotes[0].PianoNote) % 12));
                     }
+
+                    if (!oneBadNote)
+                    {
+                        firstNotes.ForEach(x => SoundManager.PlayNote(x.PianoNote));
+                        firstNotes.ForEach(x => x.ShowGoodGuess());
+                        guessValue = true;
+                    }
+                    else
+                    {
+                        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
+                        firstNotes.ForEach(x => x.ShowBadGuess());
+                        guessValue = false;
+                    }
+
+                    //var firstControllerNote = GameController.Instance.Controller.NotesDownWithOffset[0];
+                    //bool replaceNote = firstControllerNote.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
+
+                    //// Normal mode : the note has to be the exact same note
+                    //// Replacement mode : the note has to be the same note, no matter the octave (note % 12 == 0)
+                    //if (
+                    //        (
+                    //            (!replaceNote && firstControllerNote.Note == firstNotes[0].PianoNote)
+                    //            ||
+                    //            (replaceNote && (int)firstControllerNote.Note % 12 == (int)(firstNotes[0].PianoNote) % 12)
+                    //        )
+                    //    )
+                    //{
+                    //    SoundManager.PlayNote(firstControllerNote.Note);
+                    //    // Good guess
+                    //    firstNotes.ForEach(x => x.ShowGoodGuess());
+                    //    guessValue = true;
+                    //}
+                    //else
+                    //{
+                    //    SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
+                    //    // Bad guess
+                    //    firstNotes.ForEach(x => x.ShowBadGuess());
+                    //    guessValue = false;
+                    //}
+                    // }
 
                     if (guessValue.HasValue)
                     {
                         Guess?.Invoke(this, new GuessEventArgs(guessValue.Value));
                     }
+
+                    _noteBuffer.Clear();
                 }
 
                 // For testing
