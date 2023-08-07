@@ -472,7 +472,10 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                                 }
                             }*/
 
-                            staffs[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAlteration);
+                            var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
+
+                            // staffs[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAlteration);
+                            staffs[i].SpawnNote(noteList, GameMode.WithRandomAlteration);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }

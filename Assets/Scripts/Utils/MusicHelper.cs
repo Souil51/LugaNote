@@ -267,6 +267,29 @@ public class MusicHelper
 
     public static List<PianoNote> Notes3thTo6thOctave => Notes3rdOctave.Concat(Notes4thOctave).Concat(Notes5thOctave).Concat(Notes6thOctave).ToList();
 
+    public static List<PianoNote> GetNotesForLevel(Level level)
+    {
+        switch (level)
+        {
+            case Level.C3_C4:
+                return Notes3rdAnd4thOctave;
+                break;
+            case Level.C5:
+                return Notes5thOctave;
+                break;
+            case Level.C5_C6:
+                return Notes5thAnd6thOctave;
+                break;
+            case Level.C3_C6:
+                return Notes3thTo6thOctave;
+                break;
+            case Level.C4:
+            default:
+                return Notes4thOctave;
+                break;
+        }
+    }
+
     public static List<PianoNote> NotNaturallyFlatableNotes => _notNaturallyFlatableNotes;
 
     /// <summary>
