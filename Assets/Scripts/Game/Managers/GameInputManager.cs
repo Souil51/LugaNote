@@ -40,6 +40,7 @@ public class GameInputManager : MonoBehaviour
 
             if (firstNotes.Count > 0 && !GameController.Instance.IsPaused)
             {
+                // Store notes pressed
                 foreach (var note in GameController.Instance.Controller.NotesDownWithOffset)
                 {
                     if (!_noteBuffer.Contains(note))
@@ -56,6 +57,7 @@ public class GameInputManager : MonoBehaviour
                     }
                 }
 
+                // If buffer > maxNoteCount of the interval mode : bad guess (happens when user press multiple key in the same frame)
                 if(_noteBuffer.Count > maxNoteCount)
                 {
                     Debug.Log("Too much note -> bad guess");
@@ -66,6 +68,7 @@ public class GameInputManager : MonoBehaviour
                     _noteBuffer.Clear();
                 }
 
+                // If buffer == maxNoteCount of the interval mode : check if it's a good or a bad guess
                 if(_noteBuffer.Count == maxNoteCount)
                 {
                     Debug.Log("Note count match");
@@ -90,14 +93,13 @@ public class GameInputManager : MonoBehaviour
                     foreach (var note in _noteBuffer)
                     {
                         bool replaceNote = note.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
-                        var firstControllerNote = note.Note;
                         var noteFound = firstNotes.FirstOrDefault(x => x.PianoNote == note.Note);
 
                         if (!oneBadNote)
-                            oneBadNote = noteFound == null || (!(!replaceNote && firstControllerNote == firstNotes[0].PianoNote) && !(replaceNote && (int)firstControllerNote % 12 == (int)(firstNotes[0].PianoNote) % 12));
+                            oneBadNote = noteFound == null || (!(!replaceNote && note.Note == firstNotes[0].PianoNote) && !(replaceNote && (int)note.Note % 12 == (int)(firstNotes[0].PianoNote) % 12));
                     }
 
-                    if (!oneBadNote)
+                    if (!oneBadNote) // if there is one bad note in the buffer -> it's a bad guess
                     {
                         firstNotes.ForEach(x => SoundManager.PlayNote(x.PianoNote));
                         firstNotes.ForEach(x => x.ShowGoodGuess());

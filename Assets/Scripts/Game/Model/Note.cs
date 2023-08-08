@@ -90,6 +90,13 @@ public class Note : MonoBehaviour
         }
     }
 
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration, Note timedParentNote)
+    {
+        this.InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, alteration);
+        if(timedParentNote != null)
+            this._creationTimestamp = timedParentNote.CreationTimestamp;
+    }
+
     public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
     {
         InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, Alteration.Natural);

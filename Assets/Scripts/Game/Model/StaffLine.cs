@@ -104,23 +104,74 @@ public class StaffLine : MonoBehaviour
 
     public void SpawnNoteWithRandomAlteration(float scale, float fromX, float toX)
     {
-        this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural);
+        this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, null);
     }
 
     public void SpawnNote(float scale, float fromX, float toX)
     {
-        this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural);
+        this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, null);
     }
 
     public void SpawnNoteWithAlteration(float scale, float fromX, float toX, Alteration alteration)
     {
-        this.SpawnNote(scale, fromX, toX, false, true, alteration);
+        this.SpawnNote(scale, fromX, toX, false, true, alteration, null);
+    }
+
+    public void SpawnMultipleNotesWithRandomAlteration(int count, float scale, float fromX, float toX)
+    {
+        Note firstNote = null;
+        for(int i = 0; i < count; i++)
+        {
+            if(i == 0)
+            {
+                var newNote = this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, null);
+                firstNote = newNote;
+            }
+            else
+            {
+                this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, firstNote);
+            }
+        }
+    }
+
+    public void SpawnMultipleNotes(int count, float scale, float fromX, float toX)
+    {
+        Note firstNote = null;
+        for (int i = 0; i < count; i++)
+        {
+            if (i == 0)
+            {
+                var newNote = this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, null);
+                firstNote = newNote;
+            }
+            else
+            {
+                this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, firstNote);
+            }
+        }
+    }
+
+    public void SpawnMultipleNotesWithAlteration(int count, float scale, float fromX, float toX, Alteration alteration)
+    {
+        Note firstNote = null;
+        for (int i = 0; i < count; i++)
+        {
+            if (i == 0)
+            {
+                var newNote = this.SpawnNote(scale, fromX, toX, false, true, alteration, null);
+                firstNote = newNote;
+            }
+            else
+            {
+                this.SpawnNote(scale, fromX, toX, false, true, alteration, firstNote);
+            }
+        }
     }
 
     /// <summary>
     /// Instantiate a note on the line starting position to the line ending position
     /// </summary>
-    private void SpawnNote(float scale,  float fromX, float toX, bool withRandomAlteration, bool forceAlteration, Alteration forcedAlteration)
+    private Note SpawnNote(float scale,  float fromX, float toX, bool withRandomAlteration, bool forceAlteration, Alteration forcedAlteration, Note timedParentNote)
     {
         var alteration = Alteration.Natural;
 
@@ -168,12 +219,14 @@ public class StaffLine : MonoBehaviour
         var note = go.GetComponent<Note>();
 
         // Initialize note with this line alteration
-        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration);
+        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration, timedParentNote);
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         note.DestroyEvent += Note_DestroyEvent;
 
         _notes.Add(note);
+
+        return note;
     }
 
     private void Note_DestroyEvent(object sender, System.EventArgs args)

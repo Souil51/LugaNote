@@ -436,7 +436,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             switch (GameMode.IntervalMode) 
             {
                 case IntervalMode.Note:
-                case IntervalMode.Interval:
                 case IntervalMode.Chord:
                     {
                         for (int i = 0; i < staffs.Count; i++)
@@ -491,6 +490,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }
+                    break;
+                case IntervalMode.Interval:
+
                     break;
                 default:
                     yield return new WaitForSeconds(0.5f / Staffs.Count);
