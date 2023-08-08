@@ -16,14 +16,14 @@ public class TimeScaleManager : MonoBehaviour
         if (IsPaused)
             UpdatePause();
 
-        var firstNote = GameController.Instance.GetFirstNote();
+        var firstNotes = GameController.Instance.GetFirstNotes();
         // Update the timescale to slow down notes while they are approching the start of the staff
-        if (firstNote != null && !GameController.Instance.IsPaused && !GameController.Instance.IsGameEnded)
+        if (firstNotes.Count > 0 && !GameController.Instance.IsPaused && !GameController.Instance.IsGameEnded)
         {
-            var firstNoteStaff = firstNote.Parent.Parent;
+            var firstNoteStaff = firstNotes[0].Parent.Parent;
             // timescale based on the first Staff
             var totalDistance = firstNoteStaff.StartingPointPosition - firstNoteStaff.EndingPointPosition;
-            var distanceToEnd = firstNote.transform.localPosition.x - firstNoteStaff.EndingPointPosition;
+            var distanceToEnd = firstNotes[0].transform.localPosition.x - firstNoteStaff.EndingPointPosition;
 
             float newTimeScale = distanceToEnd / totalDistance;
             if (newTimeScale > 0.05f) // deadzone

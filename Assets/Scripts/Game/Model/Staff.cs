@@ -1,8 +1,10 @@
+using Guid = System.Guid;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 /// <summary>
 /// Staff script
@@ -139,5 +141,22 @@ public class Staff : MonoBehaviour
         _availableLines[index].SpawnNoteWithAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, alteration);
 
         return index;
+    }
+
+    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, bool withRandomAlteration = false)
+    {
+        Guid groupId = Guid.NewGuid();
+        var _availableLines = Lines.Where(x => notesRange.Contains(x.Note)).ToList();
+        for (int i = 0; i < count; i++)
+        {
+            int index = Random.Range(0, _availableLines.Count);
+
+            if (withRandomAlteration)
+                _availableLines[index].SpawnNoteWithRandomAlterationWithGroup(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+            else
+                _availableLines[index].SpawnNoteWithGroup(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+
+            _availableLines.RemoveAt(index);
+        }
     }
 }

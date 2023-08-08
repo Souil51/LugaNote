@@ -285,6 +285,20 @@ public class MusicHelper
         }
     }
 
+    public static int GetNotesCountForInterval(IntervalMode intervalMode)
+    {
+        switch (intervalMode)
+        {
+            default:
+            case IntervalMode.Note:
+                return 1;
+            case IntervalMode.Interval:
+                return 2;
+            case IntervalMode.Chord:
+                return 3;
+        }
+    }
+
     public static List<PianoNote> NotNaturallyFlatableNotes => _notNaturallyFlatableNotes;
 
     /// <summary>

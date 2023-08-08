@@ -1,5 +1,6 @@
 using Assets.Scripts.Utils;
 using DG.Tweening;
+using Newtonsoft.Json.Bson;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,6 +33,9 @@ public class Note : MonoBehaviour
     private Alteration _alteration;
     public Alteration Alteration => _alteration;
 
+    private bool _isPressed;
+    public bool IsPressed => _isPressed;
+
     // Get the real note with alteration
     // The parent is always a natural note
     public PianoNote PianoNote
@@ -50,15 +54,20 @@ public class Note : MonoBehaviour
     public PianoNote NaturalNote => MusicHelper.ConvertToNaturalNote(PianoNote);
 
     private SpriteRenderer _sprtRenderer;
+    private Color _baseColor;
 
     private Tween _movement;
 
     private long _creationTimestamp;
     public long CreationTimestamp => _creationTimestamp;
 
+    private Guid _groupId = Guid.Empty;
+    public Guid GroupId => _groupId;
+
     private void Awake()
     {
         _sprtRenderer = GetComponent<SpriteRenderer>();
+        _baseColor = _sprtRenderer.color;
     }
 
     public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration)
@@ -66,6 +75,7 @@ public class Note : MonoBehaviour
         _creationTimestamp = DateTime.Now.Ticks;
         _parent = parent;
         _alteration = alteration;
+        _groupId = Guid.NewGuid();
 
         // The staff display only 5 lines.
         // For lower or higher notes than that empty lines have to be displayed for better accuracy
@@ -90,11 +100,10 @@ public class Note : MonoBehaviour
         }
     }
 
-    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration, Note timedParentNote)
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration, Guid groupId)
     {
         this.InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, alteration);
-        if(timedParentNote != null)
-            this._creationTimestamp = timedParentNote.CreationTimestamp;
+        _groupId = groupId;
     }
 
     public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
@@ -147,5 +156,19 @@ public class Note : MonoBehaviour
     public void SetInactive()
     {
         _isActive = false;
+    }
+
+    public void Press()
+    {
+        _isPressed = true;
+        _sprtRenderer.color = Color.blue;
+        transform.localScale *= 1.2f;
+    }
+
+    public void Release()
+    {
+        _isPressed = false;
+        _sprtRenderer.color = _baseColor;
+        transform.localScale = Vector3.one;
     }
 }

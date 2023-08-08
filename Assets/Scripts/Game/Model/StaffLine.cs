@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Guid = System.Guid;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -104,74 +105,38 @@ public class StaffLine : MonoBehaviour
 
     public void SpawnNoteWithRandomAlteration(float scale, float fromX, float toX)
     {
-        this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, null);
+        this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, Guid.Empty);
     }
 
     public void SpawnNote(float scale, float fromX, float toX)
     {
-        this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, null);
+        this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, Guid.Empty);
     }
 
     public void SpawnNoteWithAlteration(float scale, float fromX, float toX, Alteration alteration)
     {
-        this.SpawnNote(scale, fromX, toX, false, true, alteration, null);
+        this.SpawnNote(scale, fromX, toX, false, true, alteration, Guid.Empty);
     }
 
-    public void SpawnMultipleNotesWithRandomAlteration(int count, float scale, float fromX, float toX)
+    public void SpawnNoteWithRandomAlterationWithGroup(float scale, float fromX, float toX, Guid groupId)
     {
-        Note firstNote = null;
-        for(int i = 0; i < count; i++)
-        {
-            if(i == 0)
-            {
-                var newNote = this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, null);
-                firstNote = newNote;
-            }
-            else
-            {
-                this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, firstNote);
-            }
-        }
+        this.SpawnNote(scale, fromX, toX, true, false, Alteration.Natural, groupId);
     }
 
-    public void SpawnMultipleNotes(int count, float scale, float fromX, float toX)
+    public void SpawnNoteWithGroup(float scale, float fromX, float toX, Guid groupId)
     {
-        Note firstNote = null;
-        for (int i = 0; i < count; i++)
-        {
-            if (i == 0)
-            {
-                var newNote = this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, null);
-                firstNote = newNote;
-            }
-            else
-            {
-                this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, firstNote);
-            }
-        }
+        this.SpawnNote(scale, fromX, toX, false, false, Alteration.Natural, groupId);
     }
 
-    public void SpawnMultipleNotesWithAlteration(int count, float scale, float fromX, float toX, Alteration alteration)
+    public void SpawnNoteWithAlterationWithGroup(float scale, float fromX, float toX, Alteration alteration, Guid groupId)
     {
-        Note firstNote = null;
-        for (int i = 0; i < count; i++)
-        {
-            if (i == 0)
-            {
-                var newNote = this.SpawnNote(scale, fromX, toX, false, true, alteration, null);
-                firstNote = newNote;
-            }
-            else
-            {
-                this.SpawnNote(scale, fromX, toX, false, true, alteration, firstNote);
-            }
-        }
+        this.SpawnNote(scale, fromX, toX, false, true, alteration, groupId);
     }
 
     /// <summary>
     /// Instantiate a note on the line starting position to the line ending position
     /// </summary>
-    private Note SpawnNote(float scale,  float fromX, float toX, bool withRandomAlteration, bool forceAlteration, Alteration forcedAlteration, Note timedParentNote)
+    private Note SpawnNote(float scale,  float fromX, float toX, bool withRandomAlteration, bool forceAlteration, Alteration forcedAlteration, Guid groupId)
     {
         var alteration = Alteration.Natural;
 
@@ -219,7 +184,11 @@ public class StaffLine : MonoBehaviour
         var note = go.GetComponent<Note>();
 
         // Initialize note with this line alteration
-        note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration, timedParentNote);
+        if(groupId == Guid.Empty)
+            note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration);
+        else
+            note.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration, groupId);
+
         note.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 
         note.DestroyEvent += Note_DestroyEvent;

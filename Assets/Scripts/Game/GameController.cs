@@ -292,10 +292,10 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     public List<Note> GetFirstNotes()
     {
         var firstNotes = new List<Note>();
-        var nearestNotesCreationTime = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault()?.CreationTimestamp;
-        if(nearestNotesCreationTime.HasValue)
+        var nearestNotesGroupId = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault()?.GroupId;
+        if(nearestNotesGroupId != Guid.Empty)
         {
-            firstNotes = Staffs.SelectMany(x => x.Notes).Where(x => x.CreationTimestamp == nearestNotesCreationTime.Value).ToList();
+            firstNotes = Staffs.SelectMany(x => x.Notes).Where(x => x.GroupId == nearestNotesGroupId.Value).ToList();
         }
         return firstNotes;
     }
@@ -326,7 +326,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     private void InputHandler_Guess(object sender, GuessEventArgs e)
     {
-        var firstnote = GetFirstNote();
+        var firstnotes = GetFirstNotes();
 
         if (e.Result)
         {
@@ -334,19 +334,22 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
             // Mode a note from the good guess to the score
             var notePoint = Instantiate(Resources.Load(StaticResource.PREFAB_NOTE_NO_LINE)) as GameObject;
-            notePoint.transform.position = firstnote.transform.position;
-            // var pos = new Vector3(ScreenManager.ScreenWidth / 2f, ScreenManager.ScreenHeight / 2f, 1);
-            var pos = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.95f));
-
-            notePoint.transform.DOScale(0.1f, 1f).SetUpdate(true);
-
-            notePoint.transform.DOMove(pos, 1f).SetUpdate(true).OnKill(() =>
+            foreach(var note in firstnotes)
             {
-                Destroy(notePoint);
-            });
+                notePoint.transform.position = note.transform.position;
+                // var pos = new Vector3(ScreenManager.ScreenWidth / 2f, ScreenManager.ScreenHeight / 2f, 1);
+                var pos = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.95f));
+
+                notePoint.transform.DOScale(0.1f, 1f).SetUpdate(true);
+
+                notePoint.transform.DOMove(pos, 1f).SetUpdate(true).OnKill(() =>
+                {
+                    Destroy(notePoint);
+                });
+            }
         };
 
-        firstnote.SetInactive();
+        firstnotes.ForEach(x => x.SetInactive());
         // firstnote.ChangeColor(e.Result ? StaticResource.COLOR_GOOD_GUESS : StaticResource.COLOR_BAD_GUESS);
     }
 
@@ -492,7 +495,16 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     }
                     break;
                 case IntervalMode.Interval:
-
+                    {
+                        int noteCount = MusicHelper.GetNotesCountForInterval(this.GameMode.IntervalMode);
+                        var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
+                        
+                        for (int i = 0; i < staffs.Count; i++)
+                        {
+                            staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAlteration);
+                            yield return new WaitForSeconds(0.5f / Staffs.Count);
+                        }
+                    }
                     break;
                 default:
                     yield return new WaitForSeconds(0.5f / Staffs.Count);

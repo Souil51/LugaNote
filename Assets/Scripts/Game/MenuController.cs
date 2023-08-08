@@ -137,6 +137,8 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         bool lastReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
 
         ViewModel.InitOptions(lastGameMode, lastReplacementMode);
+        if(lastGameMode != null)
+            LoadGameMode(lastGameMode, lastReplacementMode);
 
         ChangeState(MenuState.Idle);
 
@@ -207,6 +209,19 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private void ShowInfo(string info, float duration = 2f)
     {
         ViewModel.ShowInfo(info, duration);
+    }
+
+    public void LoadGameMode(GameMode gameMode, bool replacementMode)
+    {
+        if (gameMode != null)
+        {
+            _gameModeType = gameMode.GameModeType;
+            _intervalMode = gameMode.IntervalMode;
+            _selectedLevel = gameMode.Level;
+            _withAlteration = gameMode.WithRandomAlteration;
+        }
+
+        _replacementMode = replacementMode;
     }
 
     #region Events callbacks
