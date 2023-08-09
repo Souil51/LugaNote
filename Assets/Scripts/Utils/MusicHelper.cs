@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 /// <summary>
@@ -57,44 +59,44 @@ public class MusicHelper
 
 
     private static List<PianoNote> _sharpNotes = new List<PianoNote>
-    {
-        PianoNote.ASharp0,
-        PianoNote.CSharp1,
-        PianoNote.DSharp1,
-        PianoNote.FSharp1,
-        PianoNote.GSharp1,
-        PianoNote.ASharp1,
-        PianoNote.CSharp2,
-        PianoNote.DSharp2,
-        PianoNote.FSharp2,
-        PianoNote.GSharp2,
-        PianoNote.ASharp2,
-        PianoNote.CSharp3,
-        PianoNote.DSharp3,
-        PianoNote.FSharp3,
-        PianoNote.GSharp3,
-        PianoNote.ASharp3,
-        PianoNote.CSharp4,
-        PianoNote.DSharp4,
-        PianoNote.FSharp4,
-        PianoNote.GSharp4,
-        PianoNote.ASharp4,
-        PianoNote.CSharp5,
-        PianoNote.DSharp5,
-        PianoNote.FSharp5,
-        PianoNote.GSharp5,
-        PianoNote.ASharp5,
-        PianoNote.CSharp6,
-        PianoNote.DSharp6,
-        PianoNote.FSharp6,
-        PianoNote.GSharp6,
-        PianoNote.ASharp6,
-        PianoNote.CSharp7,
-        PianoNote.DSharp7,
-        PianoNote.FSharp7,
-        PianoNote.GSharp7,
-        PianoNote.ASharp7
-    };
+{
+    PianoNote.A0Sharp,
+    PianoNote.C1Sharp,
+    PianoNote.D1Sharp,
+    PianoNote.F1Sharp,
+    PianoNote.G1Sharp,
+    PianoNote.A1Sharp,
+    PianoNote.C2Sharp,
+    PianoNote.D2Sharp,
+    PianoNote.F2Sharp,
+    PianoNote.G2Sharp,
+    PianoNote.A2Sharp,
+    PianoNote.C3Sharp,
+    PianoNote.D3Sharp,
+    PianoNote.F3Sharp,
+    PianoNote.G3Sharp,
+    PianoNote.A3Sharp,
+    PianoNote.C4Sharp,
+    PianoNote.D4Sharp,
+    PianoNote.F4Sharp,
+    PianoNote.G4Sharp,
+    PianoNote.A4Sharp,
+    PianoNote.C5Sharp,
+    PianoNote.D5Sharp,
+    PianoNote.F5Sharp,
+    PianoNote.G5Sharp,
+    PianoNote.A5Sharp,
+    PianoNote.C6Sharp,
+    PianoNote.D6Sharp,
+    PianoNote.F6Sharp,
+    PianoNote.G6Sharp,
+    PianoNote.A6Sharp,
+    PianoNote.C7Sharp,
+    PianoNote.D7Sharp,
+    PianoNote.F7Sharp,
+    PianoNote.G7Sharp,
+    PianoNote.A7Sharp
+};
     /// <summary>
     /// All sharp notes
     /// </summary>
@@ -207,11 +209,11 @@ public class MusicHelper
     {
         PianoNote.E3,
         PianoNote.F3,
-        PianoNote.FSharp3,
+        PianoNote.F3Sharp,
         PianoNote.G3,
-        PianoNote.GSharp3,
+        PianoNote.G3Sharp,
         PianoNote.A3,
-        PianoNote.ASharp3,
+        PianoNote.A3Sharp,
         PianoNote.B3
     };
 
@@ -219,16 +221,16 @@ public class MusicHelper
     private static List<PianoNote> _notes4thOctave = new List<PianoNote>()
     {
         PianoNote.C4,
-        PianoNote.CSharp4,
+        PianoNote.C4Sharp,
         PianoNote.D4,
-        PianoNote.DSharp4,
+        PianoNote.D4Sharp,
         PianoNote.E4,
         PianoNote.F4,
-        PianoNote.FSharp4,
+        PianoNote.F4Sharp,
         PianoNote.G4,
-        PianoNote.GSharp4,
+        PianoNote.G4Sharp,
         PianoNote.A4,
-        PianoNote.ASharp4,
+        PianoNote.A4Sharp,
         PianoNote.B4,
     };
 
@@ -236,16 +238,16 @@ public class MusicHelper
     private static List<PianoNote> _notes5thOctave = new List<PianoNote>()
     {
         PianoNote.C5,
-        PianoNote.CSharp5,
+        PianoNote.C5Sharp,
         PianoNote.D5,
-        PianoNote.DSharp5,
+        PianoNote.D5Sharp,
         PianoNote.E5,
         PianoNote.F5,
-        PianoNote.FSharp5,
+        PianoNote.F5Sharp,
         PianoNote.G5,
-        PianoNote.GSharp5,
+        PianoNote.G5Sharp,
         PianoNote.A5,
-        PianoNote.ASharp5,
+        PianoNote.A5Sharp,
         PianoNote.B5,
     };
 
@@ -253,12 +255,12 @@ public class MusicHelper
     private static List<PianoNote> _notes6thOctave = new List<PianoNote>()
     {
         PianoNote.C6,
-        PianoNote.CSharp6,
+        PianoNote.C6Sharp,
         PianoNote.D6,
-        PianoNote.DSharp6,
+        PianoNote.D6Sharp,
         PianoNote.E6,
         PianoNote.F6,
-        PianoNote.FSharp6,
+        PianoNote.F6Sharp,
     };
 
     public static List<PianoNote> Notes3rdAnd4thOctave => Notes3rdOctave.Concat(Notes4thOctave).ToList();
@@ -455,4 +457,57 @@ public class MusicHelper
 
         return false;
     }
+
+    public static List<List<PianoNote>> GetMajorChords()
+    {
+        if(MajorChords.Count == 0)
+        {
+            PianoNote[] allEnumValues = (PianoNote[])Enum.GetValues(typeof(PianoNote));
+            foreach (var note in allEnumValues)
+            {
+                int enumValue = (int)note;
+                if((int)note + 7 <= (int)LowerNote)
+                {
+                    MajorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 4), (PianoNote)(note + 7) });
+                }
+            }
+        }
+
+        return MajorChords;
+    }
+
+    public static List<List<PianoNote>> GetMinorChords()
+    {
+        if (MajorChords.Count == 0)
+        {
+            PianoNote[] allEnumValues = (PianoNote[])Enum.GetValues(typeof(PianoNote));
+            foreach (var note in allEnumValues)
+            {
+                int enumValue = (int)note;
+                if ((int)note + 7 <= (int)LowerNote)
+                {
+                    MajorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 3), (PianoNote)(note + 7) });
+                }
+            }
+        }
+
+        return MajorChords;
+    }
+
+    public static List<List<PianoNote>> GetMajorChords(PianoNote min, PianoNote max, bool withAlterations = true)
+    {
+        var chords = GetMajorChords();
+        return chords.Where(x => min >= x.First() && max <= x.Last() && (withAlterations || !x.Any(y => SharpNotes.Contains(y)))).ToList();
+    }
+
+    public static List<List<PianoNote>> GetMinorChords(PianoNote min, PianoNote max, bool withAlterations = true)
+    {
+        var chords = GetMinorChords();
+        return chords.Where(x => min >= x.First() && max <= x.Last()).ToList();
+    }
+
+    /***** Chords *****/
+    public static List<List<PianoNote>> MajorChords => new List<List<PianoNote>>() { };
+
+    public static List<List<PianoNote>> MinorChords => new List<List<PianoNote>>() { };
 }

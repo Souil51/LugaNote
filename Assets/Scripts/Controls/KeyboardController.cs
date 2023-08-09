@@ -56,21 +56,21 @@ public class KeyboardController : MonoBehaviour, IController
     private Dictionary<KeyCode, PianoNote> keys = new Dictionary<KeyCode, PianoNote>()
     {
         { KeyCode.A, PianoNote.C4 },
-        { KeyCode.Alpha2, PianoNote.CSharp4 },
+        { KeyCode.Alpha2, PianoNote.C4Sharp },
         { KeyCode.Z, PianoNote.D4 },
-        { KeyCode.Alpha3, PianoNote.DSharp4 },
+        { KeyCode.Alpha3, PianoNote.D4Sharp },
         { KeyCode.E, PianoNote.E4 },
         { KeyCode.R, PianoNote.F4 },
-        { KeyCode.Alpha5, PianoNote.FSharp4 },
+        { KeyCode.Alpha5, PianoNote.F4Sharp },
         { KeyCode.T, PianoNote.G4 },
-        { KeyCode.Alpha6, PianoNote.GSharp4 },
+        { KeyCode.Alpha6, PianoNote.G4Sharp },
         { KeyCode.Y, PianoNote.A4 },
-        { KeyCode.Alpha7, PianoNote.ASharp4 },
+        { KeyCode.Alpha7, PianoNote.A4Sharp },
         { KeyCode.U, PianoNote.B4 },
         { KeyCode.I, PianoNote.C5 },
-        { KeyCode.Alpha9, PianoNote.CSharp5 },
+        { KeyCode.Alpha9, PianoNote.C5Sharp },
         { KeyCode.O, PianoNote.D5 },
-        { KeyCode.Alpha0, PianoNote.DSharp5 },
+        { KeyCode.Alpha0, PianoNote.D5Sharp },
         { KeyCode.P, PianoNote.E5 }
     };
 

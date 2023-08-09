@@ -439,7 +439,6 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             switch (GameMode.IntervalMode) 
             {
                 case IntervalMode.Note:
-                case IntervalMode.Chord:
                     {
                         for (int i = 0; i < staffs.Count; i++)
                         {
@@ -499,6 +498,18 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                         int noteCount = MusicHelper.GetNotesCountForInterval(this.GameMode.IntervalMode);
                         var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
                         
+                        for (int i = 0; i < staffs.Count; i++)
+                        {
+                            staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAlteration);
+                            yield return new WaitForSeconds(0.5f / Staffs.Count);
+                        }
+                    }
+                    break;
+                case IntervalMode.Chord:
+                    {
+                        int noteCount = MusicHelper.GetNotesCountForInterval(this.GameMode.IntervalMode);
+                        var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
+
                         for (int i = 0; i < staffs.Count; i++)
                         {
                             staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAlteration);
