@@ -45,7 +45,7 @@ public class GameInputManager : MonoBehaviour
                 // Store notes pressed
                 foreach (var note in GameController.Instance.Controller.NotesDownWithOffset)
                 {
-                    if (!_noteBuffer.Contains(note))
+                    if (!_noteBuffer.Select(x => x.Note).Contains(note.Note))
                     {
                         SoundManager.PlayNote(note.Note);
                         _noteBuffer.Add(note);
@@ -56,7 +56,7 @@ public class GameInputManager : MonoBehaviour
                 // Remove note from buffer
                 foreach (var note in GameController.Instance.Controller.NotesUpWithOffset)
                 {
-                    if (_noteBuffer.Contains(note))
+                    if (_noteBuffer.Select(x => x.Note).Contains(note.Note))
                     {
                         _noteBuffer.Remove(note);
                         bufferChanged = true;
@@ -96,7 +96,7 @@ public class GameInputManager : MonoBehaviour
                     }
                     else if (_noteBuffer.Count == maxNoteCount) // Else if buffer in full -> good guess
                     {
-                        firstNotes.Take(firstNotes.Count - 2).ToList().ForEach(x => SoundManager.PlayNote(x.PianoNote));
+                        firstNotes.Where(x => x.PianoNote != _noteBuffer.Select(x => x.Note).Last()).ToList().ForEach(x => SoundManager.PlayNote(x.PianoNote));
                         firstNotes.ForEach(x => x.ShowGoodGuess());
                         guessValue = true;
                     }

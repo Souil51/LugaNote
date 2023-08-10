@@ -182,9 +182,9 @@ public class VisualController : MonoBehaviour, IController
         {
             var note = (PianoNote)i;
 
-            bool altered = MusicHelper.SharpNotes.Contains(note);
+            bool altered = MusicHelper.IsSharp(note);
 
-            string prefabName = MusicHelper.NaturalNotes.Contains(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
+            string prefabName = MusicHelper.IsNatural(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             goButtonNote.transform.SetParent(btnPanel);
 

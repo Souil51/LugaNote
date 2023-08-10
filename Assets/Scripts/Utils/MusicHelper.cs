@@ -10,97 +10,46 @@ using UnityEngine;
 /// </summary>
 public class MusicHelper
 {
-    public static PianoNote HigherNote => PianoNote.C8;
-    public static PianoNote LowerNote => PianoNote.A0;
-
-    public static PianoNote HigherNote_66Touches => PianoNote.C7;
-    public static PianoNote LowerNote_66Touches => PianoNote.C2;
-
-    /// <summary>
-    /// Return the A-G notation for each Clef
-    /// </summary>
-    /// <param name="key">The clef</param>
-    /// <returns></returns>
-    public static PianoNote GetMainPianoNoteForClef(Clef key)
-    {
-        if (key == Clef.Trebble)
-            return PianoNote.G4;
-        else
-            return PianoNote.F3;
-    }
-
-    /// <summary>
-    /// Return the first A-G notation for each clef
-    /// Based on 23 differents notes staff
-    /// </summary>
-    /// <param name="key">The clef</param>
-    /// <returns></returns>
-    public static PianoNote GetLastPianoNoteForClef(Clef key)
-    {
-        if (key == Clef.Trebble)
-            return PianoNote.F6;
-        else
-            return PianoNote.A5;
-    }
-    /// <summary>
-    /// Return the last A-G notation for each clef
-    /// Based on 23 differents notes staff
-    /// </summary>
-    /// <param name="key">The clef</param>
-    /// <returns></returns>
-
-    public static PianoNote GetFirstPianoNoteForClef(Clef key)
-    {
-        if (key == Clef.Trebble)
-            return PianoNote.E3;
-        else
-            return PianoNote.G1;
-    }
-
-
+    #region Lists and Hashset
     private static List<PianoNote> _sharpNotes = new List<PianoNote>
-{
-    PianoNote.A0Sharp,
-    PianoNote.C1Sharp,
-    PianoNote.D1Sharp,
-    PianoNote.F1Sharp,
-    PianoNote.G1Sharp,
-    PianoNote.A1Sharp,
-    PianoNote.C2Sharp,
-    PianoNote.D2Sharp,
-    PianoNote.F2Sharp,
-    PianoNote.G2Sharp,
-    PianoNote.A2Sharp,
-    PianoNote.C3Sharp,
-    PianoNote.D3Sharp,
-    PianoNote.F3Sharp,
-    PianoNote.G3Sharp,
-    PianoNote.A3Sharp,
-    PianoNote.C4Sharp,
-    PianoNote.D4Sharp,
-    PianoNote.F4Sharp,
-    PianoNote.G4Sharp,
-    PianoNote.A4Sharp,
-    PianoNote.C5Sharp,
-    PianoNote.D5Sharp,
-    PianoNote.F5Sharp,
-    PianoNote.G5Sharp,
-    PianoNote.A5Sharp,
-    PianoNote.C6Sharp,
-    PianoNote.D6Sharp,
-    PianoNote.F6Sharp,
-    PianoNote.G6Sharp,
-    PianoNote.A6Sharp,
-    PianoNote.C7Sharp,
-    PianoNote.D7Sharp,
-    PianoNote.F7Sharp,
-    PianoNote.G7Sharp,
-    PianoNote.A7Sharp
-};
-    /// <summary>
-    /// All sharp notes
-    /// </summary>
-    public static List<PianoNote> SharpNotes => _sharpNotes;
+    {
+        PianoNote.A0Sharp,
+        PianoNote.C1Sharp,
+        PianoNote.D1Sharp,
+        PianoNote.F1Sharp,
+        PianoNote.G1Sharp,
+        PianoNote.A1Sharp,
+        PianoNote.C2Sharp,
+        PianoNote.D2Sharp,
+        PianoNote.F2Sharp,
+        PianoNote.G2Sharp,
+        PianoNote.A2Sharp,
+        PianoNote.C3Sharp,
+        PianoNote.D3Sharp,
+        PianoNote.F3Sharp,
+        PianoNote.G3Sharp,
+        PianoNote.A3Sharp,
+        PianoNote.C4Sharp,
+        PianoNote.D4Sharp,
+        PianoNote.F4Sharp,
+        PianoNote.G4Sharp,
+        PianoNote.A4Sharp,
+        PianoNote.C5Sharp,
+        PianoNote.D5Sharp,
+        PianoNote.F5Sharp,
+        PianoNote.G5Sharp,
+        PianoNote.A5Sharp,
+        PianoNote.C6Sharp,
+        PianoNote.D6Sharp,
+        PianoNote.F6Sharp,
+        PianoNote.G6Sharp,
+        PianoNote.A6Sharp,
+        PianoNote.C7Sharp,
+        PianoNote.D7Sharp,
+        PianoNote.F7Sharp,
+        PianoNote.G7Sharp,
+        PianoNote.A7Sharp
+    };
 
     private static List<PianoNote> _naturalNotes = new List<PianoNote>
     {
@@ -158,14 +107,9 @@ public class MusicHelper
         PianoNote.C8
     };
 
-    /// <summary>
-    /// All naturals notes
-    /// </summary>
-    public static List<PianoNote> NaturalNotes => _naturalNotes;
-
     // These not can be Sharp but will not be often Sharp (B to C or E to F)
-    private static List<PianoNote> _notNaturallySharpableNotes = new List<PianoNote>() 
-    { 
+    private static List<PianoNote> _notNaturallySharpableNotes = new List<PianoNote>()
+    {
         PianoNote.E1,
         PianoNote.E2,
         PianoNote.E3,
@@ -183,7 +127,10 @@ public class MusicHelper
         PianoNote.B7,
     };
 
-    public static List<PianoNote> NotNaturallySharpableNotes => _notNaturallySharpableNotes;
+    private static HashSet<int> _notNaturallySharpableIndices = new HashSet<int>()
+    {
+        2, 7, 14, 17, 26, 31, 38, 43, 50, 55, 62, 67, 74, 79, 86
+    };
 
     // These not can be Sharp but will not be often Sharp (C to B or F to E)
     private static List<PianoNote> _notNaturallyFlatableNotes = new List<PianoNote>()
@@ -204,7 +151,11 @@ public class MusicHelper
         PianoNote.C7,
     };
 
-    public static List<PianoNote> Notes3rdOctave => _notes3rdOctave;
+    private static HashSet<int> _notNaturallyFlatableIndices = new HashSet<int>()
+    {
+        3, 8, 15, 20, 27, 32, 39, 44, 51, 56, 63, 68, 75, 80
+    };
+
     private static List<PianoNote> _notes3rdOctave = new List<PianoNote>()
     {
         PianoNote.E3,
@@ -217,7 +168,6 @@ public class MusicHelper
         PianoNote.B3
     };
 
-    public static List<PianoNote> Notes4thOctave => _notes4thOctave;
     private static List<PianoNote> _notes4thOctave = new List<PianoNote>()
     {
         PianoNote.C4,
@@ -234,7 +184,6 @@ public class MusicHelper
         PianoNote.B4,
     };
 
-    public static List<PianoNote> Notes5thOctave => _notes5thOctave;
     private static List<PianoNote> _notes5thOctave = new List<PianoNote>()
     {
         PianoNote.C5,
@@ -251,7 +200,6 @@ public class MusicHelper
         PianoNote.B5,
     };
 
-    public static List<PianoNote> Notes6thOctave => _notes6thOctave;
     private static List<PianoNote> _notes6thOctave = new List<PianoNote>()
     {
         PianoNote.C6,
@@ -263,6 +211,117 @@ public class MusicHelper
         PianoNote.F6Sharp,
     };
 
+    public static HashSet<int> SharpIndices => new HashSet<int>
+    {
+        1, 4, 6, 9,
+        11, 13, 16, 18,
+        21, 23, 25, 28,
+        30, 33, 35, 37,
+        40, 42, 45, 47, 49,
+        52, 54, 57, 59,
+        61, 64, 66, 69,
+        71, 73, 76, 78,
+        81, 83, 85
+    };
+
+    public static HashSet<int> NaturalIndices => new HashSet<int>
+    {
+        2, 3, 5, 7, 8,
+        10, 12, 14, 15, 17, 19,
+        20, 22, 24, 26, 27, 29,
+        31, 32, 34, 36, 38, 39,
+        41, 43, 44, 46, 48,
+        50, 51, 53, 55, 56, 58,
+        60, 62, 63, 65, 67, 68,
+        70, 72, 74, 75, 77, 79,
+        80, 82, 84, 86, 87
+    };
+
+
+    /***** Chords generation in GetMajor/MinorChords methods *****/
+    private static List<List<PianoNote>> MajorChords = new List<List<PianoNote>>() { };
+
+    private static List<List<PianoNote>> MinorChords = new List<List<PianoNote>>() { };
+
+    #endregion
+
+    public static PianoNote HigherNote => PianoNote.C8;
+    public static PianoNote LowerNote => PianoNote.A0;
+
+    public static PianoNote HigherNote_66Touches => PianoNote.C7;
+    public static PianoNote LowerNote_66Touches => PianoNote.C2;
+
+    /// <summary>
+    /// Return the A-G notation for each Clef
+    /// </summary>
+    /// <param name="key">The clef</param>
+    /// <returns></returns>
+    public static PianoNote GetMainPianoNoteForClef(Clef key)
+    {
+        if (key == Clef.Trebble)
+            return PianoNote.G4;
+        else
+            return PianoNote.F3;
+    }
+
+    /// <summary>
+    /// Return the first A-G notation for each clef
+    /// Based on 23 differents notes staff
+    /// </summary>
+    /// <param name="key">The clef</param>
+    /// <returns></returns>
+    public static PianoNote GetLastPianoNoteForClef(Clef key)
+    {
+        if (key == Clef.Trebble)
+            return PianoNote.F6;
+        else
+            return PianoNote.A5;
+    }
+    /// <summary>
+    /// Return the last A-G notation for each clef
+    /// Based on 23 differents notes staff
+    /// </summary>
+    /// <param name="key">The clef</param>
+    /// <returns></returns>
+
+    public static PianoNote GetFirstPianoNoteForClef(Clef key)
+    {
+        if (key == Clef.Trebble)
+            return PianoNote.E3;
+        else
+            return PianoNote.G1;
+    }
+
+    /// <summary>
+    /// All sharp notes
+    /// </summary>
+    public static List<PianoNote> SharpNotes => _sharpNotes;
+
+    /// <summary>
+    /// All naturals notes
+    /// </summary>
+    public static List<PianoNote> NaturalNotes => _naturalNotes;
+
+    public static List<PianoNote> NotNaturallySharpableNotes => _notNaturallySharpableNotes;
+
+    public static bool IsNaturallySharpable(PianoNote note)
+    {
+        return _notNaturallySharpableIndices.Contains((int)note);
+    }
+
+    public static bool IsNaturallyFlatable(PianoNote note)
+    {
+        return _notNaturallyFlatableIndices.Contains((int)note);
+    }
+
+    public static List<PianoNote> Notes3rdOctave => _notes3rdOctave;
+    
+    public static List<PianoNote> Notes4thOctave => _notes4thOctave;
+    
+    public static List<PianoNote> Notes5thOctave => _notes5thOctave;
+    
+    public static List<PianoNote> Notes6thOctave => _notes6thOctave;
+    
     public static List<PianoNote> Notes3rdAnd4thOctave => Notes3rdOctave.Concat(Notes4thOctave).ToList();
 
     public static List<PianoNote> Notes5thAnd6thOctave => Notes5thOctave.Concat(Notes6thOctave).ToList();
@@ -310,7 +369,7 @@ public class MusicHelper
     /// <returns>Natural note</returns>
     public static PianoNote ConvertToNaturalNote(PianoNote sharp)
     {
-        if (NaturalNotes.Contains(sharp))
+        if (IsNatural(sharp))
         {
             return sharp;
         }
@@ -327,7 +386,7 @@ public class MusicHelper
     /// <returns>Sharp note</returns>
     public static PianoNote ConvertToSharpNote(PianoNote natural)
     {
-        if (SharpNotes.Contains(natural) || natural == PianoNote.C8)
+        if (IsSharp(natural) || natural == PianoNote.C8)
         {
             return natural;
         }
@@ -432,9 +491,9 @@ public class MusicHelper
     {
         bool result = true;
 
-        if (alteration == Alteration.Sharp && NotNaturallySharpableNotes.Contains(note))
+        if (alteration == Alteration.Sharp && !IsNaturallySharpable(note))
             result = false;
-        else if (alteration == Alteration.Flat && NotNaturallyFlatableNotes.Contains(note))
+        else if (alteration == Alteration.Flat && !IsNaturallyFlatable(note))
             result = false;
 
         return result;
@@ -450,7 +509,7 @@ public class MusicHelper
         if (note1 == note2)
             return true;
 
-        if (MusicHelper.SharpNotes.Contains(note1))
+        if (IsSharp(note1))
         {
             
         }
@@ -466,7 +525,7 @@ public class MusicHelper
             foreach (var note in allEnumValues)
             {
                 int enumValue = (int)note;
-                if((int)note + 7 <= (int)LowerNote)
+                if((int)note + 7 <= (int)HigherNote)
                 {
                     MajorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 4), (PianoNote)(note + 7) });
                 }
@@ -484,30 +543,35 @@ public class MusicHelper
             foreach (var note in allEnumValues)
             {
                 int enumValue = (int)note;
-                if ((int)note + 7 <= (int)LowerNote)
+                if ((int)note + 7 <= (int)HigherNote)
                 {
-                    MajorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 3), (PianoNote)(note + 7) });
+                    MinorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 3), (PianoNote)(note + 7) });
                 }
             }
         }
 
-        return MajorChords;
+        return MinorChords;
     }
 
     public static List<List<PianoNote>> GetMajorChords(PianoNote min, PianoNote max, bool withAlterations = true)
     {
         var chords = GetMajorChords();
-        return chords.Where(x => min >= x.First() && max <= x.Last() && (withAlterations || !x.Any(y => SharpNotes.Contains(y)))).ToList();
+        return chords.Where(x => x.First() >= min && x.Last() <= max && (withAlterations || !x.Any(y => IsSharp(y)))).ToList();
     }
 
     public static List<List<PianoNote>> GetMinorChords(PianoNote min, PianoNote max, bool withAlterations = true)
     {
         var chords = GetMinorChords();
-        return chords.Where(x => min >= x.First() && max <= x.Last()).ToList();
+        return chords.Where(x => x.First() >= min && x.Last() <= max && (withAlterations || !x.Any(y => IsSharp(y)))).ToList();
     }
 
-    /***** Chords *****/
-    public static List<List<PianoNote>> MajorChords => new List<List<PianoNote>>() { };
+    public static bool IsSharp(PianoNote note)
+    {
+        return SharpIndices.Contains((int)note);
+    }
 
-    public static List<List<PianoNote>> MinorChords => new List<List<PianoNote>>() { };
+    public static bool IsNatural(PianoNote note)
+    {
+        return !IsSharp(note);
+    }
 }

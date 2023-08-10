@@ -161,7 +161,7 @@ public class MenuViewModel : ViewModelBase
 
     private void AlterationsButtons_SelectedButtonChanged(object sender, IntEventArgs e)
     {
-        SelectedAlterationsChanged?.Invoke(sender, new BoolEventArgs(e.Value == 0));
+        SelectedAlterationsChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
         UpdateDisplayedScores();
     }
 

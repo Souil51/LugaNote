@@ -95,7 +95,7 @@ public class Staff : MonoBehaviour
             currentY += yHalfSpacing;
 
             currentNote++;
-            if (MusicHelper.SharpNotes.Contains(currentNote))
+            if (MusicHelper.IsSharp(currentNote))
                 currentNote++;
         }
 
@@ -111,7 +111,7 @@ public class Staff : MonoBehaviour
         var _availableLines = Lines.Where(x => x.Note >= lowerNote && x.Note <= higherNote).ToList();
 
         int index = Random.Range(0, _availableLines.Count);
-        _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+        _availableLines[index].SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
 
         return index;
     }
@@ -126,9 +126,9 @@ public class Staff : MonoBehaviour
         int index = Random.Range(0, _availableLines.Count);
 
         if(withRandomAlteration)
-            _availableLines[index].SpawnNoteWithRandomAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+            _availableLines[index].SpawnRandomNoteWithRandomAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
         else
-            _availableLines[index].SpawnNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+            _availableLines[index].SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
 
         return index;
     }
@@ -138,7 +138,7 @@ public class Staff : MonoBehaviour
         var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
 
         int index = Random.Range(0, _availableLines.Count);
-        _availableLines[index].SpawnNoteWithAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, alteration);
+        _availableLines[index].SpawnRandomNoteWithAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, alteration);
 
         return index;
     }
@@ -152,11 +152,30 @@ public class Staff : MonoBehaviour
             int index = Random.Range(0, _availableLines.Count);
 
             if (withRandomAlteration)
-                _availableLines[index].SpawnNoteWithRandomAlterationWithGroup(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+                _availableLines[index].SpawnRandomNoteWithRandomAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
             else
-                _availableLines[index].SpawnNoteWithGroup(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+                _availableLines[index].SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
 
             _availableLines.RemoveAt(index);
+        }
+    }
+
+    public void SpawnChord(List<PianoNote> notesRange, bool withAlteration)
+    {
+        Guid groupId = Guid.NewGuid();
+        var majorChords = MusicHelper.GetMajorChords(notesRange.Min(), notesRange.Max(), withAlteration);
+        var minorChords = MusicHelper.GetMinorChords(notesRange.Min(), notesRange.Max(), withAlteration);
+        var chords = majorChords.Concat(minorChords).ToList();
+
+        int index = Random.Range(0, chords.Count);
+
+        var chordToPlay = chords[index];
+        var chordAllNatural = chordToPlay.Select(x => MusicHelper.ConvertToNaturalNote(x)).ToList();
+
+        foreach(var note in chordToPlay)
+        {
+            var line = Lines.Where(x => x.NaturalNote == MusicHelper.ConvertToNaturalNote(note)).First();
+            line.SpawnNote(note, transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
         }
     }
 }
