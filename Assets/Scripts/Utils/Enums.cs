@@ -20,6 +20,10 @@ public enum Level { C4 = 0, C5, C3_C4, C5_C6, C3_C6}
 
 public enum MidiConfigurationType { Touches88 = 0, Touches61 = 1, Custom = 3 }
 
+public enum Inversion { None = 0, firstInverstion, secondInversion }
+
+public enum Tonality { Major = 0, Minor }
+
 public enum SceneSessionKey 
 {
     [Description("GameMode")]
@@ -123,7 +127,7 @@ public enum PianoNote
     C8 = 87
 }
 
-public enum NoteCommonNameSharp
+public enum SharpPianoNote
 {
     [Description("La")]
     La = 0,
@@ -151,7 +155,7 @@ public enum NoteCommonNameSharp
     SolSharp
 }
 
-public enum NoteCommonNameFlat
+public enum FlatPianoNote
 {
     [Description("La")]
     La = 0,
@@ -195,7 +199,7 @@ public enum PianoScale
     Fm
 }
 
-public enum Alteration
+public enum Accidental
 {
     Natural = 0,
     Sharp = 1,

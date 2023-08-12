@@ -1,6 +1,8 @@
+using Assets.Scripts.Game.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -211,6 +213,62 @@ public class MusicHelper
         PianoNote.F6Sharp,
     };
 
+    private static List<PianoNote> _bassNotes3rdOctave = new List<PianoNote>()
+    {
+        PianoNote.G1,
+        PianoNote.G1Sharp,
+        PianoNote.A1,
+        PianoNote.A1Sharp,
+        PianoNote.B1,
+        PianoNote.C2,
+        PianoNote.C2Sharp,
+        PianoNote.D2,
+        PianoNote.D2Sharp
+    };
+
+    private static List<PianoNote> _bassNotes4thOctave = new List<PianoNote>()
+    {
+        PianoNote.E2,
+        PianoNote.F2,
+        PianoNote.F2Sharp,
+        PianoNote.G2,
+        PianoNote.G2Sharp,
+        PianoNote.A2,
+        PianoNote.A2Sharp,
+        PianoNote.B2,
+        PianoNote.C3,
+        PianoNote.C3Sharp,
+        PianoNote.D3,
+        PianoNote.D3Sharp,
+    };
+
+    private static List<PianoNote> _bassNotes5thOctave = new List<PianoNote>()
+    {
+        PianoNote.E3,
+        PianoNote.F3,
+        PianoNote.F3Sharp,
+        PianoNote.G3,
+        PianoNote.G3Sharp,
+        PianoNote.A3,
+        PianoNote.A3Sharp,
+        PianoNote.B3,
+        PianoNote.C4,
+        PianoNote.C4Sharp,
+        PianoNote.D4,
+        PianoNote.D4Sharp,
+    };
+
+    private static List<PianoNote> _bassNotes6thOctave = new List<PianoNote>()
+    {
+        PianoNote.E4,
+        PianoNote.F4,
+        PianoNote.F4Sharp,
+        PianoNote.G4,
+        PianoNote.G4Sharp,
+        PianoNote.A5,
+        PianoNote.A5Sharp,
+    };
+
     public static HashSet<int> SharpIndices => new HashSet<int>
     {
         1, 4, 6, 9,
@@ -239,9 +297,9 @@ public class MusicHelper
 
 
     /***** Chords generation in GetMajor/MinorChords methods *****/
-    private static List<List<PianoNote>> MajorChords = new List<List<PianoNote>>() { };
+    private static List<PianoChord> MajorChords = new List<PianoChord>() { };
 
-    private static List<List<PianoNote>> MinorChords = new List<List<PianoNote>>() { };
+    private static List<PianoChord> MinorChords = new List<PianoChord>() { };
 
     #endregion
 
@@ -306,12 +364,12 @@ public class MusicHelper
 
     public static bool IsNaturallySharpable(PianoNote note)
     {
-        return _notNaturallySharpableIndices.Contains((int)note);
+        return !_notNaturallySharpableIndices.Contains((int)note);
     }
 
     public static bool IsNaturallyFlatable(PianoNote note)
     {
-        return _notNaturallyFlatableIndices.Contains((int)note);
+        return !_notNaturallyFlatableIndices.Contains((int)note);
     }
 
     public static List<PianoNote> Notes3rdOctave => _notes3rdOctave;
@@ -328,21 +386,35 @@ public class MusicHelper
 
     public static List<PianoNote> Notes3thTo6thOctave => Notes3rdOctave.Concat(Notes4thOctave).Concat(Notes5thOctave).Concat(Notes6thOctave).ToList();
 
-    public static List<PianoNote> GetNotesForLevel(Level level)
+    public static List<PianoNote> BassNotes3rdOctave => _bassNotes3rdOctave;
+
+    public static List<PianoNote> BassNotes4thOctave => _bassNotes4thOctave;
+
+    public static List<PianoNote> BassNotes5thOctave => _bassNotes5thOctave;
+
+    public static List<PianoNote> BassNotes6thOctave => _bassNotes6thOctave;
+
+    public static List<PianoNote> BassNotes3rdAnd4thOctave => BassNotes3rdOctave.Concat(BassNotes4thOctave).ToList();
+
+    public static List<PianoNote> BassNotes5thAnd6thOctave => BassNotes5thOctave.Concat(BassNotes6thOctave).ToList();
+
+    public static List<PianoNote> BassNotes3thTo6thOctave => BassNotes3rdOctave.Concat(BassNotes4thOctave).Concat(BassNotes5thOctave).Concat(BassNotes6thOctave).ToList();
+
+    public static List<PianoNote> GetNotesForLevel(Level level, Clef clef)
     {
         switch (level)
         {
             case Level.C3_C4:
-                return Notes3rdAnd4thOctave;
+                return clef == Clef.Trebble ? Notes3rdAnd4thOctave : BassNotes3rdAnd4thOctave;
             case Level.C5:
-                return Notes5thOctave;
+                return clef == Clef.Trebble ? Notes5thOctave : BassNotes5thOctave;
             case Level.C5_C6:
-                return Notes5thAnd6thOctave;
+                return clef == Clef.Trebble ? Notes5thAnd6thOctave : BassNotes5thAnd6thOctave;
             case Level.C3_C6:
-                return Notes3thTo6thOctave;
+                return clef == Clef.Trebble ? Notes3thTo6thOctave : BassNotes3thTo6thOctave;
             case Level.C4:
             default:
-                return Notes4thOctave;
+                return clef == Clef.Trebble ? Notes4thOctave : BassNotes4thOctave;
         }
     }
 
@@ -482,25 +554,25 @@ public class MusicHelper
     public static string GetNoteCommonName(PianoNote pianoNote, bool flat = false)
     {
         if (!flat)
-            return ((NoteCommonNameSharp)((int)pianoNote % 12)).GetEnumDescription();
+            return ((SharpPianoNote)((int)pianoNote % 12)).GetEnumDescription();
         else
-            return ((NoteCommonNameFlat)((int)pianoNote % 12)).GetEnumDescription();
+            return ((FlatPianoNote)((int)pianoNote % 12)).GetEnumDescription();
     }
 
-    public static bool IsNoteNaturralyAlterable(PianoNote note, Alteration alteration)
+    public static bool IsNoteNaturralyAlterable(PianoNote note, Accidental accidental)
     {
         bool result = true;
 
-        if (alteration == Alteration.Sharp && !IsNaturallySharpable(note))
+        if (accidental == Accidental.Sharp && !IsNaturallySharpable(note))
             result = false;
-        else if (alteration == Alteration.Flat && !IsNaturallyFlatable(note))
+        else if (accidental == Accidental.Flat && !IsNaturallyFlatable(note))
             result = false;
 
         return result;
     }
 
     /// <summary>
-    /// Compare 2 notes with alteration or not
+    /// Compare 2 notes with accidental or not
     /// A sharp is equal to a flat of the next note
     /// </summary>
     /// <returns></returns>
@@ -517,17 +589,21 @@ public class MusicHelper
         return false;
     }
 
-    public static List<List<PianoNote>> GetMajorChords()
+    public static List<PianoChord> GetMajorChords()
     {
         if(MajorChords.Count == 0)
         {
             PianoNote[] allEnumValues = (PianoNote[])Enum.GetValues(typeof(PianoNote));
             foreach (var note in allEnumValues)
             {
-                int enumValue = (int)note;
-                if((int)note + 7 <= (int)HigherNote)
+                Inversion[] inversions = (Inversion[])Enum.GetValues(typeof(Inversion));
+                foreach(var inversion in inversions)
                 {
-                    MajorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 4), (PianoNote)(note + 7) });
+                    var chord = new PianoChord(note, inversion, Tonality.Major);
+                    if (chord.MinNote > LowerNote && chord.MaxNote < HigherNote)
+                    {
+                        MajorChords.Add(chord);
+                    }
                 }
             }
         }
@@ -535,17 +611,21 @@ public class MusicHelper
         return MajorChords;
     }
 
-    public static List<List<PianoNote>> GetMinorChords()
+    public static List<PianoChord> GetMinorChords()
     {
         if (MajorChords.Count == 0)
         {
             PianoNote[] allEnumValues = (PianoNote[])Enum.GetValues(typeof(PianoNote));
             foreach (var note in allEnumValues)
             {
-                int enumValue = (int)note;
-                if ((int)note + 7 <= (int)HigherNote)
+                Inversion[] inversions = (Inversion[])Enum.GetValues(typeof(Inversion));
+                foreach (var inversion in inversions)
                 {
-                    MinorChords.Add(new List<PianoNote>() { (PianoNote)enumValue, (PianoNote)(note + 3), (PianoNote)(note + 7) });
+                    var chord = new PianoChord(note, inversion, Tonality.Minor);
+                    if (chord.MinNote > LowerNote && chord.MaxNote < HigherNote)
+                    {
+                        MinorChords.Add(chord);
+                    }
                 }
             }
         }
@@ -553,16 +633,16 @@ public class MusicHelper
         return MinorChords;
     }
 
-    public static List<List<PianoNote>> GetMajorChords(PianoNote min, PianoNote max, bool withAlterations = true)
+    public static List<PianoChord> GetMajorChords(PianoNote min, PianoNote max, bool withAccidentals = true, bool withInversion = false)
     {
         var chords = GetMajorChords();
-        return chords.Where(x => x.First() >= min && x.Last() <= max && (withAlterations || !x.Any(y => IsSharp(y)))).ToList();
+        return chords.Where(x => x.MinNote >= min && x.MaxNote <= max && (withAccidentals || !x.WithAccidental) && (withInversion || x.Inversion == Inversion.None)).ToList();
     }
 
-    public static List<List<PianoNote>> GetMinorChords(PianoNote min, PianoNote max, bool withAlterations = true)
+    public static List<PianoChord> GetMinorChords(PianoNote min, PianoNote max, bool withAccidentals = true, bool withInversion = false)
     {
         var chords = GetMinorChords();
-        return chords.Where(x => x.First() >= min && x.Last() <= max && (withAlterations || !x.Any(y => IsSharp(y)))).ToList();
+        return chords.Where(x => x.MinNote >= min && x.MaxNote <= max && (withAccidentals || !x.WithAccidental) && (withInversion || x.Inversion == Inversion.None)).ToList();
     }
 
     public static bool IsSharp(PianoNote note)

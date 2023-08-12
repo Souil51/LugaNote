@@ -29,9 +29,9 @@ public class StaffLine : MonoBehaviour
     {
         get
         {
-            if (_alteration == Alteration.Natural)
+            if (_accidental == Accidental.Natural)
                 return _naturalNote;
-            else if (_alteration == Alteration.Sharp)
+            else if (_accidental == Accidental.Sharp)
                 return _naturalNote + 1 > MusicHelper.HigherNote ? MusicHelper.HigherNote : _naturalNote + 1;
             else
                 return _naturalNote - 1 < MusicHelper.LowerNote ? MusicHelper.LowerNote : _naturalNote - 1;
@@ -40,8 +40,8 @@ public class StaffLine : MonoBehaviour
 
     public PianoNote NaturalNote => MusicHelper.ConvertToNaturalNote(Note);
 
-    private Alteration _alteration;
-    public Alteration Alteration => _alteration;
+    private Accidental _accidental;
+    public Accidental Accidental => _accidental;
 
     
 
@@ -76,7 +76,7 @@ public class StaffLine : MonoBehaviour
         this._isVisible = visible;
         this._id = id;
 
-        // A Staff line PianoNote CANNOT be altered, this stuff have to be handle with the alteration
+        // A Staff line PianoNote CANNOT be altered, this stuff have to be handle with the accidental
         if (MusicHelper.IsSharp(note))
             note--;
         this._naturalNote = note;
@@ -95,29 +95,29 @@ public class StaffLine : MonoBehaviour
         gameObject.transform.localScale = new Vector3(xScale, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
     }
 
-    public void SetAlteration(Alteration alteration)
+    public void SetAccidental(Accidental accidental)
     {
-        this._alteration = Alteration;
+        this._accidental = Accidental;
     }
 
-    public void ResetAlteration()
+    public void ResetAccidental()
     {
-        this.SetAlteration(Alteration.Natural);
+        this.SetAccidental(Accidental.Natural);
     }
 
     public void SpawnRandomNote(float scale, float fromX, float toX, Guid groupId = default)
     {
-        this.SpawnRandomNote(scale, fromX, toX, false, false, Alteration.Natural, groupId);
+        this.SpawnRandomNote(scale, fromX, toX, false, false, Accidental.Natural, groupId);
     }
 
-    public void SpawnRandomNoteWithAlteration(float scale, float fromX, float toX, Alteration alteration, Guid groupId = default)
+    public void SpawnRandomNoteWithAccidental(float scale, float fromX, float toX, Accidental accidental, Guid groupId = default)
     {
-        this.SpawnRandomNote(scale, fromX, toX, false, true, alteration, groupId);
+        this.SpawnRandomNote(scale, fromX, toX, false, true, accidental, groupId);
     }
 
-    public void SpawnRandomNoteWithRandomAlteration(float scale, float fromX, float toX, Guid groupId = default)
+    public void SpawnRandomNoteWithRandomAccidental(float scale, float fromX, float toX, Guid groupId = default)
     {
-        this.SpawnRandomNote(scale, fromX, toX, true, false, Alteration.Natural, groupId);
+        this.SpawnRandomNote(scale, fromX, toX, true, false, Accidental.Natural, groupId);
     }
 
     //public void SpawnNote(PianoNote note, float scale, float fromX, float toX, Guid groupId = default)
@@ -125,12 +125,12 @@ public class StaffLine : MonoBehaviour
     //    this.SpawnNote(note, scale, fromX, toX, groupId);
     //}
 
-    //public void SpawnNoteWithAlteration(PianoNote note, float scale, float fromX, float toX, Alteration alteration, Guid groupId = default)
+    //public void SpawnNoteWithAccidental(PianoNote note, float scale, float fromX, float toX, Accidental accidental, Guid groupId = default)
     //{
     //    this.SpawnNote(note, scale, fromX, toX, groupId);
     //}
 
-    //public void SpawnNoteWithRandomAlteration(PianoNote note, float scale, float fromX, float toX, Guid groupId = default)
+    //public void SpawnNoteWithRandomAccidental(PianoNote note, float scale, float fromX, float toX, Guid groupId = default)
     //{
     //    this.SpawnNote(note, scale, fromX, toX, groupId);
     //}
@@ -138,57 +138,57 @@ public class StaffLine : MonoBehaviour
     public Note SpawnNote(PianoNote note, float scale, float fromX, float toX, Guid groupId)
     {
         bool isSharp = MusicHelper.IsSharp(note);
-        var alteration = isSharp ? Alteration.Sharp : Alteration.Natural;
-        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, alteration);
+        var accidental = isSharp ? Accidental.Sharp : Accidental.Natural;
+        string resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, accidental);
 
-        return InstantiateNote(resourceToLoad, scale, fromX, toX, alteration, groupId);
+        return InstantiateNote(resourceToLoad, scale, fromX, toX, accidental, groupId);
     }
 
     /// <summary>
     /// Instantiate a note on the line starting position to the line ending position
     /// </summary>
-    private Note SpawnRandomNote(float scale,  float fromX, float toX, bool withRandomAlteration, bool forceAlteration, Alteration forcedAlteration, Guid groupId)
+    private Note SpawnRandomNote(float scale,  float fromX, float toX, bool withRandomAccidental, bool forceAccidental, Accidental forcedAccidental, Guid groupId)
     {
-        var alteration = Alteration.Natural;
+        var accidental = Accidental.Natural;
 
         string resourceToLoad = "";
 
-        if (forceAlteration)
+        if (forceAccidental)
         {
-            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, forcedAlteration);
-            alteration = forcedAlteration;
+            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, forcedAccidental);
+            accidental = forcedAccidental;
         }
-        else if (!withRandomAlteration)
+        else if (!withRandomAccidental)
         {
-            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Alteration);
-            alteration = this.Alteration;
+            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, this.Accidental);
+            accidental = this.Accidental;
         }
         else
         {
             bool sharpable = MusicHelper.IsNaturallySharpable(this.NaturalNote);
             bool flatable = MusicHelper.IsNaturallyFlatable(this.NaturalNote);
 
-            if (sharpable && flatable) // If sharpable or flatable -> random in the Alteration Enum range
+            if (sharpable && flatable) // If sharpable or flatable -> random in the Accidental Enum range
             {
                 int rand = Random.Range(0, 3);
-                alteration = (Alteration)rand;
+                accidental = (Accidental)rand;
             }
-            else if (sharpable || flatable) // Else, random to know if we use alteration or natural not
+            else if (sharpable || flatable) // Else, random to know if we use accidental or natural not
             {
                 int rand = Random.Range(0, 2);
                 if (rand == 1)
                 {
-                    alteration = sharpable ? Alteration.Sharp : Alteration.Flat;
+                    accidental = sharpable ? Accidental.Sharp : Accidental.Flat;
                 }
             }
 
-            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, alteration);
+            resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, accidental);
         }
 
-        return InstantiateNote(resourceToLoad, scale, fromX, toX, alteration, groupId);
+        return InstantiateNote(resourceToLoad, scale, fromX, toX, accidental, groupId);
     }
 
-    private Note InstantiateNote(string resourceToLoad, float scale, float fromX, float toX, Alteration alteration, Guid groupId)
+    private Note InstantiateNote(string resourceToLoad, float scale, float fromX, float toX, Accidental accidental, Guid groupId)
     {
         GameObject go = (GameObject)Instantiate(Resources.Load(resourceToLoad));
         go.transform.position = new Vector3(fromX, transform.position.y, transform.position.z);
@@ -199,11 +199,11 @@ public class StaffLine : MonoBehaviour
 
         var noteComponent = go.GetComponent<Note>();
 
-        // Initialize note with this line alteration
+        // Initialize note with this line accidental
         if (groupId == default(Guid))
-            noteComponent.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration);
+            noteComponent.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, accidental);
         else
-            noteComponent.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, alteration, groupId);
+            noteComponent.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, accidental, groupId);
 
         noteComponent.MoveTo(new Vector3(toX, transform.position.y, transform.position.z));
 

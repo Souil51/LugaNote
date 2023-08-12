@@ -116,7 +116,7 @@ public class Staff : MonoBehaviour
         return index;
     }
 
-    public int SpawnNote(List<PianoNote> notes, bool withRandomAlteration = false)
+    public int SpawnNote(List<PianoNote> notes, bool withRandomAccidental = false)
     {
         var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
         /*var _availableLines = new List<StaffLine>();
@@ -125,25 +125,25 @@ public class Staff : MonoBehaviour
 
         int index = Random.Range(0, _availableLines.Count);
 
-        if(withRandomAlteration)
-            _availableLines[index].SpawnRandomNoteWithRandomAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
+        if(withRandomAccidental)
+            _availableLines[index].SpawnRandomNoteWithRandomAccidental(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
         else
             _availableLines[index].SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition);
 
         return index;
     }
 
-    public int SpawnNote(List<PianoNote> notes, Alteration alteration)
+    public int SpawnNote(List<PianoNote> notes, Accidental accidental)
     {
         var _availableLines = Lines.Where(x => notes.Contains(x.Note)).ToList();
 
         int index = Random.Range(0, _availableLines.Count);
-        _availableLines[index].SpawnRandomNoteWithAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, alteration);
+        _availableLines[index].SpawnRandomNoteWithAccidental(transform.localScale.x, StartingPointPosition, DisappearPointPosition, accidental);
 
         return index;
     }
 
-    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, bool withRandomAlteration = false)
+    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, bool withRandomAccidental = false)
     {
         Guid groupId = Guid.NewGuid();
         var _availableLines = Lines.Where(x => notesRange.Contains(x.Note)).ToList();
@@ -151,8 +151,8 @@ public class Staff : MonoBehaviour
         {
             int index = Random.Range(0, _availableLines.Count);
 
-            if (withRandomAlteration)
-                _availableLines[index].SpawnRandomNoteWithRandomAlteration(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+            if (withRandomAccidental)
+                _availableLines[index].SpawnRandomNoteWithRandomAccidental(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
             else
                 _availableLines[index].SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
 
@@ -160,16 +160,16 @@ public class Staff : MonoBehaviour
         }
     }
 
-    public void SpawnChord(List<PianoNote> notesRange, bool withAlteration)
+    public void SpawnChord(List<PianoNote> notesRange, bool withAccidental)
     {
         Guid groupId = Guid.NewGuid();
-        var majorChords = MusicHelper.GetMajorChords(notesRange.Min(), notesRange.Max(), withAlteration);
-        var minorChords = MusicHelper.GetMinorChords(notesRange.Min(), notesRange.Max(), withAlteration);
+        var majorChords = MusicHelper.GetMajorChords(notesRange.Min(), notesRange.Max(), withAccidental);
+        var minorChords = MusicHelper.GetMinorChords(notesRange.Min(), notesRange.Max(), withAccidental);
         var chords = majorChords.Concat(minorChords).ToList();
 
         int index = Random.Range(0, chords.Count);
 
-        var chordToPlay = chords[index];
+        var chordToPlay = chords[index].Notes;
         var chordAllNatural = chordToPlay.Select(x => MusicHelper.ConvertToNaturalNote(x)).ToList();
 
         foreach(var note in chordToPlay)

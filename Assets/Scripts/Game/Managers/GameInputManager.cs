@@ -45,9 +45,11 @@ public class GameInputManager : MonoBehaviour
                 // Store notes pressed
                 foreach (var note in GameController.Instance.Controller.NotesDownWithOffset)
                 {
-                    if (!_noteBuffer.Select(x => x.Note).Contains(note.Note))
+                    bool containsNote = _noteBuffer.Select(x => x.Note).Contains(note.Note);
+                    SoundManager.PlayNote(note.Note);
+
+                    if (!containsNote)
                     {
-                        SoundManager.PlayNote(note.Note);
                         _noteBuffer.Add(note);
                         bufferChanged = true;
                     }
@@ -74,7 +76,7 @@ public class GameInputManager : MonoBehaviour
                     foreach (var note in _noteBuffer)
                     {
                         bool replaceNote = note.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
-                        var noteFound = firstNotes.FirstOrDefault(x => x.PianoNote == note.Note);
+                        var noteFound = firstNotes.FirstOrDefault(x => (!replaceNote && x.PianoNote == note.Note) || (replaceNote && (int)x.PianoNote % 12 == (int)note.Note % 12));
 
                         bool isBadNote = noteFound == null || ((replaceNote || note.Note != noteFound.PianoNote) && (!replaceNote || (int)note.Note % 12 != (int)(noteFound.PianoNote) % 12));
 
@@ -89,7 +91,7 @@ public class GameInputManager : MonoBehaviour
 
                     if (oneBadNote) // If one bad note -> bad guess
                     {
-                        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS);
+                        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS, .4f);
                         firstNotes.ForEach(x => x.ShowBadGuess());
                         guessValue = false;
 

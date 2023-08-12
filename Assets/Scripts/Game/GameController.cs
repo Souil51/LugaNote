@@ -293,7 +293,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     {
         var firstNotes = new List<Note>();
         var nearestNotesGroupId = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault()?.GroupId;
-        if(nearestNotesGroupId != Guid.Empty)
+        if(nearestNotesGroupId != null && nearestNotesGroupId != Guid.Empty)
         {
             firstNotes = Staffs.SelectMany(x => x.Notes).Where(x => x.GroupId == nearestNotesGroupId.Value).ToList();
         }
@@ -413,7 +413,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     #region Coroutines
 
     // TEST
-    // For testing all notes in order with alterations
+    // For testing all notes in order with accidentals
     private List<PianoNote> _listeTEST = new List<PianoNote>()
     {
         PianoNote.C4,
@@ -442,7 +442,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     {
                         for (int i = 0; i < staffs.Count; i++)
                         {
-                            // For testing all notes in order with alterations
+                            // For testing all notes in order with accidentals
                             /*for(int j = 0; j < _listeTEST.Count; j++)
                             {
                                 if (_listeTEST[j] == PianoNote.C4)
@@ -450,9 +450,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                                     for(int k = 0; k < 2; k++)
                                     {
                                         if(k == 0)
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Natural);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Natural);
                                         else
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Sharp);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Sharp);
 
                                         yield return new WaitForSeconds(0.5f / Staffs.Count);
                                     }
@@ -462,9 +462,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                                     for (int k = 0; k < 2; k++)
                                     {
                                         if(k == 0)
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Flat);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Flat);
                                         else if(k == 1)
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Natural);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Natural);
                                         
                                         yield return new WaitForSeconds(0.5f / Staffs.Count);
                                     }
@@ -474,21 +474,21 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                                     for (int k = 0; k < 3; k++)
                                     {
                                         if(k == 0)
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Flat);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Flat);
                                         else if(k == 1)
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Natural);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Natural);
                                         else
-                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Alteration.Sharp);
+                                            Staffs.Where(x => x.gameObject.activeSelf).ToList()[i].SpawnNote(new List<PianoNote>() { (PianoNote)((int)_listeTEST[j]) }, Accidental.Sharp);
 
                                         yield return new WaitForSeconds(0.5f / Staffs.Count);
                                     }
                                 }
                             }*/
 
-                            var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
+                            var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
 
-                            // staffs[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAlteration);
-                            staffs[i].SpawnNote(noteList, GameMode.WithRandomAlteration);
+                            // staffs[i].SpawnNote(Controller.AvailableNotes, GameMode.WithRandomAccidental);
+                            staffs[i].SpawnNote(noteList, GameMode.WithRandomAccidental);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }
@@ -496,22 +496,23 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                 case IntervalMode.Interval:
                     {
                         int noteCount = MusicHelper.GetNotesCountForInterval(this.GameMode.IntervalMode);
-                        var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
                         
                         for (int i = 0; i < staffs.Count; i++)
                         {
-                            staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAlteration);
+                            var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
+
+                            staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAccidental);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }
                     break;
                 case IntervalMode.Chord:
                     {
-                        var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level);
-
                         for (int i = 0; i < staffs.Count; i++)
                         {
-                            staffs[i].SpawnChord(noteList, GameMode.WithRandomAlteration);
+                            var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
+
+                            staffs[i].SpawnChord(noteList, GameMode.WithRandomAccidental);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }

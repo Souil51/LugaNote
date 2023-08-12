@@ -16,10 +16,11 @@ public class MenuViewModel : ViewModelBase
 {
     [SerializeField] private InfoMessage Info;
     [SerializeField] private RadioButtonsGroupViewModel LevelButtons;
-    [SerializeField] private RadioButtonsGroupViewModel AlterationsButtons;
+    [SerializeField] private RadioButtonsGroupViewModel AccidentalsButtons;
     [SerializeField] private RadioButtonsGroupViewModel ReplacementButtons;
     [SerializeField] private RadioButtonsGroupViewModel IntervalButtons;
     [SerializeField] private RadioButtonsGroupViewModel KeyButtons;
+    [SerializeField] private ToggleSwitch AccidentalSwitch;
 
     public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
     public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
@@ -33,8 +34,8 @@ public class MenuViewModel : ViewModelBase
     public delegate void SelectedLevelChangedEventHandler(object sender, LevelEventArgs e);
     public event SelectedLevelChangedEventHandler SelectedLevelChanged;
 
-    public delegate void SelectedAlterationsChangedEventHandler(object sender, BoolEventArgs e);
-    public event SelectedAlterationsChangedEventHandler SelectedAlterationsChanged;
+    public delegate void SelectedAccidentalsChangedEventHandler(object sender, BoolEventArgs e);
+    public event SelectedAccidentalsChangedEventHandler SelectedAccidentalsChanged;
 
     public delegate void SelectedReplacementChangedEventHandler(object sender, BoolEventArgs e);
     public event SelectedReplacementChangedEventHandler SelectedReplacementChanged;
@@ -131,7 +132,8 @@ public class MenuViewModel : ViewModelBase
     {
         Info.Disappeared += Info_Disappeared;
         LevelButtons.SelectedButtonChanged += LevelsButton_SelectedButtonChanged;
-        AlterationsButtons.SelectedButtonChanged += AlterationsButtons_SelectedButtonChanged;
+        AccidentalsButtons.SelectedButtonChanged += AccidentalsButtons_SelectedButtonChanged;
+        AccidentalSwitch.ValueChanged += AccidentalSwitch_ValueChanged;
         ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
@@ -140,7 +142,7 @@ public class MenuViewModel : ViewModelBase
 
         UpdateDisplayedScores();
     }
-       
+
     private void KeyButtons_SelectedButtonChanged(object sender, IntEventArgs e)
     {
         SelectedKeyChanged?.Invoke(sender, new GameModeTypeEventArgs((GameModeType)e.Value));
@@ -159,9 +161,15 @@ public class MenuViewModel : ViewModelBase
         UpdateDisplayedScores();
     }
 
-    private void AlterationsButtons_SelectedButtonChanged(object sender, IntEventArgs e)
+    private void AccidentalsButtons_SelectedButtonChanged(object sender, IntEventArgs e)
     {
-        SelectedAlterationsChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
+        SelectedAccidentalsChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
+        UpdateDisplayedScores();
+    }
+
+    private void AccidentalSwitch_ValueChanged(object sender, BoolEventArgs e)
+    {
+        SelectedAccidentalsChanged?.Invoke(sender, e);
         UpdateDisplayedScores();
     }
 
@@ -175,7 +183,8 @@ public class MenuViewModel : ViewModelBase
     {
         Info.Disappeared -= Info_Disappeared;
         LevelButtons.SelectedButtonChanged -= LevelsButton_SelectedButtonChanged;
-        AlterationsButtons.SelectedButtonChanged -= AlterationsButtons_SelectedButtonChanged;
+        AccidentalsButtons.SelectedButtonChanged -= AccidentalsButtons_SelectedButtonChanged;
+        AccidentalSwitch.ValueChanged -= AccidentalSwitch_ValueChanged;
         ReplacementButtons.SelectedButtonChanged -= ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged -= IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged -= KeyButtons_SelectedButtonChanged;
@@ -200,16 +209,17 @@ public class MenuViewModel : ViewModelBase
         var key = (GameModeType)KeyButtons.SelectedIndex;
         var interval = (IntervalMode)IntervalButtons.SelectedIndex;
         var level = (Level)LevelButtons.SelectedIndex;
-        var alterations = AlterationsButtons.SelectedIndex == 1;
+        var accidentals = AccidentalsButtons.SelectedIndex == 1;
+        accidentals = AccidentalSwitch.Value;
 
-        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, alterations);
+        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, accidentals);
     }
 
-    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAlteration)
+    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental)
     {
         List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
 
-        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, withRandomAlteration);
+        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, withRandomAccidental);
         if(gameModeData != null)
         {
             var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
@@ -240,7 +250,8 @@ public class MenuViewModel : ViewModelBase
             KeyButtons.SelectButton((int)gameMode.GameModeType);
             IntervalButtons.SelectButton((int)gameMode.IntervalMode);
             LevelButtons.SelectButton((int)gameMode.Level);
-            AlterationsButtons.SelectButton(gameMode.WithRandomAlteration ? 1 : 0);
+            AccidentalsButtons.SelectButton(gameMode.WithRandomAccidental ? 1 : 0);
+            AccidentalSwitch.InitialState(gameMode.WithRandomAccidental);
         }
         
         ReplacementButtons.SelectButton(replacementMode ? 1 : 0);

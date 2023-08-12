@@ -47,8 +47,8 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     public bool IsMidiConfigurationVisible => _controller.IsConfigurable;
 
-    private bool _withAlteration = false;
-    public bool WithAlteration => _withAlteration;
+    private bool _withAccidental = false;
+    public bool WithAccidental => _withAccidental;
 
     private bool _replacementMode = false;
     public bool ReplaceReplacementMode => _replacementMode;
@@ -87,7 +87,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.OpenScores += ViewModel_OpenScores;
         ViewModel.CloseScores += ViewModel_CloseScores;
         ViewModel.SelectedLevelChanged += ViewModel_SelectedLevelChanged;
-        ViewModel.SelectedAlterationsChanged += ViewModel_SelectedAlterationsChanged;
+        ViewModel.SelectedAccidentalsChanged += ViewModel_SelectedAccidentalsChanged;
         ViewModel.SelectedReplacementChanged += ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged += ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged += ViewModel_SelectedKeyChanged;
@@ -107,7 +107,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.CloseScores -= ViewModel_CloseScores;
 
         ViewModel.SelectedLevelChanged -= ViewModel_SelectedLevelChanged;
-        ViewModel.SelectedAlterationsChanged -= ViewModel_SelectedAlterationsChanged;
+        ViewModel.SelectedAccidentalsChanged -= ViewModel_SelectedAccidentalsChanged;
         ViewModel.SelectedReplacementChanged -= ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged -= ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged -= ViewModel_SelectedKeyChanged;
@@ -218,7 +218,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             _gameModeType = gameMode.GameModeType;
             _intervalMode = gameMode.IntervalMode;
             _selectedLevel = gameMode.Level;
-            _withAlteration = gameMode.WithRandomAlteration;
+            _withAccidental = gameMode.WithRandomAccidental;
         }
 
         _replacementMode = replacementMode;
@@ -296,9 +296,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _replacementMode = e.Value;
     }
 
-    private void ViewModel_SelectedAlterationsChanged(object sender, BoolEventArgs e)
+    private void ViewModel_SelectedAccidentalsChanged(object sender, BoolEventArgs e)
     {
-        _withAlteration = e.Value;
+        _withAccidental = e.Value;
     }
 
     private void MidiMaster_DeviceConnected(string deviceName)
@@ -327,7 +327,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     private void ChangeScene()
     {
-        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _withAlteration);
+        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _withAccidental);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();

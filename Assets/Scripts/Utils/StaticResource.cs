@@ -56,24 +56,24 @@ public static class StaticResource
 
     public static int PIANO_KEY_COUNT => 88;
 
-    public static string GET_PREFAB_NOTE(bool withLine, Alteration alteration)
+    public static string GET_PREFAB_NOTE(bool withLine, Accidental accidental)
     {
         string result = "";
 
         if (withLine)
         {
-            if (alteration == Alteration.Natural)
+            if (accidental == Accidental.Natural)
                 result = StaticResource.PREFAB_NOTE_LINE;
-            else if (alteration == Alteration.Sharp)
+            else if (accidental == Accidental.Sharp)
                 result = StaticResource.PREFAB_NOTE_LINE_SHARP;
             else
                 result = StaticResource.PREFAB_NOTE_LINE_FLAT;
         }
         else
         {
-            if (alteration == Alteration.Natural)
+            if (accidental == Accidental.Natural)
                 result = StaticResource.PREFAB_NOTE_NO_LINE;
-            else if (alteration == Alteration.Sharp)
+            else if (accidental == Accidental.Sharp)
                 result = StaticResource.PREFAB_NOTE_NO_LINE_SHARP;
             else
                 result = StaticResource.PREFAB_NOTE_NO_LINE_FLAT;

@@ -26,9 +26,9 @@ namespace Assets.Scripts.Data
                             {
                                 for(int i = 0; i < 2; i++)
                                 {
-                                    bool alterations = i == 0;
+                                    bool accidentals = i == 0;
 
-                                    _gameModes.Add(new GameMode(index, gameModeType, interval, level, alterations));
+                                    _gameModes.Add(new GameMode(index, gameModeType, interval, level, accidentals));
 
                                     index++;
                                 }
@@ -41,9 +41,9 @@ namespace Assets.Scripts.Data
             }
         }
 
-        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAlteration)
+        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental)
         {
-            var gameMode = new GameMode(0, gameModeType, intervalMode, level, withRandomAlteration);
+            var gameMode = new GameMode(0, gameModeType, intervalMode, level, withRandomAccidental);
             var existingGameMode = GameModes.Where(x => x.Equals(gameMode)).FirstOrDefault();
 
             return existingGameMode;

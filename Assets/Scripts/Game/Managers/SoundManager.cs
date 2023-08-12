@@ -40,15 +40,15 @@ public class SoundManager : MonoBehaviour
         PlaySound(GetNoteClip(note));
     }
 
-    public static void PlaySound(string audioClip)
+    public static void PlaySound(string audioClip, float volume = 1f)
     {
         if (_commonSoundAudioClip.ContainsKey(audioClip))
         {
-            PlaySound(_commonSoundAudioClip[audioClip]);
+            PlaySound(_commonSoundAudioClip[audioClip], volume);
         }
     }
 
-    public static void PlaySound(AudioClip audioClip)
+    public static void PlaySound(AudioClip audioClip, float volume = 1f)
     {
         // Use custom One Shot Sound because PlayClipAtPoint stops working when spamming
         GameObject newGo = new GameObject();
@@ -57,7 +57,7 @@ public class SoundManager : MonoBehaviour
         var oneShotSound = newGo.AddComponent<OneShotSound>();
 
         oneShotSound.InitializeAudioSource(audioSource);
-        oneShotSound.PlayClip(audioClip);
+        oneShotSound.PlayClip(audioClip, volume);
     }
 
     public static AudioClip GetNoteClip(PianoNote note)

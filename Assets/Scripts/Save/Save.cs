@@ -25,9 +25,9 @@ namespace Assets.Scripts.Game.Save
             _datas.Add(modeData);
         }
 
-        public GameModeData GetGameModeData(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAlteration)
+        public GameModeData GetGameModeData(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental)
         {
-            var gameMode = new GameMode(0, gameModeType, intervalMode, level, withRandomAlteration);
+            var gameMode = new GameMode(0, gameModeType, intervalMode, level, withRandomAccidental);
             return _datas.FirstOrDefault(x => x.GameMode.Equals(gameMode));
         }
 

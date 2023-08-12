@@ -30,21 +30,21 @@ public class Note : MonoBehaviour
     private bool _isActive = true;
     public bool IsActive => _isActive;
 
-    private Alteration _alteration;
-    public Alteration Alteration => _alteration;
+    private Accidental _accidental;
+    public Accidental Accidental => _accidental;
 
     private bool _isPressed;
     public bool IsPressed => _isPressed;
 
-    // Get the real note with alteration
+    // Get the real note with accidental
     // The parent is always a natural note
     public PianoNote PianoNote
     {
         get
         {
-            if (Alteration == Alteration.Sharp)
+            if (Accidental == Accidental.Sharp)
                 return Parent.Note < MusicHelper.HigherNote ? Parent.Note + 1 : MusicHelper.HigherNote;
-            else if(Alteration == Alteration.Flat)
+            else if(Accidental == Accidental.Flat)
                 return Parent.Note > MusicHelper.LowerNote ? Parent.Note - 1 : MusicHelper.LowerNote;
             else
                 return Parent.Note;
@@ -70,11 +70,11 @@ public class Note : MonoBehaviour
         _baseColor = _sprtRenderer.color;
     }
 
-    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration)
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Accidental accidental)
     {
         _creationTimestamp = DateTime.Now.Ticks;
         _parent = parent;
-        _alteration = alteration;
+        _accidental = accidental;
         _groupId = Guid.NewGuid();
 
         // The staff display only 5 lines.
@@ -100,15 +100,15 @@ public class Note : MonoBehaviour
         }
     }
 
-    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Alteration alteration, Guid groupId)
+    public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove, Accidental accidental, Guid groupId)
     {
-        this.InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, alteration);
+        this.InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, accidental);
         _groupId = groupId;
     }
 
     public void InitializeNote(StaffLine parent, int emptyLinesBelow, int emptyLinesAbove)
     {
-        InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, Alteration.Natural);
+        InitializeNote(parent, emptyLinesBelow, emptyLinesAbove, Accidental.Natural);
     }
 
     /// <summary>
