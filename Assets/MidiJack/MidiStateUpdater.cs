@@ -31,6 +31,11 @@ namespace MidiJack
         public delegate void Callback();
         public delegate void DeviceCallback();
 
+        private static MidiStateUpdater _updater;
+        private static bool _started = false;
+
+        private Coroutine _deviceCoroutine = null;
+
         public static void CreateGameObject(Callback callback, DeviceCallback deviceCallback)
         {
             var go = new GameObject("MIDI Updater");
@@ -38,24 +43,40 @@ namespace MidiJack
             GameObject.DontDestroyOnLoad(go);
             go.hideFlags = HideFlags.HideInHierarchy;
 
-            var updater = go.AddComponent<MidiStateUpdater>();
-            updater._callback = callback;
-            updater._deviceCallback = deviceCallback;
+            _updater = go.AddComponent<MidiStateUpdater>();
+            _updater._callback = callback;
+            _updater._deviceCallback = deviceCallback;
 
-            updater.StartDeviceCoroutine();
+            // updater.StartDeviceCoroutine();
+            _started = true;
         }
 
         Callback _callback; // MIDI info callback, called every frames to get notes
         DeviceCallback _deviceCallback;// MIDI device callback, called every seconds to detect device connection/disconnection
 
+        private void OnEnable()
+        {
+            int i = 0;
+        }
+
+        private void Awake()
+        {
+            // StartDeviceCoroutine();
+        }
+
         void Update()
         {
+            if (_started && _deviceCoroutine == null)
+            {
+                StartDeviceCoroutine();
+            }
+
             _callback();
         }
 
         void StartDeviceCoroutine()
         {
-            StartCoroutine(Co_DeviceCallback());
+            _deviceCoroutine = StartCoroutine(Co_DeviceCallback());
         }
 
         IEnumerator Co_DeviceCallback()

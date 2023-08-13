@@ -122,16 +122,16 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
         Save save = SaveManager.Save;
         var currentControllerType = ControllerFactory.Instance.GetCurrentType();
-        var controllerData = save.GetControllerData();
-        if (controllerData == null || controllerData.ControllerType != currentControllerType)
-        {
-            if(_controller.IsConfigurable)
-                save.SetControllerData(currentControllerType, _controller.LowerNote, _controller.HigherNote);
-            else
-                save.SetControllerData(currentControllerType, MusicHelper.LowerNote, MusicHelper.HigherNote);
+        //var controllerData = save.GetControllerData();
+        //if (controllerData == null || controllerData.ControllerType != currentControllerType)
+        //{
+        //    if(_controller.IsConfigurable)
+        //        save.SetControllerData(currentControllerType, "", _controller.LowerNote, _controller.HigherNote);
+        //    else
+        //        save.SetControllerData(currentControllerType, "", MusicHelper.LowerNote, MusicHelper.HigherNote);
 
-            SaveManager.SaveGame();
-        }
+        //    SaveManager.SaveGame();
+        //}
 
         var lastGameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
         bool lastReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
@@ -147,6 +147,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _controllerLabel = _controller.Label;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
         ViewModel.InitializeViewModel();
+        ViewModel.UpdateRecommendation();
     }
 
     // Update is called once per frame
@@ -181,7 +182,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (CurrentState == MenuState.Idle && newState == MenuState.Configuration)
         {
-            var goConfiguration = _controller.Configure();
+            var save = SaveManager.Save;
+            var existingDevice = save.GetControllerData(MidiMaster.GetDeviceName());
+            var goConfiguration = _controller.Configure(existingDevice == null);
 
             if (goConfiguration != null)
             {
@@ -248,11 +251,12 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
             ShowInfo(info);
             Save save = SaveManager.Save;
-            save.SetControllerData(ControllerFactory.Instance.GetCurrentType(), _controller.LowerNote, _controller.HigherNote);
+            save.SetControllerData(ControllerFactory.Instance.GetCurrentType(), MidiMaster.GetDeviceName(), _controller.LowerNote, _controller.HigherNote);
             SaveManager.SaveGame();
         }
 
         ChangeState(MenuState.Idle);
+        ViewModel.UpdateRecommendation();
     }
 
     private void _controller_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
@@ -307,6 +311,24 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
         var save = SaveManager.Save;
         save.AddDeviceData(deviceName);
+
+        var controllerData = save.GetControllerData(deviceName);
+        if(controllerData != null)
+        {
+            if(Controller is MultipleController multipleController)
+            {
+                multipleController.SetControllerData(controllerData);
+            }
+            else if(Controller is MidiController midiController)
+            {
+                midiController.SetControllerData(controllerData);
+            }
+            ViewModel.UpdateRecommendation();
+        }
+        else // if device not exists, open configuration
+        {
+            ViewModel_OpenMidiConfiguration(this, EventArgs.Empty);
+        }
     }
 
     private void MidiMaster_DeviceDisconnected(string deviceName)

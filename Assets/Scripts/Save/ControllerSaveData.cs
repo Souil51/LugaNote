@@ -10,14 +10,16 @@ namespace Assets.Scripts.Game.Save
     public class ControllerSaveData
     {
         public ControllerType ControllerType;
+        public string DeviceName;
         public PianoNote MidiLowerNote;
         public PianoNote MidiHigherNote;
 
-        public ControllerSaveData(ControllerType controllerType, PianoNote midiLowerNote, PianoNote midiHigherNote)
+        public ControllerSaveData(ControllerType controllerType, string deviceName, PianoNote midiLowerNote, PianoNote midiHigherNote)
         {
             ControllerType = controllerType;
             MidiLowerNote = midiLowerNote;
             MidiHigherNote = midiHigherNote;
+            DeviceName = deviceName;
         }
     }
 }

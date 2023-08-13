@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Hardware;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -64,7 +65,7 @@ public class VisualController : MonoBehaviour, IController
     public event ConfigurationEventHandled Configuration;
     public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
-    public GameObject Configure()
+    public GameObject Configure(bool newDevice = false)
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
         ConfigurationDestroyed?.Invoke(this, new GameObjectEventArgs(null));

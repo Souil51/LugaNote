@@ -123,6 +123,17 @@ public class MenuViewModel : ViewModelBase
         }
     }
 
+    private bool _lessThan61Keys;
+    public bool LessThan61Keys
+    {
+        get => _lessThan61Keys;
+        private set
+        {
+            _lessThan61Keys = value;
+            OnPropertyChanged();
+        }
+    }
+
     private void Awake()
     {
         MenuController.Instance.PropertyChanged += Instance_PropertyChanged;
@@ -268,6 +279,15 @@ public class MenuViewModel : ViewModelBase
     public void HideInfo()
     {
         Info.Disappear();
+    }
+
+    public void UpdateRecommendation()
+    {
+        // Disable replacement for less than 61 keys because we need at least 56 keys (and 61 keys midi devices will cover all notes)
+        LessThan61Keys = MenuController.Instance.Controller.HigherNote - MenuController.Instance.Controller.LowerNote < 61 - 1;
+
+        if (ReplacementButtons.SelectedIndex == 0 && LessThan61Keys)
+            ReplacementButtons.SelectButton(1);
     }
 
     private void Info_Disappeared(object sender, System.EventArgs e)

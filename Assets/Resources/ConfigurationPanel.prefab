@@ -447,6 +447,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!1 &8201509140264532572
 GameObject:
@@ -601,6 +602,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!1 &8201509140274442540
 GameObject:
@@ -756,6 +758,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!1 &8201509140375971982
 GameObject:
@@ -1373,6 +1376,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!1 &8201509140533136454
 GameObject:
@@ -2272,6 +2276,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!114 &8201509140919342048
 MonoBehaviour:
@@ -3799,6 +3804,7 @@ GameObject:
   - component: {fileID: 8201509141733175767}
   - component: {fileID: 8201509141733175760}
   - component: {fileID: 8201509141733175761}
+  - component: {fileID: 6237784158321236252}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -3823,8 +3829,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 322, y: 2.9}
-  m_SizeDelta: {x: 618.47, y: 82.7}
+  m_AnchoredPosition: {x: 322, y: 16.6}
+  m_SizeDelta: {x: 622.31, y: 82.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8201509141733175767
 CanvasRenderer:
@@ -3854,7 +3860,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Controller configuration
+  m_text: MIDI controller configuration
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3881,10 +3887,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 42.85
   m_fontSizeBase: 50
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
@@ -3943,6 +3949,26 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 20
   m_LayoutPriority: 1
+--- !u!114 &6237784158321236252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201509141733175763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b5e6f142685ab4dac71038564c8242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MemberName: text
+  Paths:
+  - Name: Title
+    LocalizeName: 
+    BeforeConcatenationString: 
+    AfterConcatenationString: 
+  Converter: {fileID: 0}
+  localize: {fileID: 0}
 --- !u!1 &8201509141792705879
 GameObject:
   m_ObjectHideFlags: 0
@@ -4224,6 +4250,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!114 &8201509141858192860
 MonoBehaviour:
@@ -4763,6 +4790,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!224 &2687826855584655812 stripped
 RectTransform:
@@ -4914,6 +4942,7 @@ MonoBehaviour:
     LocalizeName: 
     BeforeConcatenationString: 
     AfterConcatenationString: 
+  Converter: {fileID: 0}
   localize: {fileID: 0}
 --- !u!114 &8201509140655026123
 MonoBehaviour:

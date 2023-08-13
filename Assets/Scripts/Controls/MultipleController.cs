@@ -1,4 +1,5 @@
 using Assets.Scripts.Game.Model;
+using Assets.Scripts.Game.Save;
 using DataBinding.Core;
 using System.Collections.Generic;
 using System.Linq;
@@ -124,6 +125,18 @@ public class MultipleController : MonoBehaviour, IController
         }
     }
 
+    public void SetControllerData(ControllerSaveData controllerData)
+    {
+        var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+        if (midiController != null)
+        {
+            ((MidiController)midiController).SetControllerData(controllerData);
+
+            _lowerNote = _controllers.Select(x => x.LowerNote).Max();
+            _higherNote = _controllers.Select(x => x.HigherNote).Min();
+        }
+    }
+
     public void InitializeController(params IController[] controllers)
     {
         _controllers = new List<IController>(controllers);
@@ -158,12 +171,12 @@ public class MultipleController : MonoBehaviour, IController
         ConfigurationDestroyed?.Invoke(sender, e);
     }
 
-    public GameObject Configure()
+    public GameObject Configure(bool newDevice = false)
     {
         var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
         if (midiController != null)
         {
-            return midiController.Configure();
+            return midiController.Configure(newDevice);
         }
 
         return null;

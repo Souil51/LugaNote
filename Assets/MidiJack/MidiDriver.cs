@@ -114,6 +114,11 @@ namespace MidiJack
             return defaultValue;
         }
 
+        public string GetDeviceName()
+        {
+            return allDevicesBound.FirstOrDefault(x => x.IsBound)?.Name; ;
+        }
+
         #endregion
 
         #region Event Delegates

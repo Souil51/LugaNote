@@ -45,7 +45,7 @@ public interface IController
 
     public bool IsReplacementModeForced { get; }
 
-    GameObject Configure();
+    GameObject Configure(bool newDevice = false);
 
     void ShowControllerUI();
     void HideControllerUI();

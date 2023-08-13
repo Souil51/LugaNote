@@ -105,6 +105,16 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         }
     }
 
+    private string _title = "MIDI device configuration";
+    public string Title
+    {
+        get { return _title; }
+        set
+        {
+            _title = value;
+            OnPropertyChanged();
+        }
+    }
 
     private void Awake()
     {
@@ -117,12 +127,21 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         InitialiserNotifyPropertyChanged();
     }
 
-    public void Initialize(IController controller)
+    public void Initialize(IController controller, bool newDevice = false)
     {
         _controller = controller;
         controller.NoteDown += Controller_NoteDown;
 
         ChangeState(ConfigurationState.Started);
+
+        if (newDevice)
+        {
+            Title = "New MIDI device connected, please choose your configuration";
+        }
+        else
+        {
+            Title = "MIDI device configuration";
+        }
     }
 
     private void Controller_NoteDown(object sender, ControllerNoteEventArgs e)

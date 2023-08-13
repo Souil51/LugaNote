@@ -12,7 +12,7 @@ namespace Assets.Scripts.Game.Save
     public class Save
     {
         public List<GameModeData> _datas;
-        public ControllerSaveData _controllerData;
+        public List<ControllerSaveData> _controllersData;
         public List<DeviceData> _devicesDatas;
 
         public Save()
@@ -41,14 +41,30 @@ namespace Assets.Scripts.Game.Save
             }
         }
 
-        public ControllerSaveData GetControllerData()
+        public List<ControllerSaveData> GetControllersData()
         {
-            return _controllerData;
+            return _controllersData;
         }
 
-        public void SetControllerData(ControllerType controllerType, PianoNote midiLowerNote, PianoNote midiHigherNote)
+        public ControllerSaveData GetControllerData(string deviceName)
         {
-            _controllerData = new ControllerSaveData(controllerType, midiLowerNote, midiHigherNote);
+            return _controllersData.Where(x => x.DeviceName == deviceName).FirstOrDefault();
+        }
+
+        public void SetControllerData(ControllerType controllerType, string deviceName, PianoNote midiLowerNote, PianoNote midiHigherNote)
+        {
+            var existingData = GetControllerData(deviceName);
+            if(existingData != null)
+            {
+                existingData.ControllerType = controllerType;
+                existingData.MidiLowerNote = midiLowerNote;
+                existingData.MidiHigherNote = midiHigherNote;
+            }
+            else
+            {
+                var newData = new ControllerSaveData(controllerType, deviceName, midiLowerNote, midiHigherNote);
+                _controllersData.Add(newData);
+            }
         }
 
         public List<DeviceData> GetDevicesDatas()

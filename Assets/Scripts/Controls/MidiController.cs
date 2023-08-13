@@ -100,13 +100,13 @@ public class MidiController : MonoBehaviour, IController
     private void Awake()
     {
         // Read the save file to get last MIDI configuration
-        Save save = SaveManager.Save;
-        var controllerData = save.GetControllerData();
-        if (controllerData != null && (_midiControllerTypeList.Contains(controllerData.ControllerType)))
-        {
-            _lowerNote = controllerData.MidiLowerNote;
-            _higherNote = controllerData.MidiHigherNote;
-        }
+        //Save save = SaveManager.Save;
+        //var controllerData = save.GetControllerData();
+        //if (controllerData != null && (_midiControllerTypeList.Contains(controllerData.ControllerType)))
+        //{
+        //    _lowerNote = controllerData.MidiLowerNote;
+        //    _higherNote = controllerData.MidiHigherNote;
+        //}
 
         _notesWithOffset = Notes;
         _notesDownWithOffset = NotesDown;
@@ -147,6 +147,15 @@ public class MidiController : MonoBehaviour, IController
             NoteDown?.Invoke(this, new ControllerNoteEventArgs(_notesDown[0]));
     }
 
+    public void SetControllerData(ControllerSaveData controllerData)
+    {
+        if (controllerData != null && (_midiControllerTypeList.Contains(controllerData.ControllerType)))
+        {
+            _lowerNote = controllerData.MidiLowerNote;
+            _higherNote = controllerData.MidiHigherNote;
+        }
+    }
+
     private void Config_ConfigurationEnded(object sender, MidiConfigurationReturn e)
     {
         _configurationHelper.ConfigurationEnded -= Config_ConfigurationEnded;
@@ -160,7 +169,7 @@ public class MidiController : MonoBehaviour, IController
         Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
     }
 
-    public GameObject Configure()
+    public GameObject Configure(bool newDevice = false)
     {
         // GameObject test = new GameObject();
         var go = Instantiate(Resources.Load(StaticResource.PREFAB_MIDI_CONFIGURATION_PANEL), Vector3.zero, Quaternion.identity) as GameObject;
@@ -169,7 +178,7 @@ public class MidiController : MonoBehaviour, IController
         _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
         _configurationHelper.ConfigurationDestroyed += _configurationHelper_ConfigurationDestroyed;
 
-        _configurationHelper.Initialize(this);
+        _configurationHelper.Initialize(this, newDevice);
 
         return go;
     }

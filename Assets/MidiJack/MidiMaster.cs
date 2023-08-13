@@ -53,6 +53,11 @@ namespace MidiJack
             set { MidiDriver.Instance.deviceDisconnectedDelegate = value; }
         }
 
+        public static string GetDeviceName()
+        {
+            return MidiDriver.Instance.GetDeviceName();
+        }
+
         // Returns the key state (on: velocity, off: zero).
         public static float GetKey(MidiChannel channel, int noteNumber)
         {

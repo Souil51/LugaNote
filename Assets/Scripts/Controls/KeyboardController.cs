@@ -151,7 +151,7 @@ public class KeyboardController : MonoBehaviour, IController
         Configuration?.Invoke(this, new ConfigurationEventArgs(e.StatusCode));
     }
 
-    public GameObject Configure()
+    public GameObject Configure(bool newDevice = false)
     {
         Configuration?.Invoke(this, new ConfigurationEventArgs(true)); // no visual configuration yet
         ConfigurationDestroyed?.Invoke(this, new GameObjectEventArgs(null));
