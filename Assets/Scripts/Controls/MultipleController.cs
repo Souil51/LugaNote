@@ -3,6 +3,7 @@ using Assets.Scripts.Game.Save;
 using DataBinding.Core;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Hardware;
 using UnityEngine;
 
 public class MultipleController : MonoBehaviour, IController
@@ -209,4 +210,21 @@ public class MultipleController : MonoBehaviour, IController
         }
     }
 
+    public void ChangeMode(VisualControllerMode mode)
+    {
+        var visualController = _controllers.Where(x => x.GetType() == typeof(VisualController)).FirstOrDefault();
+        if (visualController != null)
+        {
+            ((VisualController)visualController).ChangeMode(mode);
+        }
+    }
+
+    public void GenerateUI()
+    {
+        var visualController = _controllers.Where(x => x.GetType() == typeof(VisualController)).FirstOrDefault();
+        if (visualController != null)
+        {
+            ((VisualController)visualController).GenerateUI();
+        }
+    }
 }

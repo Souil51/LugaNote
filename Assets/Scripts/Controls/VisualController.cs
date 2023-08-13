@@ -1,5 +1,6 @@
 using Assets.Scripts.Game.Model;
 using DataBinding.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,11 @@ public class VisualController : MonoBehaviour, IController
     public bool IsReplacementModeForced => true;
 
     private GameObject _buttonCanvas;
+
+    public VisualControllerMode _mode = VisualControllerMode.Classic;
+    public VisualControllerMode Mode => _mode;
+
+    private GameObject _currentButtonsCanvas = null;
 
     // These contains notes pressed based on Buttons callback on PointerDown and PointerUp
     // As this is note like Input.Key and button don't have "KeyDown" (PointerDown trigger each frame if button is pressed)
@@ -114,8 +120,17 @@ public class VisualController : MonoBehaviour, IController
     {
         UpdateNotesWithOffset();
 
-        _buttonCanvas = GenerateButtons();
+        GenerateUI();
+
         HideControllerUI();
+    }
+
+    public void GenerateUI()
+    {
+        if (Mode == VisualControllerMode.Classic)
+            _buttonCanvas = GenerateButtons();
+        else
+            _buttonCanvas = GenerateButtonsIntervalsName();
     }
 
     private void UpdateNotesWithOffset()
@@ -146,6 +161,9 @@ public class VisualController : MonoBehaviour, IController
     /// </summary>
     private GameObject GenerateButtons()
     {
+        if(_currentButtonsCanvas != null)
+            Destroy(_currentButtonsCanvas);
+
         // UI Canvas that will contains all buttons
         var goCanvas = Instantiate(Resources.Load(StaticResource.PREFAB_VISUAL_KEYBOARD)) as GameObject;
         goCanvas.transform.localPosition = Vector3.zero;
@@ -224,6 +242,99 @@ public class VisualController : MonoBehaviour, IController
             currentX += buttonWidth / 2f + spaceBetween;
         }
 
-        return goCanvas;
+        _currentButtonsCanvas = goCanvas;
+        return _currentButtonsCanvas;
+    }
+
+    private GameObject GenerateButtonsIntervalsName()
+    {
+        if (_currentButtonsCanvas != null)
+            Destroy(_currentButtonsCanvas);
+
+        // UI Canvas that will contains all buttons
+        var goCanvas = Instantiate(Resources.Load(StaticResource.PREFAB_VISUAL_KEYBOARD)) as GameObject;
+        goCanvas.transform.localPosition = Vector3.zero;
+        goCanvas.transform.SetParent(transform);
+
+        var btnPanel = goCanvas.transform.GetChild(0);
+        btnPanel.gameObject.transform.localPosition += new Vector3(0, -25f, 0);
+
+        // 2 prefabs to calculate the center position of the buttons
+        var goTmpButton = Instantiate(Resources.Load("NoteButton")) as GameObject;
+        var rectTmpButton = goTmpButton.GetComponent<RectTransform>();
+
+        // Compute Y note position
+        float canvasHeight = goCanvas.GetComponent<RectTransform>().sizeDelta.y;
+        float yPosition = -(canvasHeight / 2f) + 25f;
+
+        var intervalNames = Enum.GetValues(typeof(IntervalName));
+
+        // Compute the X of the first note
+        var buttonsCount = intervalNames.Length;
+
+        float totalWidth = (rectTmpButton.sizeDelta.x * buttonsCount);
+
+        float spaceBetween = 5f;
+        float currentX = -(totalWidth / 4) - (buttonsCount * spaceBetween / 2);
+        float startingY = -(rectTmpButton.sizeDelta.x / 4);
+
+        // Destroy the 2 temp prefabs
+        Destroy(goTmpButton);
+
+        foreach (IntervalName intervalName in intervalNames)
+        {
+            string prefabName = StaticResource.PREFAB_NOTE_BUTTON;
+            GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
+            goButtonNote.transform.SetParent(btnPanel);
+
+            var buttonTransform = goButtonNote.GetComponent<RectTransform>();
+            buttonTransform.localPosition = new Vector3(currentX, startingY, 0f);
+
+            // Get the size of the button
+            var buttonWidth = buttonTransform.sizeDelta.x;
+
+            // Update the text of the button
+            var buttonTMP = goButtonNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            buttonTMP.text = Enums.GetEnumDescription(intervalName);
+
+            // Add the button down and button up event here because UI Button only have Click event
+            // But we want to know when button is up or held
+            var buttonEventTrigger = goButtonNote.GetComponent<EventTrigger>();
+
+            // PointerDown and PointerUp just fill list to track which button is pressed and which is not
+            // PianoNote list used by the game are managed in the update method, like other controllers
+            // It's possible to handle this in callbacks but easier to do like this others controllers
+            var pointerUp = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
+            pointerUp.callback.AddListener((data) =>
+            {
+                // _buttonsNoteDown.Remove(note);
+            });
+
+            var pointerDown = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerDown).FirstOrDefault();
+            pointerDown.callback.AddListener((data) =>
+            {
+                //if (!_buttonsNoteDown.Contains(note))
+                //{
+                //    _buttonsNoteDown.Add(note);
+                //}
+            });
+
+            currentX += buttonWidth / 2f + spaceBetween;
+        }
+
+        _currentButtonsCanvas = goCanvas;
+        return _currentButtonsCanvas;
+    }
+
+    private GameObject GenerateButtonsChordsName()
+    {
+        return null;
+    }
+
+    public void ChangeMode(VisualControllerMode mode)
+    {
+        _mode = mode;
+
+        Debug.Log("Change visual mode to " + mode);
     }
 }

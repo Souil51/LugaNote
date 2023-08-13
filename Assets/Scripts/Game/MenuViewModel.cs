@@ -22,6 +22,7 @@ public class MenuViewModel : ViewModelBase
     [SerializeField] private RadioButtonsGroupViewModel KeyButtons;
     [SerializeField] private ToggleSwitch AccidentalSwitch;
     [SerializeField] private ToggleSwitch InversionSwitch;
+    [SerializeField] private ToggleSwitch GuessNameSwitch;
 
     public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
     public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
@@ -40,6 +41,9 @@ public class MenuViewModel : ViewModelBase
 
     public delegate void SelectedInversionChangedEventHandler(object sender, BoolEventArgs e);
     public event SelectedInversionChangedEventHandler SelectedInversionChanged;
+
+    public delegate void SelectedGuessNameChangedEventHandler(object sender, BoolEventArgs e);
+    public event SelectedGuessNameChangedEventHandler SelectedGuessNameChanged;
 
     public delegate void SelectedReplacementChangedEventHandler(object sender, BoolEventArgs e);
     public event SelectedReplacementChangedEventHandler SelectedReplacementChanged;
@@ -155,6 +159,7 @@ public class MenuViewModel : ViewModelBase
         ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
+        GuessNameSwitch.ValueChanged += GuessNameSwitch_ValueChanged;
 
         OnPropertyChanged(nameof(IsInversionModeVisible));
 
@@ -205,6 +210,12 @@ public class MenuViewModel : ViewModelBase
         UpdateDisplayedScores();
     }
 
+    private void GuessNameSwitch_ValueChanged(object sender, BoolEventArgs e)
+    {
+        SelectedGuessNameChanged?.Invoke(sender, e);
+        UpdateDisplayedScores();
+    }
+
     private void OnDisable()
     {
         Info.Disappeared -= Info_Disappeared;
@@ -215,6 +226,7 @@ public class MenuViewModel : ViewModelBase
         ReplacementButtons.SelectedButtonChanged -= ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged -= IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged -= KeyButtons_SelectedButtonChanged;
+        GuessNameSwitch.ValueChanged -= GuessNameSwitch_ValueChanged;
     }
 
     public void InitializeViewModel()
@@ -238,15 +250,16 @@ public class MenuViewModel : ViewModelBase
         var level = (Level)LevelButtons.SelectedIndex;
         var accidentals = AccidentalSwitch.Value;
         var inversions = InversionSwitch.Value;
+        var guessName = GuessNameSwitch.Value;
 
-        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, accidentals, inversions);
+        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, guessName, accidentals, inversions);
     }
 
-    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental, bool withInversion)
+    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool guessName, bool withRandomAccidental, bool withInversion)
     {
         List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
 
-        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, withRandomAccidental, withInversion);
+        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, guessName, withRandomAccidental, withInversion);
         if(gameModeData != null)
         {
             var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
@@ -279,6 +292,7 @@ public class MenuViewModel : ViewModelBase
             LevelButtons.SelectButton((int)gameMode.Level);
             AccidentalsButtons.SelectButton(gameMode.WithRandomAccidental ? 1 : 0);
             AccidentalSwitch.InitialState(gameMode.WithRandomAccidental);
+            InversionSwitch.InitialState(gameMode.WithInversion);
         }
         
         ReplacementButtons.SelectButton(replacementMode ? 1 : 0);

@@ -157,7 +157,18 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            _gameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, false, false);
+            _gameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, true, false, false);
+
+            if (Controller is MultipleController multipleController)
+            {
+                multipleController.ChangeMode(VisualControllerMode.IntervalName);
+                multipleController.GenerateUI();
+            }
+            else if (Controller is VisualController visualController)
+            {
+                visualController.ChangeMode(VisualControllerMode.IntervalName);
+                visualController.GenerateUI();
+            }
         }
 
         // Generate the staff lines

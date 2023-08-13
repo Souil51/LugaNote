@@ -24,10 +24,13 @@ namespace Assets.Scripts.Game.Model
         private bool _withInversion;
         public bool WithInversion => _withInversion;
 
+        private bool _guessName;
+        public bool guessName => _guessName;
+
         private Level _level;
         public Level Level => _level;
 
-        public GameMode(int id, GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental, bool withInversion)
+        public GameMode(int id, GameModeType gameModeType, IntervalMode intervalMode, Level level, bool guessName, bool withRandomAccidental, bool withInversion)
         {
             _id = id;
             _gameModeType = gameModeType;
@@ -35,13 +38,14 @@ namespace Assets.Scripts.Game.Model
             _withRandomAccidental = withRandomAccidental;
             _withInversion = withInversion;
             _level = level;
+            _guessName = guessName;
         }
 
         public override bool Equals(object obj)
         {
             if (obj is GameMode gameMode)
             {
-                return GameModeType == gameMode.GameModeType && IntervalMode == gameMode.IntervalMode && Level == gameMode.Level && WithRandomAccidental == gameMode.WithRandomAccidental && WithInversion == gameMode.WithInversion;
+                return GameModeType == gameMode.GameModeType && IntervalMode == gameMode.IntervalMode && Level == gameMode.Level && WithRandomAccidental == gameMode.WithRandomAccidental && WithInversion == gameMode.WithInversion && guessName == gameMode.guessName;
             }
 
             return false;
@@ -50,7 +54,7 @@ namespace Assets.Scripts.Game.Model
         public override int GetHashCode()
         {
             int hash = HashCode.Combine(_id, Id, _gameModeType, GameModeType, _intervalMode, IntervalMode, _level, Level);
-            return HashCode.Combine(hash, _withRandomAccidental, WithRandomAccidental, _withInversion, WithInversion);
+            return HashCode.Combine(hash, _withRandomAccidental, WithRandomAccidental, _withInversion, WithInversion, _guessName, guessName);
         }
     }
 }

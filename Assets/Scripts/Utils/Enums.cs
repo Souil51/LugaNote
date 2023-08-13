@@ -24,6 +24,8 @@ public enum Inversion { None = 0, firstInverstion, secondInversion }
 
 public enum Tonality { Major = 0, Minor }
 
+public enum VisualControllerMode { Classic = 0, IntervalName = 1, ChordName = 2 }
+
 public enum SceneSessionKey 
 {
     [Description("GameMode")]
@@ -197,6 +199,32 @@ public enum PianoScale
     Em,
     F,
     Fm
+}
+
+public enum IntervalName
+{
+    [Description("2nd m")]
+    SecondMinor = 0,
+    [Description("2nd")]
+    Second,
+    [Description("3rd m")]
+    ThridMinor,
+    [Description("3rd")]
+    Third,
+    [Description("4th")]
+    Fourth,
+    [Description("5th dim")]
+    FifthDiminished,
+    [Description("5th")]
+    Fitch,
+    [Description("6th m")]
+    SixthMinor,
+    [Description("6th")]
+    Sixth,
+    [Description("7th m")]
+    SeventhMinor,
+    [Description("7th")]
+    Seventh
 }
 
 public enum Accidental

@@ -42,6 +42,8 @@ public class SoundManager : MonoBehaviour
 
     public static void PlaySound(string audioClip, float volume = 1f)
     {
+        if (_commonSoundAudioClip == null) LoadAllSounds();
+
         if (_commonSoundAudioClip.ContainsKey(audioClip))
         {
             PlaySound(_commonSoundAudioClip[audioClip], volume);

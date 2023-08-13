@@ -53,6 +53,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private bool _withInversion = false;
     public bool WithInversion => _withInversion;
 
+    private bool _guessName = false;
+    public bool GuessName => _guessName;
+
     private bool _replacementMode = false;
     public bool ReplaceReplacementMode => _replacementMode;
 
@@ -95,6 +98,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.SelectedReplacementChanged += ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged += ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged += ViewModel_SelectedKeyChanged;
+        ViewModel.SelectedGuessNameChanged += ViewModel_SelectedGuessNameChanged;
 
         MidiMaster.deviceConnectedDelegate += MidiMaster_DeviceConnected;
         MidiMaster.deviceDisconnectedDelegate += MidiMaster_DeviceDisconnected;
@@ -116,6 +120,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.SelectedReplacementChanged -= ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged -= ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged -= ViewModel_SelectedKeyChanged;
+        ViewModel.SelectedGuessNameChanged -= ViewModel_SelectedGuessNameChanged;
 
         MidiMaster.deviceConnectedDelegate -= MidiMaster_DeviceConnected;
         MidiMaster.deviceDisconnectedDelegate -= MidiMaster_DeviceDisconnected;
@@ -321,6 +326,11 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _withInversion = e.Value;
     }
 
+    private void ViewModel_SelectedGuessNameChanged(object sender, BoolEventArgs e)
+    {
+        _guessName = e.Value;
+    }
+
     private void MidiMaster_DeviceConnected(string deviceName)
     {
         Debug.Log("MidiMaster_DeviceConnected");
@@ -367,7 +377,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     private void ChangeScene()
     {
-        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _withAccidental, _withInversion);
+        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _guessName, _withAccidental, _withInversion);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();
