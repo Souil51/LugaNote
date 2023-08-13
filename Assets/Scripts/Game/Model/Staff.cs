@@ -160,11 +160,11 @@ public class Staff : MonoBehaviour
         }
     }
 
-    public void SpawnChord(List<PianoNote> notesRange, bool withAccidental)
+    public void SpawnChord(List<PianoNote> notesRange, bool withAccidental, bool withInversion)
     {
         Guid groupId = Guid.NewGuid();
-        var majorChords = MusicHelper.GetMajorChords(notesRange.Min(), notesRange.Max(), withAccidental);
-        var minorChords = MusicHelper.GetMinorChords(notesRange.Min(), notesRange.Max(), withAccidental);
+        var majorChords = MusicHelper.GetMajorChords(notesRange.Min(), notesRange.Max(), withAccidental, withInversion);
+        var minorChords = MusicHelper.GetMinorChords(notesRange.Min(), notesRange.Max(), withAccidental, withInversion);
         var chords = majorChords.Concat(minorChords).ToList();
 
         int index = Random.Range(0, chords.Count);

@@ -50,6 +50,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private bool _withAccidental = false;
     public bool WithAccidental => _withAccidental;
 
+    private bool _withInversion = false;
+    public bool WithInversion => _withInversion;
+
     private bool _replacementMode = false;
     public bool ReplaceReplacementMode => _replacementMode;
 
@@ -88,6 +91,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.CloseScores += ViewModel_CloseScores;
         ViewModel.SelectedLevelChanged += ViewModel_SelectedLevelChanged;
         ViewModel.SelectedAccidentalsChanged += ViewModel_SelectedAccidentalsChanged;
+        ViewModel.SelectedInversionChanged += ViewModel_SelectedInversionChanged;
         ViewModel.SelectedReplacementChanged += ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged += ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged += ViewModel_SelectedKeyChanged;
@@ -108,6 +112,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
         ViewModel.SelectedLevelChanged -= ViewModel_SelectedLevelChanged;
         ViewModel.SelectedAccidentalsChanged -= ViewModel_SelectedAccidentalsChanged;
+        ViewModel.SelectedInversionChanged -= ViewModel_SelectedInversionChanged;
         ViewModel.SelectedReplacementChanged -= ViewModel_SelectedReplacementChanged;
         ViewModel.SelectedIntervalChanged -= ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged -= ViewModel_SelectedKeyChanged;
@@ -222,9 +227,15 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             _intervalMode = gameMode.IntervalMode;
             _selectedLevel = gameMode.Level;
             _withAccidental = gameMode.WithRandomAccidental;
+            _withInversion = gameMode.WithInversion;
         }
 
         _replacementMode = replacementMode;
+    }
+
+    public bool IsMidiConnected()
+    {
+        return !String.IsNullOrEmpty(MidiMaster.GetDeviceName());
     }
 
     #region Events callbacks
@@ -305,6 +316,11 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _withAccidental = e.Value;
     }
 
+    private void ViewModel_SelectedInversionChanged(object sender, BoolEventArgs e)
+    {
+        _withInversion = e.Value;
+    }
+
     private void MidiMaster_DeviceConnected(string deviceName)
     {
         Debug.Log("MidiMaster_DeviceConnected");
@@ -329,6 +345,8 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         {
             ViewModel_OpenMidiConfiguration(this, EventArgs.Empty);
         }
+
+        ViewModel.UpdateMidiConnection();
     }
 
     private void MidiMaster_DeviceDisconnected(string deviceName)
@@ -349,7 +367,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     private void ChangeScene()
     {
-        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _withAccidental);
+        var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _withAccidental, _withInversion);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
         Transition.Close();

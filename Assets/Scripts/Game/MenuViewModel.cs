@@ -21,6 +21,7 @@ public class MenuViewModel : ViewModelBase
     [SerializeField] private RadioButtonsGroupViewModel IntervalButtons;
     [SerializeField] private RadioButtonsGroupViewModel KeyButtons;
     [SerializeField] private ToggleSwitch AccidentalSwitch;
+    [SerializeField] private ToggleSwitch InversionSwitch;
 
     public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
     public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
@@ -36,6 +37,9 @@ public class MenuViewModel : ViewModelBase
 
     public delegate void SelectedAccidentalsChangedEventHandler(object sender, BoolEventArgs e);
     public event SelectedAccidentalsChangedEventHandler SelectedAccidentalsChanged;
+
+    public delegate void SelectedInversionChangedEventHandler(object sender, BoolEventArgs e);
+    public event SelectedInversionChangedEventHandler SelectedInversionChanged;
 
     public delegate void SelectedReplacementChangedEventHandler(object sender, BoolEventArgs e);
     public event SelectedReplacementChangedEventHandler SelectedReplacementChanged;
@@ -134,6 +138,8 @@ public class MenuViewModel : ViewModelBase
         }
     }
 
+    public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
+
     private void Awake()
     {
         MenuController.Instance.PropertyChanged += Instance_PropertyChanged;
@@ -145,12 +151,14 @@ public class MenuViewModel : ViewModelBase
         LevelButtons.SelectedButtonChanged += LevelsButton_SelectedButtonChanged;
         AccidentalsButtons.SelectedButtonChanged += AccidentalsButtons_SelectedButtonChanged;
         AccidentalSwitch.ValueChanged += AccidentalSwitch_ValueChanged;
+        InversionSwitch.ValueChanged += InversionSwitch_ValueChanged;
         ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
 
-        IsMIDIDeviceConnected = MenuController.Instance.Controller.IsConfigurable;
+        OnPropertyChanged(nameof(IsInversionModeVisible));
 
+        UpdateMidiConnection();
         UpdateDisplayedScores();
     }
 
@@ -164,6 +172,7 @@ public class MenuViewModel : ViewModelBase
     {
         SelectedIntervalChanged?.Invoke(sender, new IntervalEventArgs((IntervalMode)e.Value));
         UpdateDisplayedScores();
+        OnPropertyChanged(nameof(IsInversionModeVisible));
     }
 
     private void ReplacementButtons_SelectedButtonChanged(object sender, IntEventArgs e)
@@ -184,6 +193,12 @@ public class MenuViewModel : ViewModelBase
         UpdateDisplayedScores();
     }
 
+    private void InversionSwitch_ValueChanged(object sender, BoolEventArgs e)
+    {
+        SelectedInversionChanged?.Invoke(sender, e);
+        UpdateDisplayedScores();
+    }
+
     private void LevelsButton_SelectedButtonChanged(object sender, IntEventArgs e)
     {
         SelectedLevelChanged?.Invoke(sender, new LevelEventArgs((Level)e.Value));
@@ -196,6 +211,7 @@ public class MenuViewModel : ViewModelBase
         LevelButtons.SelectedButtonChanged -= LevelsButton_SelectedButtonChanged;
         AccidentalsButtons.SelectedButtonChanged -= AccidentalsButtons_SelectedButtonChanged;
         AccidentalSwitch.ValueChanged -= AccidentalSwitch_ValueChanged;
+        InversionSwitch.ValueChanged -= InversionSwitch_ValueChanged;
         ReplacementButtons.SelectedButtonChanged -= ReplacementButtons_SelectedButtonChanged;
         IntervalButtons.SelectedButtonChanged -= IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged -= KeyButtons_SelectedButtonChanged;
@@ -220,17 +236,17 @@ public class MenuViewModel : ViewModelBase
         var key = (GameModeType)KeyButtons.SelectedIndex;
         var interval = (IntervalMode)IntervalButtons.SelectedIndex;
         var level = (Level)LevelButtons.SelectedIndex;
-        var accidentals = AccidentalsButtons.SelectedIndex == 1;
-        accidentals = AccidentalSwitch.Value;
+        var accidentals = AccidentalSwitch.Value;
+        var inversions = InversionSwitch.Value;
 
-        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, accidentals);
+        DisplayedScores = GenerateLeaderboardScoreList(key, interval, level, accidentals, inversions);
     }
 
-    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental)
+    private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental, bool withInversion)
     {
         List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
 
-        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, withRandomAccidental);
+        var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, withRandomAccidental, withInversion);
         if(gameModeData != null)
         {
             var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
@@ -290,6 +306,11 @@ public class MenuViewModel : ViewModelBase
             ReplacementButtons.SelectButton(1);
     }
 
+    public void UpdateMidiConnection()
+    {
+        IsMIDIDeviceConnected = MenuController.Instance.Controller.IsConfigurable && MenuController.Instance.IsMidiConnected();
+    }
+
     private void Info_Disappeared(object sender, System.EventArgs e)
     {
         IsInfoVisible = false;
@@ -298,33 +319,6 @@ public class MenuViewModel : ViewModelBase
     public void StartControllerConfiguration()
     {
         OpenMidiConfiguration?.Invoke(this, EventArgs.Empty);
-    }
-
-    public void ViewScore_Trebble()
-    {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Trebble, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false);
-        ScorePanelVisible = true;
-        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.Trebble, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false)));
-    }
-
-    public void ViewScore_Bass()
-    {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.Bass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false);
-        ScorePanelVisible = true;
-        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.Bass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false)));
-    }
-
-    public void ViewScore_TrebbleBass()
-    {
-        DisplayedScores = GenerateLeaderboardScoreList(GameModeType.TrebbleBass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false);
-        ScorePanelVisible = true;
-        OpenScores?.Invoke(this, new GameModeEventArgs(new GameMode(0, GameModeType.TrebbleBass, IntervalMode.Note, (Level)LevelButtons.SelectedIndex, false)));
-    }
-
-    public void ViewScore_Close()
-    {
-        ScorePanelVisible = false;
-        CloseScores?.Invoke(this, EventArgs.Empty);
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

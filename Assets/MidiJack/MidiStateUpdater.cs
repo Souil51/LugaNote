@@ -56,7 +56,7 @@ namespace MidiJack
 
         private void OnEnable()
         {
-            int i = 0;
+            //int i = 0;
         }
 
         private void Awake()

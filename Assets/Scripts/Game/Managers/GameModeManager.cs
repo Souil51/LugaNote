@@ -24,13 +24,19 @@ namespace Assets.Scripts.Data
                         {
                             foreach (Level level in Enum.GetValues(typeof(Level)))
                             {
-                                for(int i = 0; i < 2; i++)
+                                foreach(Inversion inversion in Enum.GetValues(typeof(Inversion)))
                                 {
-                                    bool accidentals = i == 0;
+                                    for (int i = 0; i < 2; i++)
+                                    {
+                                        bool accidentals = i == 0;
+                                        for (int j = 0; j < 2; j++)
+                                        {
+                                            bool inversions = j == 0;
+                                            _gameModes.Add(new GameMode(index, gameModeType, interval, level, accidentals, inversions));
 
-                                    _gameModes.Add(new GameMode(index, gameModeType, interval, level, accidentals));
-
-                                    index++;
+                                            index++;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -41,9 +47,9 @@ namespace Assets.Scripts.Data
             }
         }
 
-        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental)
+        public static GameMode GetGameMode(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool withRandomAccidental, bool withInversion)
         {
-            var gameMode = new GameMode(0, gameModeType, intervalMode, level, withRandomAccidental);
+            var gameMode = new GameMode(0, gameModeType, intervalMode, level, withRandomAccidental, withInversion);
             var existingGameMode = GameModes.Where(x => x.Equals(gameMode)).FirstOrDefault();
 
             return existingGameMode;

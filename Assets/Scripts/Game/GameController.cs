@@ -10,6 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using DG.Tweening;
 using Assets.Scripts.Game.Save;
+using MidiJack;
 
 /// <summary>
 /// 
@@ -156,7 +157,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            _gameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, false);
+            _gameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, false, false);
         }
 
         // Generate the staff lines
@@ -307,6 +308,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         Transition.SetPositionOpen_2();
         Transition.Close();
     }
+
     #endregion
 
     #region Events callbacks
@@ -512,7 +514,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                         {
                             var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
 
-                            staffs[i].SpawnChord(noteList, GameMode.WithRandomAccidental);
+                            staffs[i].SpawnChord(noteList, GameMode.WithRandomAccidental, GameMode.WithInversion);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }
