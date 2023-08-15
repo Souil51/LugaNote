@@ -27,11 +27,11 @@ public class MenuViewModel : ViewModelBase
     public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
     public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
 
-    public delegate void OpenScoresModeEventHandler(object sender, GameModeEventArgs e);
-    public event OpenScoresModeEventHandler OpenScores;
+    //public delegate void OpenScoresModeEventHandler(object sender, GameModeEventArgs e);
+    //public event OpenScoresModeEventHandler OpenScores;
 
-    public delegate void CloseScoresModeEventHandler(object sender, EventArgs e);
-    public event CloseScoresModeEventHandler CloseScores;
+    //public delegate void CloseScoresModeEventHandler(object sender, EventArgs e);
+    //public event CloseScoresModeEventHandler CloseScores;
 
     public delegate void SelectedLevelChangedEventHandler(object sender, LevelEventArgs e);
     public event SelectedLevelChangedEventHandler SelectedLevelChanged;

@@ -81,7 +81,7 @@ public class GameInputManager : MonoBehaviour
                 if (_noteBuffer.Count <= maxNoteCount && _noteBuffer.Count > 0 && bufferChanged)
                 {
                     Debug.Log("Low : " + firstNotes.Select(x => x.PianoNote).Min() + " - High : " + firstNotes.Select(x => x.PianoNote).Max());
-                    Debug.Log("Buffer if : " + _noteBuffer[0].Note + " - " + _noteBuffer[1].Note);
+                    // Debug.Log("Buffer if : " + _noteBuffer[0].Note + " - " + _noteBuffer[1].Note);
 
                     var firstPianoNotes = firstNotes.Select(x => x.PianoNote).ToList();
                     var firstPianoNotesForReplace = firstNotes.Select(x => x.PianoNoteForReplaceValue).ToList();

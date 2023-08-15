@@ -90,8 +90,8 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         Transition.Closed += Transition_Closed;
 
         ViewModel.OpenMidiConfiguration += ViewModel_OpenMidiConfiguration;
-        ViewModel.OpenScores += ViewModel_OpenScores;
-        ViewModel.CloseScores += ViewModel_CloseScores;
+        //ViewModel.OpenScores += ViewModel_OpenScores;
+        //ViewModel.CloseScores += ViewModel_CloseScores;
         ViewModel.SelectedLevelChanged += ViewModel_SelectedLevelChanged;
         ViewModel.SelectedAccidentalsChanged += ViewModel_SelectedAccidentalsChanged;
         ViewModel.SelectedInversionChanged += ViewModel_SelectedInversionChanged;
@@ -111,8 +111,8 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _controller.Configuration -= controller_Configuration;
 
         ViewModel.OpenMidiConfiguration -= ViewModel_OpenMidiConfiguration;
-        ViewModel.OpenScores -= ViewModel_OpenScores;
-        ViewModel.CloseScores -= ViewModel_CloseScores;
+        //ViewModel.OpenScores -= ViewModel_OpenScores;
+        //ViewModel.CloseScores -= ViewModel_CloseScores;
 
         ViewModel.SelectedLevelChanged -= ViewModel_SelectedLevelChanged;
         ViewModel.SelectedAccidentalsChanged -= ViewModel_SelectedAccidentalsChanged;
@@ -132,24 +132,20 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
         Save save = SaveManager.Save;
         var currentControllerType = ControllerFactory.Instance.GetCurrentType();
-        //var controllerData = save.GetControllerData();
-        //if (controllerData == null || controllerData.ControllerType != currentControllerType)
-        //{
-        //    if(_controller.IsConfigurable)
-        //        save.SetControllerData(currentControllerType, "", _controller.LowerNote, _controller.HigherNote);
-        //    else
-        //        save.SetControllerData(currentControllerType, "", MusicHelper.LowerNote, MusicHelper.HigherNote);
-
-        //    SaveManager.SaveGame();
-        //}
-
+        
         var lastGameMode = GameSceneManager.Instance.GetValue<GameMode>(Enums.GetEnumDescription(SceneSessionKey.GameMode));
         bool lastReplacementMode = GameSceneManager.Instance.GetValue<bool>(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode));
+
+        if(lastGameMode == null && save._lastGameMode != null)
+        {
+            lastGameMode = save._lastGameMode;
+            lastReplacementMode = save._lastReplacementMode;
+        }
 
         ViewModel.InitOptions(lastGameMode, lastReplacementMode);
         if(lastGameMode != null)
             LoadGameMode(lastGameMode, lastReplacementMode);
-
+        
         ChangeState(MenuState.Idle);
 
         ViewModel.HideInfo();
@@ -380,6 +376,11 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _guessName, _withAccidental, _withInversion);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.GameMode), gameMode);
         GameSceneManager.Instance.SetValue(Enums.GetEnumDescription(SceneSessionKey.ReplacementMode), _replacementMode);
+
+        var save = SaveManager.Save;
+        save.SetLastGameMode(gameMode, _replacementMode);
+        SaveManager.SaveGame();
+
         Transition.Close();
     }
 

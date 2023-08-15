@@ -14,6 +14,8 @@ namespace Assets.Scripts.Game.Save
         public List<GameModeData> _datas;
         public List<ControllerSaveData> _controllersData;
         public List<DeviceData> _devicesDatas;
+        public GameMode _lastGameMode;
+        public bool _lastReplacementMode;
 
         public Save()
         {
@@ -38,6 +40,12 @@ namespace Assets.Scripts.Game.Save
             if (saveGameModeData != null)
             {
                 saveGameModeData.AddScore(score, date);
+            }
+            else
+            {
+                var datas = new GameModeData(gameMode);
+                datas.AddScore(score, date);
+                AddGameModeData(datas);
             }
         }
 
@@ -99,6 +107,12 @@ namespace Assets.Scripts.Game.Save
                 device.AndroidPermissionRequested = androidPermissionRequested;
                 device.AndroidPermission = androidPermissionResult;
             }
+        }
+
+        public void SetLastGameMode(GameMode gameMode, bool replacementMode)
+        {
+            this._lastGameMode = gameMode;
+            this._lastReplacementMode = replacementMode;
         }
     }
 }
