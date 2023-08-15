@@ -316,7 +316,7 @@ public class MusicHelper
     /// <returns></returns>
     public static PianoNote GetMainPianoNoteForClef(Clef key)
     {
-        if (key == Clef.Trebble)
+        if (key == Clef.Treble)
             return PianoNote.G4;
         else
             return PianoNote.F3;
@@ -330,10 +330,10 @@ public class MusicHelper
     /// <returns></returns>
     public static PianoNote GetLastPianoNoteForClef(Clef key)
     {
-        if (key == Clef.Trebble)
+        if (key == Clef.Treble)
             return PianoNote.F6;
         else
-            return PianoNote.A5;
+            return PianoNote.A4;
     }
     /// <summary>
     /// Return the last A-G notation for each clef
@@ -344,7 +344,7 @@ public class MusicHelper
 
     public static PianoNote GetFirstPianoNoteForClef(Clef key)
     {
-        if (key == Clef.Trebble)
+        if (key == Clef.Treble)
             return PianoNote.E3;
         else
             return PianoNote.G1;
@@ -405,16 +405,16 @@ public class MusicHelper
         switch (level)
         {
             case Level.C3_C4:
-                return clef == Clef.Trebble ? Notes3rdAnd4thOctave : BassNotes3rdAnd4thOctave;
+                return clef == Clef.Treble ? Notes3rdAnd4thOctave : BassNotes3rdAnd4thOctave;
             case Level.C5:
-                return clef == Clef.Trebble ? Notes5thOctave : BassNotes5thOctave;
+                return clef == Clef.Treble ? Notes5thOctave : BassNotes5thOctave;
             case Level.C5_C6:
-                return clef == Clef.Trebble ? Notes5thAnd6thOctave : BassNotes5thAnd6thOctave;
+                return clef == Clef.Treble ? Notes5thAnd6thOctave : BassNotes5thAnd6thOctave;
             case Level.C3_C6:
-                return clef == Clef.Trebble ? Notes3thTo6thOctave : BassNotes3thTo6thOctave;
+                return clef == Clef.Treble ? Notes3thTo6thOctave : BassNotes3thTo6thOctave;
             case Level.C4:
             default:
-                return clef == Clef.Trebble ? Notes4thOctave : BassNotes4thOctave;
+                return clef == Clef.Treble ? Notes4thOctave : BassNotes4thOctave;
         }
     }
 
@@ -600,7 +600,7 @@ public class MusicHelper
                 foreach(var inversion in inversions)
                 {
                     var chord = new PianoChord(note, inversion, Tonality.Major);
-                    if (chord.MinNote > LowerNote && chord.MaxNote < HigherNote)
+                    if (chord.MinNote >= LowerNote && chord.MaxNote <= HigherNote)
                     {
                         MajorChords.Add(chord);
                     }
@@ -613,7 +613,7 @@ public class MusicHelper
 
     public static List<PianoChord> GetMinorChords()
     {
-        if (MajorChords.Count == 0)
+        if (MinorChords.Count == 0)
         {
             PianoNote[] allEnumValues = (PianoNote[])Enum.GetValues(typeof(PianoNote));
             foreach (var note in allEnumValues)
@@ -622,7 +622,7 @@ public class MusicHelper
                 foreach (var inversion in inversions)
                 {
                     var chord = new PianoChord(note, inversion, Tonality.Minor);
-                    if (chord.MinNote > LowerNote && chord.MaxNote < HigherNote)
+                    if (chord.MinNote >= LowerNote && chord.MaxNote <= HigherNote)
                     {
                         MinorChords.Add(chord);
                     }

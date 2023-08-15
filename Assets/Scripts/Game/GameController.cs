@@ -157,7 +157,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            _gameMode = new GameMode(1, GameModeType.Trebble, IntervalMode.Note, Level.C3_C6, true, false, false);
+            _gameMode = new GameMode(1, GameModeType.Treble, IntervalMode.Interval, Level.C3_C6, true, false, false);
 
             if (Controller is MultipleController multipleController)
             {
@@ -176,9 +176,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         {
             var staff = Staffs[i];
                 
-            staff.transform.localScale = new Vector3(GameMode.GameModeType == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, GameMode.GameModeType == GameModeType.TrebbleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
+            staff.transform.localScale = new Vector3(GameMode.GameModeType == GameModeType.TrebleBass ? TwoStaffScale : OneStaffScale, GameMode.GameModeType == GameModeType.TrebleBass ? TwoStaffScale : OneStaffScale, staff.transform.localScale.z);
 
-            if (GameMode.GameModeType == GameModeType.TrebbleBass)
+            if (GameMode.GameModeType == GameModeType.TrebleBass)
             {
                 staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
 
@@ -189,7 +189,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             {
                 staff.transform.position = new Vector3(staff.transform.position.x, 0f, staff.transform.position.z);
 
-                if (GameMode.GameModeType == GameModeType.Trebble && staff.StaffClef == Clef.Bass || GameMode.GameModeType == GameModeType.Bass && staff.StaffClef == Clef.Trebble)
+                if (GameMode.GameModeType == GameModeType.Treble && staff.StaffClef == Clef.Bass || GameMode.GameModeType == GameModeType.Bass && staff.StaffClef == Clef.Treble)
                     staff.gameObject.SetActive(false);
             }
             
@@ -514,7 +514,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                         {
                             var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
 
-                            staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAccidental);
+                            // 12 interval max for the octave
+                            staffs[i].SpawnMultipleNotes(noteCount, noteList, 12, GameMode.WithRandomAccidental);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }
@@ -524,6 +525,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                         for (int i = 0; i < staffs.Count; i++)
                         {
                             var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
+                            noteList = noteList.Where(x => x >= MusicHelper.GetFirstPianoNoteForClef(staffs[i].StaffClef) && x <= MusicHelper.GetLastPianoNoteForClef(staffs[i].StaffClef)).ToList();
 
                             staffs[i].SpawnChord(noteList, GameMode.WithRandomAccidental, GameMode.WithInversion);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);

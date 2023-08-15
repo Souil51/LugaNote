@@ -143,20 +143,32 @@ public class Staff : MonoBehaviour
         return index;
     }
 
-    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, bool withRandomAccidental = false)
+    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, int maxInterval, bool withRandomAccidental = false)
     {
         Guid groupId = Guid.NewGuid();
         var _availableLines = Lines.Where(x => notesRange.Contains(x.Note)).ToList();
+
+        PianoNote maxNote = PianoNote.C8;
+        PianoNote minNote = PianoNote.A0;
+
         for (int i = 0; i < count; i++)
         {
             int index = Random.Range(0, _availableLines.Count);
+            var staffLine = _availableLines[index];
 
             if (withRandomAccidental)
-                _availableLines[index].SpawnRandomNoteWithRandomAccidental(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+                staffLine.SpawnRandomNoteWithRandomAccidental(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
             else
-                _availableLines[index].SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
+                staffLine.SpawnRandomNote(transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
 
             _availableLines.RemoveAt(index);
+
+            if (i == 0)
+            {
+                minNote = (int)staffLine.Note - 12 >= 0 ? staffLine.Note - 12 : PianoNote.A0;
+                maxNote = (int)staffLine.Note + 12 <= (int)PianoNote.C8 ? staffLine.Note + 12 : PianoNote.C8;
+                _availableLines = _availableLines.Where(x => x.Note >= minNote && x.Note <= maxNote).ToList();
+            }
         }
     }
 
@@ -174,6 +186,7 @@ public class Staff : MonoBehaviour
 
         foreach(var note in chordToPlay)
         {
+            Debug.Log(note);
             var line = Lines.Where(x => x.NaturalNote == MusicHelper.ConvertToNaturalNote(note)).First();
             line.SpawnNote(note, transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
         }

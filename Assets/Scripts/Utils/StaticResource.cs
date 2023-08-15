@@ -28,6 +28,7 @@ public static class StaticResource
     public static string PREFAB_EMPTY_NOTE_LINE => "empty_note_line";
     public static string PREFAB_NOTE_BUTTON => "NoteButton";
     public static string PREFAB_NOTE_BUTTON_SHARP => "NoteButtonSharp";
+    public static string PREFAB_NOTE_BUTTON_SMALL => "NoteButtonSmall";
     public static string PREFAB_TRANSITION => "transition";
     public static string PREFAB_VISUAL_KEYBOARD => "VisualKeyBoard";
 

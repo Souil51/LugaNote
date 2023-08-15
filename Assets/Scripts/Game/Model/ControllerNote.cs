@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace Assets.Scripts.Game.Model
 
         private PianoNote _note;
         public PianoNote Note => _note;
+
+        public int PianoNoteForReplaceValue => (int)Note % 12;
 
         public ControllerNote(PianoNote note, bool isReplaceable)
         {

@@ -51,6 +51,8 @@ public class Note : MonoBehaviour
         }
     }
 
+    public int PianoNoteForReplaceValue => (int)PianoNote % 12;
+
     public PianoNote NaturalNote => MusicHelper.ConvertToNaturalNote(PianoNote);
 
     private SpriteRenderer _sprtRenderer;

@@ -1,10 +1,12 @@
 using Assets.Scripts.Game.Model;
+using Assets.Scripts.Utils;
 using DataBinding.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.Hardware;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -129,8 +131,10 @@ public class VisualController : MonoBehaviour, IController
     {
         if (Mode == VisualControllerMode.Classic)
             _buttonCanvas = GenerateButtons();
-        else
+        else if(Mode == VisualControllerMode.IntervalName)
             _buttonCanvas = GenerateButtonsIntervalsName();
+        else
+            _buttonCanvas = GenerateButtonsChordsName();
     }
 
     private void UpdateNotesWithOffset()
@@ -281,8 +285,13 @@ public class VisualController : MonoBehaviour, IController
         // Destroy the 2 temp prefabs
         Destroy(goTmpButton);
 
+        PianoNote baseNote = PianoNote.A0;
+
+        int index = 0;
         foreach (IntervalName intervalName in intervalNames)
         {
+            PianoNote intervalNote = (PianoNote)(index + 1);
+
             string prefabName = StaticResource.PREFAB_NOTE_BUTTON;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             goButtonNote.transform.SetParent(btnPanel);
@@ -304,22 +313,27 @@ public class VisualController : MonoBehaviour, IController
             // PointerDown and PointerUp just fill list to track which button is pressed and which is not
             // PianoNote list used by the game are managed in the update method, like other controllers
             // It's possible to handle this in callbacks but easier to do like this others controllers
+
+            // For interval we set note based on A0 (PianoNote = 0) and A0 + interval length
             var pointerUp = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
             pointerUp.callback.AddListener((data) =>
             {
-                // _buttonsNoteDown.Remove(note);
+                _buttonsNoteDown.Remove(baseNote);
+                _buttonsNoteDown.Remove(intervalNote);
             });
 
             var pointerDown = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerDown).FirstOrDefault();
             pointerDown.callback.AddListener((data) =>
             {
-                //if (!_buttonsNoteDown.Contains(note))
-                //{
-                //    _buttonsNoteDown.Add(note);
-                //}
+                if (!_buttonsNoteDown.Contains(baseNote))
+                    _buttonsNoteDown.Add(baseNote);
+
+                if (!_buttonsNoteDown.Contains(intervalNote))
+                    _buttonsNoteDown.Add(intervalNote);
             });
 
             currentX += buttonWidth / 2f + spaceBetween;
+            index++;
         }
 
         _currentButtonsCanvas = goCanvas;
@@ -328,7 +342,123 @@ public class VisualController : MonoBehaviour, IController
 
     private GameObject GenerateButtonsChordsName()
     {
-        return null;
+        if (_currentButtonsCanvas != null)
+            Destroy(_currentButtonsCanvas);
+
+        // UI Canvas that will contains all buttons
+        var goCanvas = Instantiate(Resources.Load(StaticResource.PREFAB_VISUAL_KEYBOARD)) as GameObject;
+        goCanvas.transform.localPosition = Vector3.zero;
+        goCanvas.transform.SetParent(transform);
+
+        var btnPanel = goCanvas.transform.GetChild(0);
+        btnPanel.gameObject.transform.localPosition += new Vector3(0, -20, 0);
+
+        // 2 prefabs to calculate the center position of the buttons
+        var goTmpButton = Instantiate(Resources.Load(StaticResource.PREFAB_NOTE_BUTTON_SMALL)) as GameObject;
+        var rectTmpButton = goTmpButton.GetComponent<RectTransform>();
+
+        // Compute Y note position
+        float canvasHeight = goCanvas.GetComponent<RectTransform>().sizeDelta.y;
+        float yPosition = -(canvasHeight / 2f) + 35;
+
+        var chordsNames = Enum.GetValues(typeof(SharpPianoNote));
+
+        // Compute the X of the first note
+        var halfButtonsCount = chordsNames.Length;
+
+        float totalWidth = (rectTmpButton.sizeDelta.x * halfButtonsCount);
+
+        float spaceBetween = 5f;
+        float startingX = -(totalWidth / 4) - (halfButtonsCount * spaceBetween / 2);
+        float startingY = -(rectTmpButton.sizeDelta.x / 4) + ((rectTmpButton.sizeDelta.y / 2) + spaceBetween);
+
+        float currentX = startingX;
+        float currentY = startingY;
+
+        // Destroy the 2 temp prefabs
+        Destroy(goTmpButton);
+
+        for (int i = 0; i < 2; i++)
+        {
+            currentX = startingX;
+            int index = 0;
+            Tonality tonality = i == 0 ? Tonality.Major : Tonality.Minor;
+
+            // Generating text for minor and major
+            var tonalityGo = Instantiate(new GameObject());
+            var tonalityText = tonalityGo.AddComponent<TextMeshProUGUI>();
+            tonalityGo.AddComponent<CanvasRenderer>();
+            tonalityText.text = tonality == Tonality.Major ? "Major" : "Minor";
+            tonalityText.color = Color.black;
+            tonalityText.verticalAlignment = VerticalAlignmentOptions.Middle;
+            tonalityGo.transform.SetParent(btnPanel);
+            tonalityGo.transform.localPosition = new Vector3(currentX - (rectTmpButton.sizeDelta.y / 6f), currentY + (rectTmpButton.sizeDelta.y / 4f), 0);
+            
+
+            foreach (SharpPianoNote intervalName in chordsNames)
+            {
+                PianoNote chordNote = (PianoNote)((int)intervalName);
+
+                PianoChord chord;
+                if(tonality == Tonality.Major)
+                    chord = MusicHelper.GetMajorChords().Where(x => x.Tonality == tonality && x.BaseNote == chordNote && x.Inversion == Inversion.None).FirstOrDefault();
+                else
+                    chord = MusicHelper.GetMinorChords().Where(x => x.Tonality == tonality && x.BaseNote == chordNote && x.Inversion == Inversion.None).FirstOrDefault();
+
+                string prefabName = StaticResource.PREFAB_NOTE_BUTTON_SMALL;
+                GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
+                goButtonNote.transform.SetParent(btnPanel);
+
+                var buttonTransform = goButtonNote.GetComponent<RectTransform>();
+                buttonTransform.localPosition = new Vector3(currentX, currentY, 0f);
+
+                // Get the size of the button
+                var buttonWidth = buttonTransform.sizeDelta.x;
+
+                // Update the text of the button
+                var buttonTMP = goButtonNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                buttonTMP.text = Enums.GetEnumDescription(intervalName);
+
+                // Add the button down and button up event here because UI Button only have Click event
+                // But we want to know when button is up or held
+                var buttonEventTrigger = goButtonNote.GetComponent<EventTrigger>();
+
+                // PointerDown and PointerUp just fill list to track which button is pressed and which is not
+                // PianoNote list used by the game are managed in the update method, like other controllers
+                // It's possible to handle this in callbacks but easier to do like this others controllers
+
+                // For chords, we add all notes of the chord
+                var pointerUp = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
+                pointerUp.callback.AddListener((data) =>
+                {
+                    foreach(var chordNote in chord.Notes)
+                    {
+                        var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
+                        _buttonsNoteDown.Remove(noteToAdd);
+                    }
+                });
+
+                var pointerDown = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerDown).FirstOrDefault();
+                pointerDown.callback.AddListener((data) =>
+                {
+                    foreach (var chordNote in chord.Notes)
+                    {
+                        var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
+                        if (!_buttonsNoteDown.Contains(noteToAdd))
+                            _buttonsNoteDown.Add(noteToAdd);
+                    }
+                });
+
+                currentX += buttonWidth / 2f + spaceBetween;
+                
+                index++;
+            }
+
+            currentY -= ((rectTmpButton.sizeDelta.y / 2) + spaceBetween);
+        }
+
+        _currentButtonsCanvas = goCanvas;
+        return _currentButtonsCanvas;
     }
 
     public void ChangeMode(VisualControllerMode mode)

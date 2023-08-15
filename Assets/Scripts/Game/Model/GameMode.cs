@@ -25,7 +25,7 @@ namespace Assets.Scripts.Game.Model
         public bool WithInversion => _withInversion;
 
         private bool _guessName;
-        public bool guessName => _guessName;
+        public bool GuessName => _guessName;
 
         private Level _level;
         public Level Level => _level;
@@ -45,7 +45,7 @@ namespace Assets.Scripts.Game.Model
         {
             if (obj is GameMode gameMode)
             {
-                return GameModeType == gameMode.GameModeType && IntervalMode == gameMode.IntervalMode && Level == gameMode.Level && WithRandomAccidental == gameMode.WithRandomAccidental && WithInversion == gameMode.WithInversion && guessName == gameMode.guessName;
+                return GameModeType == gameMode.GameModeType && IntervalMode == gameMode.IntervalMode && Level == gameMode.Level && WithRandomAccidental == gameMode.WithRandomAccidental && WithInversion == gameMode.WithInversion && GuessName == gameMode.GuessName;
             }
 
             return false;
@@ -54,7 +54,7 @@ namespace Assets.Scripts.Game.Model
         public override int GetHashCode()
         {
             int hash = HashCode.Combine(_id, Id, _gameModeType, GameModeType, _intervalMode, IntervalMode, _level, Level);
-            return HashCode.Combine(hash, _withRandomAccidental, WithRandomAccidental, _withInversion, WithInversion, _guessName, guessName);
+            return HashCode.Combine(hash, _withRandomAccidental, WithRandomAccidental, _withInversion, WithInversion, _guessName, GuessName);
         }
     }
 }

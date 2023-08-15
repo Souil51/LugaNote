@@ -9,8 +9,8 @@ using UnityEngine;
 public enum TransitionPosition { Open_1 = 0, Open_2 = 1, Close = 2 };
 public enum ControllerType { Keyboard = 0, MIDI = 1, Visual = 2, KeyboardAndVisual = 3, KeyboardAndMidi = 4, KeyboardVisualMidi = 5 }
 public enum ScaleFactor { Screen = 0, Staff = 1 }
-public enum Clef { Trebble = 0, Bass = 1 }
-public enum GameModeType { Trebble = 0, Bass = 1, TrebbleBass = 2 }
+public enum Clef { Treble = 0, Bass = 1 }
+public enum GameModeType { Treble = 0, Bass = 1, TrebleBass = 2 }
 public enum IntervalMode { Note = 0, Interval = 1, Chord = 2 }
 
 public enum GameState { Loaded = 5, Starting = 0, Started = 1, Ended = 2, Paused = 3, Navigating = 4 }
@@ -224,7 +224,9 @@ public enum IntervalName
     [Description("7th m")]
     SeventhMinor,
     [Description("7th")]
-    Seventh
+    Seventh,
+    [Description("8th")]
+    Octave
 }
 
 public enum Accidental
