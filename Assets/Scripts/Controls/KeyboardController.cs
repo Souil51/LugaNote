@@ -104,17 +104,17 @@ public class KeyboardController : MonoBehaviour, IController
             if (Input.GetKeyDown(kvp.Key))
             {
                 // SoundManager.PlayNote(kvp.Value);
-                _notesDown.Add(new ControllerNote(kvp.Value, IsReplacementModeForced));
+                _notesDown.Add(new ControllerNote(kvp.Value, IsReplacementModeForced, ControllerType.Keyboard));
             }
 
             if (Input.GetKeyUp(kvp.Key))
             {
-                _notesUp.Add(new ControllerNote(kvp.Value, IsReplacementModeForced));
+                _notesUp.Add(new ControllerNote(kvp.Value, IsReplacementModeForced, ControllerType.Keyboard));
             }
 
             if (Input.GetKey(kvp.Key))
             {
-                _notes.Add(new ControllerNote(kvp.Value, IsReplacementModeForced));
+                _notes.Add(new ControllerNote(kvp.Value, IsReplacementModeForced, ControllerType.Keyboard));
             }
         }
 
@@ -135,8 +135,8 @@ public class KeyboardController : MonoBehaviour, IController
         _notesDownWithOffset = new List<ControllerNote>(NotesDown);
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.Keyboard)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.Keyboard)).ToList();
         }
     }
 

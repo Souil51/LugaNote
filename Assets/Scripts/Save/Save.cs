@@ -33,18 +33,18 @@ namespace Assets.Scripts.Game.Save
             return _datas.FirstOrDefault(x => x.GameMode.Equals(gameMode));
         }
 
-        public void AddScore(GameMode gameMode, int score, DateTime date)
+        public void AddScore(GameMode gameMode, int score, DateTime date, List<ControllerType> usedControllers)
         {
             var saveGameModeData = _datas.FirstOrDefault(x => x.GameMode.Equals(gameMode));
 
             if (saveGameModeData != null)
             {
-                saveGameModeData.AddScore(score, date);
+                saveGameModeData.AddScore(score, date, usedControllers);
             }
             else
             {
                 var datas = new GameModeData(gameMode);
-                datas.AddScore(score, date);
+                datas.AddScore(score, date, usedControllers);
                 AddGameModeData(datas);
             }
         }

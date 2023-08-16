@@ -112,8 +112,8 @@ public class MidiController : MonoBehaviour, IController
         _notesDownWithOffset = NotesDown;
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.MIDI)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.MIDI)).ToList();
         }
     }
 
@@ -129,17 +129,17 @@ public class MidiController : MonoBehaviour, IController
             if (MidiMaster.GetKeyDown(i))
             {
                 // SoundManager.PlayNote((PianoNote)(i - A0StartingMidiNote));
-                _notesDown.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced));
+                _notesDown.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
             }
 
             if (MidiMaster.GetKeyUp(i))
             {
-                _notesUp.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced));
+                _notesUp.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
             }
 
             if (MidiMaster.GetKey(i) > 0)
             {
-                _notes.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced));
+                _notes.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
             }
         }
 

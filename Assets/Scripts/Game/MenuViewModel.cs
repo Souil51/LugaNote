@@ -262,11 +262,11 @@ public class MenuViewModel : ViewModelBase
         var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, guessName, withRandomAccidental, withInversion);
         if(gameModeData != null)
         {
-            var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(10).ToList();
+            var scores = gameModeData.Scores.OrderByDescending(x => x.Value).ToList();
 
             for (int i = 0; i < scores.Count; i++)
             {
-                leaderboard.Add(new LeaderboardScore(i + 1, scores[i].Value, scores[i].Date));
+                leaderboard.Add(new LeaderboardScore(i + 1, scores[i].Value, scores[i].Date, scores[i].UsedControllers));
             }
         }
         

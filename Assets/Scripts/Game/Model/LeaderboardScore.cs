@@ -24,7 +24,7 @@ namespace Assets.Scripts.Game.Model
             }
         }
 
-        public LeaderboardScore(int index, int value, DateTime date) : base(value, date)
+        public LeaderboardScore(int index, int value, DateTime date, List<ControllerType> usedControllers) : base(value, date, usedControllers)
         {
             Index = index;
         }

@@ -52,7 +52,7 @@ public class GameInputManager : MonoBehaviour
                     // For interval "guess name" mode, the notes in NotesDown/UpWithOffset are A0 and (A0 + interval name)
                     // Just add to these notes the (int) of the lower firstnote allow to know if the guess is good
                     if (GameController.Instance.GameMode.GuessName && GameController.Instance.GameMode.IntervalMode == IntervalMode.Interval)
-                        noteToAdd = new ControllerNote((PianoNote)((int)note.Note + (int)lowerFirstNote), note.IsReplaceableByDefault);
+                        noteToAdd = new ControllerNote((PianoNote)((int)note.Note + (int)lowerFirstNote), note.IsReplaceableByDefault, note.ControllerType);
 
                     SoundManager.PlayNote(noteToAdd.Note);
                     bool containsNote = _noteBuffer.Select(x => x.Note).Contains(noteToAdd.Note);
@@ -68,7 +68,7 @@ public class GameInputManager : MonoBehaviour
                 {
                     var noteToAdd = note;
                     if (GameController.Instance.GameMode.GuessName && GameController.Instance.GameMode.IntervalMode == IntervalMode.Interval)
-                        noteToAdd = new ControllerNote((PianoNote)((int)note.Note + (int)lowerFirstNote), note.IsReplaceableByDefault);
+                        noteToAdd = new ControllerNote((PianoNote)((int)note.Note + (int)lowerFirstNote), note.IsReplaceableByDefault, note.ControllerType);
 
                     if (_noteBuffer.Select(x => x.Note).Contains(noteToAdd.Note))
                     {
@@ -120,7 +120,9 @@ public class GameInputManager : MonoBehaviour
 
                     if (guessValue.HasValue)
                     {
-                        Guess?.Invoke(this, new GuessEventArgs(guessValue.Value));
+                        var controllersList = _noteBuffer.Select(x => x.ControllerType).ToList();
+
+                        Guess?.Invoke(this, new GuessEventArgs(guessValue.Value, controllersList));
                         _noteBuffer.Clear();// Clear buffer for next note(s)
                     }
                 }
@@ -128,7 +130,7 @@ public class GameInputManager : MonoBehaviour
                 // For testing
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    Guess?.Invoke(this, new GuessEventArgs(true));
+                    Guess?.Invoke(this, new GuessEventArgs(true, new List<ControllerType>() { ControllerType.Keyboard }));
                 }
             }
         }
@@ -139,8 +141,12 @@ public class GuessEventArgs : EventArgs
 {
     public bool Result;
 
-    public GuessEventArgs(bool result)
+    private List<ControllerType> _usedControllers;
+    public List<ControllerType> UsedControllers => _usedControllers;
+
+    public GuessEventArgs(bool result, List<ControllerType> usedControllers)
     {
         Result = result;
+        _usedControllers = usedControllers;
     }
 }

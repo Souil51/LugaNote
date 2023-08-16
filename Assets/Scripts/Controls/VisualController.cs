@@ -93,9 +93,9 @@ public class VisualController : MonoBehaviour, IController
             if (!_lastUpdateButtonsNoteDown.Contains(buttonNote))
             {
                 // SoundManager.PlayNote(buttonNote);
-                _notesDown.Add(new ControllerNote(buttonNote, IsReplacementModeForced));
+                _notesDown.Add(new ControllerNote(buttonNote, IsReplacementModeForced, ControllerType.Visual));
 
-                _notes.Add(new ControllerNote(buttonNote, IsReplacementModeForced));// For note's holding, just add if Down and remove if Up
+                _notes.Add(new ControllerNote(buttonNote, IsReplacementModeForced, ControllerType.Visual));// For note's holding, just add if Down and remove if Up
             }
         }
 
@@ -104,9 +104,9 @@ public class VisualController : MonoBehaviour, IController
         {
             if (!_buttonsNoteDown.Contains(buttonNote))
             {
-                _notesUp.Add(new ControllerNote(buttonNote, IsReplacementModeForced));
+                _notesUp.Add(new ControllerNote(buttonNote, IsReplacementModeForced, ControllerType.Visual));
 
-                _notes.Remove(new ControllerNote(buttonNote, IsReplacementModeForced));// For note's holding, just add if Down and remove if Up
+                _notes.Remove(new ControllerNote(buttonNote, IsReplacementModeForced, ControllerType.Visual));// For note's holding, just add if Down and remove if Up
             }
         }
 
@@ -143,8 +143,8 @@ public class VisualController : MonoBehaviour, IController
         _notesDownWithOffset = new List<ControllerNote>(NotesDown);
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced)).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.Visual)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.Visual)).ToList();
         }
     }
 

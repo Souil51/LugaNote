@@ -15,12 +15,16 @@ namespace Assets.Scripts.Game.Model
         private PianoNote _note;
         public PianoNote Note => _note;
 
+        private ControllerType _controllerType;
+        public ControllerType ControllerType => _controllerType;
+
         public int PianoNoteForReplaceValue => (int)Note % 12;
 
-        public ControllerNote(PianoNote note, bool isReplaceable)
+        public ControllerNote(PianoNote note, bool isReplaceable, ControllerType controllerType)
         {
             _note = note;
             _isReplaceableByDefault = isReplaceable;
+            _controllerType = controllerType;
         }
     }
 }

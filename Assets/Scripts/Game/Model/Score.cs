@@ -35,6 +35,19 @@ namespace Assets.Scripts.Game.Model
             }
         }
 
+        private List<ControllerType> _usedControllers;
+        public  List<ControllerType> UsedControllers 
+        {
+            get => _usedControllers;
+            set
+            {
+                _usedControllers = value;
+                OnPropertyChanged();
+                OnPropertyChanged("MidiUsed");
+                OnPropertyChanged("VisualUsed");
+            }
+        }
+
         [JsonIgnore]
         public string DateString
         {
@@ -47,10 +60,17 @@ namespace Assets.Scripts.Game.Model
             }
         }
 
-        public Score(int value, DateTime date)
+        [JsonIgnore]
+        public bool MidiUsed => _usedControllers != null && _usedControllers.Any(x => x == ControllerType.MIDI);
+
+        [JsonIgnore]
+        public bool VisualUsed => _usedControllers != null && _usedControllers.Any(x => x == ControllerType.Visual);
+
+        public Score(int value, DateTime date, List<ControllerType> usedControllers)
         {
             Value = value;
             Date = date;
+            UsedControllers = usedControllers;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

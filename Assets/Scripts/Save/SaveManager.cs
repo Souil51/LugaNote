@@ -18,6 +18,12 @@ namespace Assets.Scripts.Game.Save
         private static readonly bool m_bUseFile = true;
         private static readonly string m_szSaveFileName = "save.json";
 
+        [RuntimeInitializeOnLoadMethod]
+        static void RunOnStart()
+        {
+            _save = null;
+        }
+
         private static Save _save;
         public static Save Save 
         {
@@ -86,9 +92,9 @@ namespace Assets.Scripts.Game.Save
                 SaveGameToFile(Save);
         }
 
-        public static void AddScore(GameMode gameMode, int score, DateTime date)
+        public static void AddScore(GameMode gameMode, int score, DateTime date, List<ControllerType> UsedControllers)
         {
-            Save.AddScore(gameMode, score, date);
+            Save.AddScore(gameMode, score, date, UsedControllers);
         }
 
         private static Save InitGameSave()

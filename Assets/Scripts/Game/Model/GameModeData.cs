@@ -23,9 +23,9 @@ namespace Assets.Scripts.Game.Model
             _scores = new List<Score>();
         }
 
-        public void AddScore(int score, DateTime date)
+        public void AddScore(int score, DateTime date, List<ControllerType> usedControllers)
         {
-            _scores.Add(new Score(score, date));
+            _scores.Add(new Score(score, date, usedControllers));
         }
 
         public override bool Equals(object obj)

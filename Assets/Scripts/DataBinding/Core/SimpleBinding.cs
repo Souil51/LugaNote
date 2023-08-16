@@ -103,7 +103,7 @@ namespace DataBinding.Core
                     propInfo.PropertyType.GetProperty(splitName[1]);
             }*/
 
-            if (Converter != null)
+            if (Converter != null && _converter != null)
             {
                 value = _converter.GetConvertedValue(value, null);
             }

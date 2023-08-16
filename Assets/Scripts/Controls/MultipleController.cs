@@ -189,8 +189,8 @@ public class MultipleController : MonoBehaviour, IController
         _notesDownWithOffset = new List<ControllerNote>(NotesDown);
         if (C4Offset != 0)
         {
-            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, x.IsReplaceableByDefault)).ToList();
-            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, x.IsReplaceableByDefault)).ToList();
+            _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, x.IsReplaceableByDefault, x.ControllerType)).ToList();
+            _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, x.IsReplaceableByDefault, x.ControllerType)).ToList();
         }
     }
 

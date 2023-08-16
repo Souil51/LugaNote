@@ -106,7 +106,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     public IController Controller => _controller;
     private Coroutine _notesCoroutine = null;
     private static GameController _instance;
-    
+    private List<ControllerType> _usedControllers = new List<ControllerType>();
+
     public static GameController Instance => _instance;
     #endregion
 
@@ -131,6 +132,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         GameSceneManager.Instance.SceneLoaded -= GameSceneManager_SceneLoaded;
 
         InputHandler.Guess          -= InputHandler_Guess;
+        InputHandler.Pause -= InputHandler_Pause;
         ViewModel.PlayAgain         -= ViewModel_PlayAgain;
         ViewModel.NavigateToMenu        -= ViewModel_NavigateToMenu;
         ViewModel.Resume            -= ViewModel_Resume;
@@ -260,7 +262,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             IsGameEnded = true;
             TimeScaleManager.PauseGame(0f);
 
-            SaveManager.AddScore(GameMode, Points, DateTime.Now);
+            SaveManager.AddScore(GameMode, Points, DateTime.Now, _usedControllers);
             SaveManager.SaveGame();
             changed = true;
         }
@@ -360,6 +362,9 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                     Destroy(notePoint);
                 });
             }
+
+            _usedControllers.AddRange(e.UsedControllers);
+            _usedControllers = _usedControllers.Distinct().ToList();
         };
 
         firstnotes.ForEach(x => x.SetInactive());
