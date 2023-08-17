@@ -10,6 +10,8 @@ using UnityEngine;
 
 public class KeyboardController : MonoBehaviour, IController
 {
+    public bool IsEnabled => true;
+
     private List<ControllerNote> _notesDown = new List<ControllerNote>();
     public List<ControllerNote> NotesDown => _notesDown;
 

@@ -341,6 +341,10 @@ public class MenuViewModel : ViewModelBase
         {
             ControllerLabel = MenuController.Instance.ControllerLabel;
         }
+        else if(e.PropertyName == nameof(IsMidiConfigurationVisible))
+        {
+            IsMidiConfigurationVisible = MenuController.Instance.IsMidiConfigurationVisible;
+        }
     }
 
     private IEnumerator Co_Info(float duration)

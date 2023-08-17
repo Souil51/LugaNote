@@ -14,6 +14,9 @@ public class MidiController : MonoBehaviour, IController
 {
     private static int A0StartingMidiNote = 21; // A0 is commonly the note number 21 on MIDI (C3 is 60)
 
+    private bool _isEnabled = false;
+    public bool IsEnabled => _isEnabled;
+
     private List<ControllerNote> _notesDown = new List<ControllerNote>();
     public List<ControllerNote> NotesDown => _notesDown;
 
@@ -198,5 +201,15 @@ public class MidiController : MonoBehaviour, IController
     public void HideControllerUI()
     {
         // Do nothing (show key pressed here ?)
+    }
+
+    public void EnableController()
+    {
+        _isEnabled = true;
+    }
+
+    public void DisableController()
+    {
+        _isEnabled = false;
     }
 }

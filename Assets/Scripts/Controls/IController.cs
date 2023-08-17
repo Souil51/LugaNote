@@ -20,6 +20,8 @@ public interface IController
     event ConfigurationEventHandled Configuration;
     event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
 
+    bool IsEnabled { get; }
+
     PianoNote HigherNote { get; }
     PianoNote LowerNote { get; }
 

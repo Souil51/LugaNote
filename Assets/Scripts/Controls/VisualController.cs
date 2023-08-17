@@ -13,6 +13,8 @@ using UnityEngine.EventSystems;
 
 public class VisualController : MonoBehaviour, IController
 {
+    public bool IsEnabled => true;
+
     private List<ControllerNote> _notesDown = new List<ControllerNote>();
     public List<ControllerNote> NotesDown => _notesDown;
 

@@ -56,11 +56,13 @@ namespace Assets.Scripts.Game.Save
 
         public ControllerSaveData GetControllerData(string deviceName)
         {
-            return _controllersData.Where(x => x.DeviceName == deviceName).FirstOrDefault();
+            return _controllersData?.Where(x => x.DeviceName == deviceName).FirstOrDefault();
         }
 
         public void SetControllerData(ControllerType controllerType, string deviceName, PianoNote midiLowerNote, PianoNote midiHigherNote)
         {
+            if (_controllersData == null) _controllersData = new List<ControllerSaveData>();
+
             var existingData = GetControllerData(deviceName);
             if(existingData != null)
             {

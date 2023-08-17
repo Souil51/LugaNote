@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class MultipleController : MonoBehaviour, IController
 {
+    public bool IsEnabled => true;
+
     private PianoNote _higherNote;
     public PianoNote HigherNote => _higherNote;
 
@@ -42,7 +44,7 @@ public class MultipleController : MonoBehaviour, IController
     {
         get
         {
-            return string.Join(", ", _controllers.Select(x => x.Label).ToList());
+            return string.Join(", ", _controllers.Where(x => x.IsEnabled).Select(x => x.Label).ToList());
         }
     }
 
@@ -75,7 +77,7 @@ public class MultipleController : MonoBehaviour, IController
     {
         get
         {
-            var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+            var midiController = _controllers.Where(x => x.IsEnabled && x.GetType() == typeof(MidiController)).FirstOrDefault();
             return midiController != null;
         }
     }
@@ -108,9 +110,9 @@ public class MultipleController : MonoBehaviour, IController
         _notesUp.Clear();
         _notes.Clear();
 
-        _notesDown = _controllers.SelectMany(x => x.NotesDown).Distinct().ToList();
-        _notesUp = _controllers.SelectMany(x => x.NotesUp).Distinct().ToList();
-        _notes = _controllers.SelectMany(x => x.Notes).Distinct().ToList();
+        _notesDown = _controllers.Where(x => x.IsEnabled).SelectMany(x => x.NotesDown).Distinct().ToList();
+        _notesUp = _controllers.Where(x => x.IsEnabled).SelectMany(x => x.NotesUp).Distinct().ToList();
+        _notes = _controllers.Where(x => x.IsEnabled).SelectMany(x => x.Notes).Distinct().ToList();
 
         UpdateNotesWithOffset();
 
@@ -225,6 +227,24 @@ public class MultipleController : MonoBehaviour, IController
         if (visualController != null)
         {
             ((VisualController)visualController).GenerateUI();
+        }
+    }
+
+    public void DisableMIDI()
+    {
+        var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+        if (midiController != null)
+        {
+            ((MidiController)midiController).DisableController();
+        }
+    }
+
+    public void EnableMIDI()
+    {
+        var midiController = _controllers.Where(x => x.GetType() == typeof(MidiController)).FirstOrDefault();
+        if (midiController != null)
+        {
+            ((MidiController)midiController).EnableController();
         }
     }
 }

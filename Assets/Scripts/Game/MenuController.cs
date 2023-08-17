@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Experimental;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -245,8 +246,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         if (e.Result)
         {
             string info = "";
-            _controllerLabel = _controller.Label;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
+            UpdateFooter();
 
             if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 88)
             {
@@ -331,6 +331,12 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     {
         Debug.Log("MidiMaster_DeviceConnected");
 
+        if(Controller is MultipleController multipleCtrl)
+        {
+            multipleCtrl.EnableMIDI();
+            UpdateFooter();
+        }
+
         var save = SaveManager.Save;
         save.AddDeviceData(deviceName);
 
@@ -358,6 +364,17 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private void MidiMaster_DeviceDisconnected(string deviceName)
     {
         Debug.Log("MidiMaster_DeviceDisconnected");
+        if (Controller is MultipleController multipleCtrl)
+        {
+            multipleCtrl.DisableMIDI();
+            UpdateFooter();
+        }
+    }
+    private void UpdateFooter()
+    {
+        _controllerLabel = _controller.Label;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMidiConfigurationVisible)));
     }
 
     #endregion
