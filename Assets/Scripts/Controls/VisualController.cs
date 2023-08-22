@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.Hardware;
@@ -45,7 +46,16 @@ public class VisualController : MonoBehaviour, IController
     private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
     public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
-    public string Label => "Touch screen";
+    private string _label = "Touch screen";
+    public string Label
+    {
+        get => _label;
+        set
+        {
+            _label = value;
+        }
+    }
+    public string LabelEntryName => "Touch screen";
 
     public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerVisibleNote, (int)HigherVisibleNote - (int)LowerVisibleNote + 1).Select(x => (PianoNote)x).ToList();
 
@@ -468,5 +478,10 @@ public class VisualController : MonoBehaviour, IController
         _mode = mode;
 
         Debug.Log("Change visual mode to " + mode);
+    }
+
+    public async Task UpdateLabel()
+    {
+        Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_CONTROLLER_LABEL_VISUAL);
     }
 }

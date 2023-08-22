@@ -4,6 +4,7 @@ using DataBinding.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -51,6 +52,8 @@ public interface IController
 
     void ShowControllerUI();
     void HideControllerUI();
+
+    Task UpdateLabel();
 }
 
 public class ControllerNoteEventArgs : EventArgs

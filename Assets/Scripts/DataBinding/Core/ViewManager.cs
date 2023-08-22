@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -31,6 +32,7 @@ namespace DataBinding.Core
         private List<ListBinding> ListBindings;
 
         private IViewModel DataContext;
+        private bool _initialized = false;
 
         private void Awake()
         {
@@ -47,21 +49,25 @@ namespace DataBinding.Core
         /// </summary>
         public void InitialiserDataContext()
         {
-            var allSimpleBindings = GetComponentsInChildren<SimpleBinding>(true).Select(x => x.gameObject).Distinct().ToList();
-            var allListBindings = GetComponentsInChildren<ListBinding>(true).Select(x => x.gameObject).Distinct().ToList();
+            if (!_initialized)
+            {
+                var allSimpleBindings = GetComponentsInChildren<SimpleBinding>(true).Select(x => x.gameObject).Distinct().ToList();
+                var allListBindings = GetComponentsInChildren<ListBinding>(true).Select(x => x.gameObject).Distinct().ToList();
 
-            Bindings = new List<SimpleBinding>();
-            ListBindings = new List<ListBinding>();
+                Bindings = new List<SimpleBinding>();
+                ListBindings = new List<ListBinding>();
 
-            allSimpleBindings.ForEach(x => Bindings.AddRange(x.GetComponents<SimpleBinding>()));
-            allListBindings.ForEach(x => ListBindings.AddRange(x.GetComponents<ListBinding>()));
+                allSimpleBindings.ForEach(x => Bindings.AddRange(x.GetComponents<SimpleBinding>()));
+                allListBindings.ForEach(x => ListBindings.AddRange(x.GetComponents<ListBinding>()));
 
-            DataContext = DataContextContainer.GetComponent<IViewModel>();
+                DataContext = DataContextContainer.GetComponent<IViewModel>();
 
-            DataContext.PropertyChanged += BoundProperty_PropertyChanged;
-            DataContext.GameObjectCreated += DataContext_GameObjectCreated;
-            DataContext.GameObjectDestroyed += DataContext_GameObjectDestroyed; ;
-
+                DataContext.PropertyChanged += BoundProperty_PropertyChanged;
+                DataContext.GameObjectCreated += DataContext_GameObjectCreated;
+                DataContext.GameObjectDestroyed += DataContext_GameObjectDestroyed; ;
+                _initialized = true;
+            }
+            
             /*foreach(var binding in Bindings)
             {
                 foreach(var path in binding.Paths)
@@ -119,10 +125,15 @@ namespace DataBinding.Core
         // Search for all UI element bound to the pchanged property
         private void FindBindingAndChangeProperty(object sender, string propertyName)
         {
-            List<SimpleBinding> foundBindings = Bindings.FindAll(x => x.Paths.Find(y => y.Name == propertyName) != null);
+            List<SimpleBinding> foundBindings = Bindings.FindAll(x => x.Paths.Find(y => y.Name == propertyName || (y.Name.Contains('$') && y.Name.Substring(0, y.Name.IndexOf('$')) == propertyName)) != null);
 
             foreach (SimpleBinding sb in foundBindings)
             {
+                //if (sb.Paths.Any(y => y.Name.Contains('$') && y.Name.Substring(0, y.Name.IndexOf('$')) == propertyName))
+                //{
+                //    int i = 9;
+                //}
+
                 ChangeProperty(sb, sender, propertyName);
             }
 
@@ -177,13 +188,32 @@ namespace DataBinding.Core
                 }
                 else
                 {
-                    PropertyInfo prop = sender.GetType().GetProperty(propertyToGet);
+                    var arrayIndexedPaths = simpleBinding.Paths.Where(y => y.Name.Contains('$') && y.Name.Substring(0, y.Name.IndexOf('$')) == propertyName).ToList();
 
-                    if (prop != null)
+                    // If it's a array index binding, call ChangeValue with the path name to pass also the key char "$" for index
+                    if(arrayIndexedPaths.Count > 0)
                     {
-                        object value = prop.GetValue(sender);
+                        PropertyInfo prop = sender.GetType().GetProperty(propertyToGet);
 
-                        simpleBinding.ChangeValue(value, propertyName);
+                        if (prop != null)
+                        {
+                            foreach (var path in arrayIndexedPaths)
+                            {
+                                object value = prop.GetValue(sender);
+                                simpleBinding.ChangeValue(value, path.Name);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        PropertyInfo prop = sender.GetType().GetProperty(propertyToGet);
+
+                        if (prop != null)
+                        {
+                            object value = prop.GetValue(sender);
+
+                            simpleBinding.ChangeValue(value, propertyName);
+                        }
                     }
                 }
             }

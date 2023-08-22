@@ -1,7 +1,9 @@
 using Assets;
 using DataBinding.Converter;
 using DataBinding.Core;
+using DataBinding.Core.Lists;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -29,6 +31,8 @@ namespace DataBinding.Core
         // Used for the localization
         public LocalizeStringEvent localize;
         private IBindingConverter _converter;
+
+        public bool LocalizationEntryBinding = false;
 
         private void Awake()
         {
@@ -129,6 +133,25 @@ namespace DataBinding.Core
                 // Find the path to update
                 BindingPath path = Paths.Find(x => x.Name == propertyName);
 
+                // Handle array index binding
+                // The List property has changed and the index is in the propertyName after the key char "$" (passed by the viewmanager)
+                if (path.Name.Contains('$')) 
+                {
+                    string[] arraySplit = propertyName.Split("$");
+                    string arrayPropName = arraySplit[0];
+                    int arrayIndex = -1;
+                    int.TryParse(arraySplit[1], out arrayIndex);
+
+                    if(arrayIndex >= 0 && value != null && ListBinding.IsIList(value))
+                    {
+                        IList typedList = (IList)value;
+                        if(typedList.Count > arrayIndex)
+                        {
+                            value = typedList[arrayIndex];
+                        }
+                    }
+                }
+
                 object convertedValue = null;
                 if (value is IConvertible)
                 {
@@ -185,7 +208,7 @@ namespace DataBinding.Core
 
                         SetValueOfType(propInfo, obj, concat);
                     }
-                    else
+                    else if(!LocalizationEntryBinding) // The binding will use the localize string, the value of the binding is a parameter of the localize string
                     {
                         LocalizedString localizedStrings = new LocalizedString(localize.StringReference.TableReference, localize.StringReference.TableEntryReference);
 
@@ -198,6 +221,35 @@ namespace DataBinding.Core
                         }
 
                         localize.StringReference = localizedStrings;
+                        localize.StringReference.RefreshString();
+                    }
+                    else if(localize != null) // if LocalizationEntryBinding, the value of the Binding is the string entry key for the localization system
+                    {
+                        LocalizedString localizedString = null;
+
+                        // Order by : we want the Entry Name first, then variables
+                        foreach (BindingPath bindingPath in Paths.OrderBy(x => String.IsNullOrEmpty(x.LocalizeName) ? 0 : 1))
+                        {
+                            if (String.IsNullOrEmpty(bindingPath.LocalizeName))
+                            {
+                                if (bindingPath.LastValue != null)
+                                {
+                                    string[] localizeSplit = bindingPath.LastValue.ToString().Split('/');
+                                    string tableRefName = localizeSplit[0];
+                                    string entryRefName = String.Join("", localizeSplit.Skip(1));
+                                    localizedString = new LocalizedString { TableReference = tableRefName, TableEntryReference = entryRefName };
+                                }
+                            }
+                            else
+                            {
+                                if (bindingPath.LastValue != null && localizedString != null)
+                                {
+                                    localizedString.Add(bindingPath.LocalizeName, new StringVariable { Value = bindingPath.LastValue.ToString() });
+                                }
+                            }
+                        }
+
+                        localize.StringReference = localizedString;
                         localize.StringReference.RefreshString();
                     }
                 }

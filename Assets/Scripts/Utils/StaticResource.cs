@@ -41,6 +41,21 @@ public static class StaticResource
 
     public static string RESOURCES_SOUND_BAD_GUESS => "bad_guess";
 
+    public static string LOCALIZATION_MIDI_CONFIGURATION_TITLE => "MainMenu/title_midi_configuration";
+    public static string LOCALIZATION_MIDI_CONFIGURATION_NEW_TITLE => "MainMenu/title_midi_configuration_new";
+
+    public static string LOCALIZATION_MENU_INFO_MIDI_88_TOUCHES => "MainMenu/menu_info_midi_88";
+    public static string LOCALIZATION_MENU_INFO_MIDI_61_TOUCHES => "MainMenu/menu_info_midi_61";
+    public static string LOCALIZATION_MENU_INFO_MIDI_CUSTOM_TOUCHES => "MainMenu/menu_info_midi_custom";
+
+    public static string LOCALIZATION_MENU_MIDI_88_TOUCHES => "MainMenu/menu_midi_88";
+    public static string LOCALIZATION_MENU_MIDI_61_TOUCHES => "MainMenu/menu_midi_61";
+    public static string LOCALIZATION_MENU_MIDI_CUSTOM_TOUCHES => "MainMenu/menu_midi_custom";
+
+    public static string LOCALIZATION_CONTROLLER_LABEL_KEYBOARD => "MainMenu/controller_label_keyboard";
+
+    public static string LOCALIZATION_CONTROLLER_LABEL_VISUAL => "MainMenu/controller_label_visual";
+
     /// <summary>
     /// Useful values
     /// </summary>

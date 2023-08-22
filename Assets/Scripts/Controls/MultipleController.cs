@@ -1,8 +1,10 @@
 using Assets.Scripts.Game.Model;
 using Assets.Scripts.Game.Save;
+using Assets.Scripts.Utils;
 using DataBinding.Core;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor.Hardware;
 using UnityEngine;
 
@@ -40,13 +42,18 @@ public class MultipleController : MonoBehaviour, IController
     private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
     public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
+    private string _label = "";
     public string Label
     {
-        get
+        get => _label;
+        set
         {
-            return string.Join(", ", _controllers.Where(x => x.IsEnabled).Select(x => x.Label).ToList());
+            _label = value;
         }
     }
+    // return string.Join(", ", _controllers.Where(x => x.IsEnabled).Select(x => x.Label).ToList());
+
+    public string LabelEntryName => "";
 
     public List<PianoNote> AvailableNotes
     {
@@ -245,6 +252,21 @@ public class MultipleController : MonoBehaviour, IController
         if (midiController != null)
         {
             ((MidiController)midiController).EnableController();
+        }
+    }
+
+    public async Task UpdateLabel()
+    {
+        Label = "";
+
+        foreach(var controller in _controllers)
+        {
+            await controller.UpdateLabel();
+
+            if (!string.IsNullOrEmpty(Label))
+                Label += ", ";
+
+            Label += controller.Label;
         }
     }
 }

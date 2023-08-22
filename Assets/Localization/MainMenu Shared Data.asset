@@ -1,0 +1,216 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: MainMenu Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: MainMenu
+  m_TableCollectionNameGuidString: e081e144b8269fa4eb898ed9c7ebcdaa
+  m_Entries:
+  - m_Id: 583236460544
+    m_Key: trebble
+    m_Metadata:
+      m_Items: []
+  - m_Id: 942159831040
+    m_Key: bass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1005229580288
+    m_Key: trebble_bass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1169692434432
+    m_Key: intervals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369915924480
+    m_Key: chords
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1478430957568
+    m_Key: level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1536069083136
+    m_Key: accidentals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1586199404544
+    m_Key: replacement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1676616015872
+    m_Key: guess_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1927930322944
+    m_Key: connected_devices
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2038890635264
+    m_Key: configure_midi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2125628841984
+    m_Key: midi_controller
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2229731467264
+    m_Key: keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2373826781184
+    m_Key: scores_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2454281920512
+    m_Key: no_score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2578479456256
+    m_Key: score_header_index
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2666761166848
+    m_Key: score_header_device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2740572528640
+    m_Key: 4th_octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2813322731520
+    m_Key: 5th_octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2878481244160
+    m_Key: 3rd_4th_octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2997054218240
+    m_Key: 5th_6th_octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3134535114752
+    m_Key: 3rd_6th_octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3332002947072
+    m_Key: 'Inversions : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3463502766080
+    m_Key: no_midi_device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3548869435392
+    m_Key: midi_not_comptatible
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3732462510080
+    m_Key: not_recommended
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3836359614464
+    m_Key: guess_name_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4075405582336
+    m_Key: replacement_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4812961357824
+    m_Key: guess_name_description_chords
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6825803653120
+    m_Key: play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16765523992576
+    m_Key: cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16808557551616
+    m_Key: title_midi_configuration_new
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17003592687616
+    m_Key: 61_keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17097431851008
+    m_Key: 88_keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17205112217600
+    m_Key: custom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17326684119040
+    m_Key: confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17438617509888
+    m_Key: press_lower_note
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17564501155840
+    m_Key: press_higher_note
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18995685761024
+    m_Key: title_midi_configuration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44089321594880
+    m_Key: menu_info_midi_88
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44218174808064
+    m_Key: menu_info_midi_61
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44320645849088
+    m_Key: menu_info_midi_custom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44571142266880
+    m_Key: menu_midi_88
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44647340187648
+    m_Key: menu_midi_61
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44730894917632
+    m_Key: menu_midi_custom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86168156381184
+    m_Key: controller_label_keyboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86218500612096
+    m_Key: controller_label_visual
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8439659351304306698
+  references:
+    version: 2
+    RefIds:
+    - rid: 8439659351304306698
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1692713051863

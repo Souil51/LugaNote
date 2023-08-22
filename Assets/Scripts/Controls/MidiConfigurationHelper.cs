@@ -116,6 +116,17 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         }
     }
 
+    private string _titleLocalizeEntry = "";
+    public string TitleLocalizeEntry
+    {
+        get { return _titleLocalizeEntry; }
+        set
+        {
+            _titleLocalizeEntry = value;
+            OnPropertyChanged();
+        }
+    }
+
     private void Awake()
     {
         ChangeState(ConfigurationState.Initializing);
@@ -137,10 +148,12 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         if (newDevice)
         {
             Title = "New MIDI device connected, please choose your configuration";
+            TitleLocalizeEntry = StaticResource.LOCALIZATION_MIDI_CONFIGURATION_NEW_TITLE;
         }
         else
         {
             Title = "MIDI device configuration";
+            TitleLocalizeEntry = StaticResource.LOCALIZATION_MIDI_CONFIGURATION_TITLE;
         }
     }
 

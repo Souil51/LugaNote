@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MainMenu_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: e081e144b8269fa4eb898ed9c7ebcdaa, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 8439659353169461251
+  m_TableData:
+  - m_Id: 583236460544
+    m_Localized: Sol
+    m_Metadata:
+      m_Items: []
+  - m_Id: 942159831040
+    m_Localized: Fa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1005229580288
+    m_Localized: Sol et Fa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1169692434432
+    m_Localized: Intervalles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369915924480
+    m_Localized: Accords
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1478430957568
+    m_Localized: 'Niveau : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1536069083136
+    m_Localized: "Alt\xE9rations : "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1586199404544
+    m_Localized: 'Remplacement : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1676616015872
+    m_Localized: 'Deviner le nom : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1927930322944
+    m_Localized: "Appareils connect\xE9s : "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2038890635264
+    m_Localized: Configuration MIDI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2125628841984
+    m_Localized: Clavier MIDI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2229731467264
+    m_Localized: touches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2373826781184
+    m_Localized: "Scores pour la s\xE9lection"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2454281920512
+    m_Localized: "Aucun score pour cette s\xE9lection"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2578479456256
+    m_Localized: Rang
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2666761166848
+    m_Localized: Appareil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2740572528640
+    m_Localized: "4\xE8me octave"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2813322731520
+    m_Localized: "5\xE8me octave"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2878481244160
+    m_Localized: "3\xE8me/4\xE8me octaves"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2997054218240
+    m_Localized: "5\xE8me/6\xE8me octaves"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3134535114752
+    m_Localized: "3\xE8me/6\xE8me octave"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3332002947072
+    m_Localized: 'Renversement : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3463502766080
+    m_Localized: "Aucun clavier MIDI connect\xE9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3548869435392
+    m_Localized: Incompatible avec les claviers MIDI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3732462510080
+    m_Localized: "Non recommand\xE9 avec moins de 61 touches"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3836359614464
+    m_Localized: Deviner le nom des intervalles au lieu des notes (seconde, tierce,
+      quarte...)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4075405582336
+    m_Localized: Le mode de remplacement ne prend pas en compte l'octave (par exemple,
+      vous pouvez appuyer sur n'importe quel Do pour un Do4)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4812961357824
+    m_Localized: Deviner le nom des accords au lieu des notes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6825803653120
+    m_Localized: Jouer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16765523992576
+    m_Localized: Annuler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16808557551616
+    m_Localized: "Nouveau clavier MIDI connect\xE9, merci de chosir sa configuration"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17003592687616
+    m_Localized: 61 touches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17097431851008
+    m_Localized: 88 touches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17205112217600
+    m_Localized: Autre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17326684119040
+    m_Localized: Valider
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17438617509888
+    m_Localized: Appuyer sur la touche la plus grave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17564501155840
+    m_Localized: Appuyer sur la touche la plus aigue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18995685761024
+    m_Localized: Configuration de clavier MIDI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44089321594880
+    m_Localized: "Clavier MIDI modifi\xE9 : 88 touches"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44218174808064
+    m_Localized: "Clavier MIDI modifi\xE9 : 61 touches"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44320645849088
+    m_Localized: "Clavieaar MIDI modifi\xE9 : {first} touches ({second} to {third})"
+    m_Metadata:
+      m_Items:
+      - rid: 8439659353169461251
+  - m_Id: 44571142266880
+    m_Localized: Clavier MIDI (88 keys)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44647340187648
+    m_Localized: Clavier MIDI (61 keys)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44730894917632
+    m_Localized: MIDI controller ({first} to {second})
+    m_Metadata:
+      m_Items:
+      - rid: 8439659353169461251
+  - m_Id: 86168156381184
+    m_Localized: clavier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86218500612096
+    m_Localized: clavier tactile
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 8439659353169461251
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00201ab9ae28000000205a344f280000

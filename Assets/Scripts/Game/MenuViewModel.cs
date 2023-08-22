@@ -16,13 +16,13 @@ public class MenuViewModel : ViewModelBase
 {
     [SerializeField] private InfoMessage Info;
     [SerializeField] private RadioButtonsGroupViewModel LevelButtons;
-    [SerializeField] private RadioButtonsGroupViewModel AccidentalsButtons;
     [SerializeField] private RadioButtonsGroupViewModel ReplacementButtons;
     [SerializeField] private RadioButtonsGroupViewModel IntervalButtons;
     [SerializeField] private RadioButtonsGroupViewModel KeyButtons;
     [SerializeField] private ToggleSwitch AccidentalSwitch;
     [SerializeField] private ToggleSwitch InversionSwitch;
     [SerializeField] private ToggleSwitch GuessNameSwitch;
+    [SerializeField] private ToggleSwitch ReplacementSwitch;
 
     public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
     public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
@@ -72,6 +72,17 @@ public class MenuViewModel : ViewModelBase
         private set
         {
             _infoText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private List<string> _infoText_Variables;
+    public List<string> InfoText_Variables
+    {
+        get => _infoText_Variables;
+        private set
+        {
+            _infoText_Variables = value;
             OnPropertyChanged();
         }
     }
@@ -143,6 +154,9 @@ public class MenuViewModel : ViewModelBase
     }
 
     public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
+    public bool IsGuessNameModeVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note;
+    public bool IsGuessNameIntervalVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Interval;
+    public bool IsGuessNameChordVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
 
     private void Awake()
     {
@@ -153,18 +167,29 @@ public class MenuViewModel : ViewModelBase
     {
         Info.Disappeared += Info_Disappeared;
         LevelButtons.SelectedButtonChanged += LevelsButton_SelectedButtonChanged;
-        AccidentalsButtons.SelectedButtonChanged += AccidentalsButtons_SelectedButtonChanged;
         AccidentalSwitch.ValueChanged += AccidentalSwitch_ValueChanged;
         InversionSwitch.ValueChanged += InversionSwitch_ValueChanged;
-        ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
+        //ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
+        ReplacementSwitch.ValueChanged += ReplacementSwtch_ValueChanged;
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
         GuessNameSwitch.ValueChanged += GuessNameSwitch_ValueChanged;
 
         OnPropertyChanged(nameof(IsInversionModeVisible));
+        OnPropertyChanged(nameof(IsGuessNameModeVisible));
+        OnPropertyChanged(nameof(IsGuessNameIntervalVisible));
+        OnPropertyChanged(nameof(IsGuessNameChordVisible));
 
         UpdateMidiConnection();
         UpdateDisplayedScores();
+    }
+
+    private void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.I))
+        //{
+        //    ShowInfo(StaticResource.LOCALIZATION_MENU_INFO_MIDI_CUSTOM_TOUCHES, 2f, "a", "b", "c");
+        //}
     }
 
     private void KeyButtons_SelectedButtonChanged(object sender, IntEventArgs e)
@@ -178,11 +203,20 @@ public class MenuViewModel : ViewModelBase
         SelectedIntervalChanged?.Invoke(sender, new IntervalEventArgs((IntervalMode)e.Value));
         UpdateDisplayedScores();
         OnPropertyChanged(nameof(IsInversionModeVisible));
+        OnPropertyChanged(nameof(IsGuessNameModeVisible));
+        OnPropertyChanged(nameof(IsGuessNameIntervalVisible));
+        OnPropertyChanged(nameof(IsGuessNameChordVisible));
     }
 
     private void ReplacementButtons_SelectedButtonChanged(object sender, IntEventArgs e)
     {
         SelectedReplacementChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
+        UpdateDisplayedScores();
+    }
+
+    private void ReplacementSwtch_ValueChanged(object sender, BoolEventArgs e)
+    {
+        SelectedReplacementChanged?.Invoke(sender, e);
         UpdateDisplayedScores();
     }
 
@@ -220,10 +254,10 @@ public class MenuViewModel : ViewModelBase
     {
         Info.Disappeared -= Info_Disappeared;
         LevelButtons.SelectedButtonChanged -= LevelsButton_SelectedButtonChanged;
-        AccidentalsButtons.SelectedButtonChanged -= AccidentalsButtons_SelectedButtonChanged;
         AccidentalSwitch.ValueChanged -= AccidentalSwitch_ValueChanged;
         InversionSwitch.ValueChanged -= InversionSwitch_ValueChanged;
-        ReplacementButtons.SelectedButtonChanged -= ReplacementButtons_SelectedButtonChanged;
+        //ReplacementButtons.SelectedButtonChanged -= ReplacementButtons_SelectedButtonChanged;
+        ReplacementSwitch.ValueChanged -= ReplacementSwtch_ValueChanged;
         IntervalButtons.SelectedButtonChanged -= IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged -= KeyButtons_SelectedButtonChanged;
         GuessNameSwitch.ValueChanged -= GuessNameSwitch_ValueChanged;
@@ -233,7 +267,7 @@ public class MenuViewModel : ViewModelBase
     {
         InitialiserNotifyPropertyChanged();
 
-        IsMidiConfigurationVisible = MenuController.Instance.IsMidiConfigurationVisible;
+        IsMidiConfigurationVisible = true; // MenuController.Instance.IsMidiConfigurationVisible;
 
     }
 
@@ -290,17 +324,29 @@ public class MenuViewModel : ViewModelBase
             KeyButtons.SelectButton((int)gameMode.GameModeType);
             IntervalButtons.SelectButton((int)gameMode.IntervalMode);
             LevelButtons.SelectButton((int)gameMode.Level);
-            AccidentalsButtons.SelectButton(gameMode.WithRandomAccidental ? 1 : 0);
             AccidentalSwitch.InitialState(gameMode.WithRandomAccidental);
             InversionSwitch.InitialState(gameMode.WithInversion);
         }
         
-        ReplacementButtons.SelectButton(replacementMode ? 1 : 0);
+        //ReplacementButtons.SelectButton(replacementMode ? 1 : 0);
+        ReplacementSwitch.InitialState(replacementMode);
     }
 
-    public void ShowInfo(string info, float duration = 2f)
+    public void ShowInfo(string info, float duration = 2f, params string[] variables)
     {
         InfoText = info;
+
+        InfoText_Variables = variables?.ToList();
+
+        /*if (variables.Length > 0)
+            InfoText_FirstVariable = variables[0];
+
+        if (variables.Length > 1)
+            InfoText_SecondVariable = variables[1];
+
+        if (variables.Length > 2)
+            InfoText_ThirdVariable = variables[2];*/
+
         IsInfoVisible = true;
 
         StartCoroutine(Co_Info(duration));
@@ -316,8 +362,11 @@ public class MenuViewModel : ViewModelBase
         // Disable replacement for less than 61 keys because we need at least 56 keys (and 61 keys midi devices will cover all notes)
         LessThan61Keys = MenuController.Instance.Controller.HigherNote - MenuController.Instance.Controller.LowerNote < 61 - 1;
 
-        if (ReplacementButtons.SelectedIndex == 0 && LessThan61Keys)
-            ReplacementButtons.SelectButton(1);
+        //if (ReplacementButtons.SelectedIndex == 0 && LessThan61Keys)
+        //    ReplacementButtons.SelectButton(1);
+
+        if (!ReplacementSwitch.Value && LessThan61Keys)
+            ReplacementSwitch.InitialState(true);
     }
 
     public void UpdateMidiConnection()
@@ -343,7 +392,7 @@ public class MenuViewModel : ViewModelBase
         }
         else if(e.PropertyName == nameof(IsMidiConfigurationVisible))
         {
-            IsMidiConfigurationVisible = MenuController.Instance.IsMidiConfigurationVisible;
+            IsMidiConfigurationVisible = true; // MenuController.Instance.IsMidiConfigurationVisible;
         }
     }
 

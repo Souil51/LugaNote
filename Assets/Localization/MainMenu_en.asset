@@ -1,0 +1,219 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MainMenu_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: e081e144b8269fa4eb898ed9c7ebcdaa, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 8439659353169461250
+  m_TableData:
+  - m_Id: 583236460544
+    m_Localized: Trebble
+    m_Metadata:
+      m_Items: []
+  - m_Id: 942159831040
+    m_Localized: Bass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1005229580288
+    m_Localized: Trebble and Bass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1169692434432
+    m_Localized: Intervals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369915924480
+    m_Localized: Chords
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1478430957568
+    m_Localized: 'Level : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1536069083136
+    m_Localized: 'Accidentals : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1586199404544
+    m_Localized: 'Replacement : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1676616015872
+    m_Localized: 'Guess name : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1927930322944
+    m_Localized: 'Connected devices : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2038890635264
+    m_Localized: Configure MIDI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2125628841984
+    m_Localized: MIDI controller
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2229731467264
+    m_Localized: keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2373826781184
+    m_Localized: Scores for the selection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2454281920512
+    m_Localized: No score for this selection...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2578479456256
+    m_Localized: Index
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2666761166848
+    m_Localized: Device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2740572528640
+    m_Localized: 4th octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2813322731520
+    m_Localized: 5th octave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2878481244160
+    m_Localized: 3rd/4th octaves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2997054218240
+    m_Localized: 5th/6th octaves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3134535114752
+    m_Localized: 3rd/6th octaves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3332002947072
+    m_Localized: 'Inversions : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3463502766080
+    m_Localized: No MIDI device connected
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3548869435392
+    m_Localized: Not comptatible with MIDI devices
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3732462510080
+    m_Localized: Not recommended with less than 61 keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3836359614464
+    m_Localized: Guess the interval length instead of notes (second, third, fourth...)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4075405582336
+    m_Localized: Replacement mode does not take into account octave (for example,
+      you can press any C for a C4)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4812961357824
+    m_Localized: Guess the chords name instead of notes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6825803653120
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16765523992576
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16808557551616
+    m_Localized: New MIDI device connected, please choose your configuration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17003592687616
+    m_Localized: 61 keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17097431851008
+    m_Localized: 88 keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17205112217600
+    m_Localized: Custom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17326684119040
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17438617509888
+    m_Localized: Press lower note
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17564501155840
+    m_Localized: Press higher note
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18995685761024
+    m_Localized: MIDI device configuration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44089321594880
+    m_Localized: 'MIDI device changed to : 88 keys'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44218174808064
+    m_Localized: 'MIDI device changed to : 61 keys'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44320645849088
+    m_Localized: 'MIDI aadevice changed to : {first} touches ({second} to {third})'
+    m_Metadata:
+      m_Items:
+      - rid: 8439659353169461250
+  - m_Id: 44571142266880
+    m_Localized: MIDI controller (88 keys)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44647340187648
+    m_Localized: MIDI controller (61 keys)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44730894917632
+    m_Localized: MIDI controller ({first} to {second})
+    m_Metadata:
+      m_Items:
+      - rid: 8439659353169461250
+  - m_Id: 86168156381184
+    m_Localized: keyboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86218500612096
+    m_Localized: touch keyboard
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 8439659353169461250
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00201ab9ae28000000205a344f280000

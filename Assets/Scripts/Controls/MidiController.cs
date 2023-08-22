@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class MidiController : MonoBehaviour, IController
@@ -48,24 +49,17 @@ public class MidiController : MonoBehaviour, IController
     private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
     public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
+    private string _label;
     public string Label 
     {
-        get
+        get => _label;
+        set
         {
-            if((int)HigherNote - (int)LowerNote + 1 == 88)
-            {
-                return string.Format(Strings.MENU_MIDI_88_TOUCHES);
-            } 
-            else if((int)HigherNote - (int)LowerNote + 1 == 61)
-            {
-                return string.Format(Strings.MENU_MIDI_61_TOUCHES);
-            }
-            else
-            {
-                return string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, HigherNote - LowerNote, LowerNote, HigherNote);
-            }
+            _label = value;
         }
     }
+
+    public string LabelEntryName => "";
 
     public List<PianoNote> AvailableNotes => Enumerable.Range((int)LowerNote, (int)HigherNote - (int)LowerNote + 1).Select(x => (PianoNote)x).ToList();
 
@@ -211,5 +205,21 @@ public class MidiController : MonoBehaviour, IController
     public void DisableController()
     {
         _isEnabled = false;
+    }
+
+    public async Task UpdateLabel()
+    {
+        if ((int)HigherNote - (int)LowerNote + 1 == 88)
+        {
+            Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_MENU_MIDI_88_TOUCHES);
+        }
+        else if ((int)HigherNote - (int)LowerNote + 1 == 61)
+        {
+            Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_MENU_MIDI_61_TOUCHES);
+        }
+        else
+        {
+            Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_MENU_MIDI_CUSTOM_TOUCHES);
+        }
     }
 }

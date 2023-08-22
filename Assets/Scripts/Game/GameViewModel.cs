@@ -101,6 +101,15 @@ public class GameViewModel : ViewModelBase
     }
 
     private bool _visualKeysVisibilityVisibility = true;
+    public bool VisualKeysVisibilityVisibility
+    {
+        get => _visualKeysVisibilityVisibility;
+        set
+        {
+            _visualKeysVisibilityVisibility = value;
+            OnPropertyChanged();
+        }
+    }
 
     private string _visualKeysVisibilityText;
     public string VisualKeysVisibilityText
@@ -203,7 +212,7 @@ public class GameViewModel : ViewModelBase
     {
         ToggleVisualKeysVisibility?.Invoke(this, EventArgs.Empty);
 
-        _visualKeysVisibilityVisibility = !_visualKeysVisibilityVisibility;
+        VisualKeysVisibilityVisibility = !VisualKeysVisibilityVisibility;
         UpdateVisualKeysVisibilityText();
     }
 

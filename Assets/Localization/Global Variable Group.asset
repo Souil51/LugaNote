@@ -9,19 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: New Table_en
+  m_Script: {fileID: 11500000, guid: b1e3e22ff9634e441a479f01f905a2f7, type: 3}
+  m_Name: Global Variable Group
   m_EditorClassIdentifier: 
-  m_LocaleId:
-    m_Code: en
-  m_SharedData: {fileID: 11400000, guid: 2d30ab6a448e8f54ebc1b78b4eadc257, type: 2}
-  m_Metadata:
-    m_Items: []
-  m_TableData:
-  - m_Id: 30414610432
-    m_Localized: Hello
-    m_Metadata:
-      m_Items: []
+  m_Variables: []
   references:
     version: 2
     RefIds: []

@@ -127,7 +127,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         MidiMaster.deviceDisconnectedDelegate -= MidiMaster_DeviceDisconnected;
     }
 
-    private void Start()
+    private async void Start()
     {
         SoundManager.LoadAllSounds();
 
@@ -151,6 +151,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
         ViewModel.HideInfo();
 
+        await _controller.UpdateLabel();
         _controllerLabel = _controller.Label;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
         ViewModel.InitializeViewModel();
@@ -216,9 +217,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    private void ShowInfo(string info, float duration = 2f)
+    private void ShowInfo(string info, float duration = 2f, params string[] variables)
     {
-        ViewModel.ShowInfo(info, duration);
+        ViewModel.ShowInfo(info, duration, variables);
     }
 
     public void LoadGameMode(GameMode gameMode, bool replacementMode)
@@ -250,18 +251,20 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
             if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 88)
             {
-                info = string.Format(Strings.MENU_INFO_MIDI_88_TOUCHES);
+                info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_88_TOUCHES);
+                ShowInfo(info);
             }
             else if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 61)
             {
-                info = string.Format(Strings.MENU_INFO_MIDI_61_TOUCHES);
+                info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_61_TOUCHES);
+                ShowInfo(info);
             }
             else
             {
-                info = string.Format(Strings.MENU_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+                info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
+                ShowInfo(info, 2f, ((PianoNote)(_controller.HigherNote - _controller.LowerNote)).ToString(), _controller.LowerNote.ToString(), _controller.HigherNote.ToString());
             }
 
-            ShowInfo(info);
             Save save = SaveManager.Save;
             save.SetControllerData(ControllerFactory.Instance.GetCurrentType(), MidiMaster.GetDeviceName(), _controller.LowerNote, _controller.HigherNote);
             SaveManager.SaveGame();

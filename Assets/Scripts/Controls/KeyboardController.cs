@@ -1,10 +1,13 @@
 using Assets.Scripts.Game.Model;
+using Assets.Scripts.Utils;
 using DataBinding.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditor.Experimental;
 using UnityEngine;
 
 
@@ -41,7 +44,17 @@ public class KeyboardController : MonoBehaviour, IController
     private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
     public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
-    public string Label => "Keyboard";
+    private string _label = "keyboard";
+    public string Label
+    {
+        get => _label;
+        set
+        {
+            _label = value;
+        }
+    }
+
+    public string LabelEntryName => "Keyboard";
 
     public List<PianoNote> AvailableNotes => keys.Select(x => x.Value).ToList();
 
@@ -92,6 +105,11 @@ public class KeyboardController : MonoBehaviour, IController
     private void Awake()
     {
         UpdateNotesWithOffset();
+    }
+
+    private void Start()
+    {
+        
     }
 
     // Update is called once per frame
@@ -169,5 +187,10 @@ public class KeyboardController : MonoBehaviour, IController
     public void HideControllerUI()
     {
         // Do nothing (qwerty / azerty handle here ?)
+    }
+
+    public async Task UpdateLabel()
+    {
+        Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_CONTROLLER_LABEL_KEYBOARD);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DataBinding.Core;
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +32,9 @@ namespace DataBinding.Core.Lists
         public GameObject EmptyTemplate;
 
         private List<ListItemViewModel> _uiItems = new List<ListItemViewModel>();
+        // Use to "pool" items. The change value will not Destroy and Instantiate items every times
+        // Instead, when we have more items, we disable them and resuse them after, because Instantiating is too heavy for performance when we have dozens of scores
+        private List<ListItemViewModel> _uiItemsAvailable = new List<ListItemViewModel>();
         private Type _listType; // The unerlying type of the list (the type T of ILIst<T>)
         private IList _list = null; // The list itself
         private IListBindingTemplateSelector _templateSelector;
@@ -87,6 +92,9 @@ namespace DataBinding.Core.Lists
         // If the list itself change, update all items
         public void ChangeValue(object value)
         {
+            var start = DateTime.Now;
+            var end = DateTime.Now;
+            // Debug.Log("ListBinding ChangeValue : " + start.ToString("hh:mm:ss.fff"));
             if (_list == null)
                 InitListInfo(value);
 
@@ -107,7 +115,20 @@ namespace DataBinding.Core.Lists
                 // here create the right amount of UI Items
                 if (_uiItems.Count == 0) // first loading, no items so we create all
                 {
-                    for(int i = 0; i < _list.Count; i++)
+                    int numberToReuse = _list.Count > _uiItemsAvailable.Count ? _uiItemsAvailable.Count : _list.Count;
+                    var itemToRemove = new List<ListItemViewModel>();
+                    for (int i = 0; i < numberToReuse; i++)
+                    {
+                        var existingItem = _uiItemsAvailable[i];
+                        existingItem.gameObject.SetActive(true);
+
+                        _uiItems.Add(existingItem.GetComponent<ListItemViewModel>());
+                        itemToRemove.Add(existingItem);
+                    }
+                    itemToRemove.ForEach(x => _uiItemsAvailable.Remove(x));
+
+                    int numberToCreate = _list.Count - numberToReuse;
+                    for (int i = 0; i < numberToCreate; i++)
                     {
                         // Get the template
                         var template = TemplateSelector != null ? _templateSelector.GetTemplate(i) : UIItem;
@@ -129,7 +150,21 @@ namespace DataBinding.Core.Lists
                 else if (_list.Count > _uiItems.Count) // else reuse ui items and add some
                 {
                     int numberToAdd = _list.Count - _uiItems.Count;
-                    for (int i = 0; i < numberToAdd; i++)
+
+                    int numberToReuse = numberToAdd > _uiItemsAvailable.Count ? _uiItemsAvailable.Count : numberToAdd;
+                    var itemToRemove = new List<ListItemViewModel>();
+                    for (int i = 0; i < numberToReuse; i++)
+                    {
+                        var existingItem = _uiItemsAvailable[i];
+                        existingItem.gameObject.SetActive(true);
+
+                        _uiItems.Add(existingItem.GetComponent<ListItemViewModel>());
+                        itemToRemove.Add(existingItem);
+                    }
+                    itemToRemove.ForEach(x => _uiItemsAvailable.Remove(x));
+
+                    int numberToCreate = numberToAdd - numberToReuse;
+                    for (int i = 0; i < numberToCreate; i++)
                     {
                         // Get the template
                         var template = TemplateSelector != null ? _templateSelector.GetTemplate(_uiItems.Count) : UIItem;
@@ -141,18 +176,23 @@ namespace DataBinding.Core.Lists
                         _uiItems.Add(newItem.GetComponent<ListItemViewModel>());
                     }
                 }
-                else if (_list.Count < _uiItems.Count) // or reuse° items and destroy some
+                else if (_list.Count < _uiItems.Count) // or reuse items and destroy some
                 {
                     int numberToRemove = _uiItems.Count - _list.Count;
                     for (int i = 0; i < numberToRemove; i++)
                     {
-                        Destroy(_uiItems[_uiItems.Count - 1].gameObject);
+                        // Start from the last item to not touch templates
+                        _uiItems[_uiItems.Count - 1].gameObject.SetActive(false);
+                        // Insert in the first of availables items
+                        // If we just add them then item will be re-added in the uiItems but will not correspond to the right Child index in the hierarchy
+                        // uiItems have to correspond to the hierarchy to set the good item in the good hierarchy position after
+                        _uiItemsAvailable.Insert(0, _uiItems[_uiItems.Count - 1]);
                         _uiItems.RemoveAt(_uiItems.Count - 1);
                     }
                 }
 
                 // We have the right count of UI Element cloned, we can assign items
-                for(int i = 0; i < _uiItems.Count; i++) 
+                for (int i = 0; i < _uiItems.Count; i++)
                 {
                     var viewModel = _uiItems[i].GetComponent<ListItemViewModel>();
                     if (viewModel == null)
@@ -166,9 +206,13 @@ namespace DataBinding.Core.Lists
                     viewModel.InitialiserNotifyPropertyChanged(_list[i]);
                 }
 
-                if(EmptyTemplate != null)
+                if (EmptyTemplate != null)
                     EmptyTemplate.SetActive(_uiItems.Count == 0);
             }
+
+            end = DateTime.Now;
+            // Debug.Log("ListBinding ChangeValue : " + end.ToString("hh:mm:ss.fff"));
+            // Debug.Log("Complete in : " + (end - start).ToString(@"ss\.fff"));
         }
 
 
