@@ -12,9 +12,8 @@ using UnityEngine.UIElements;
 /// </summary>
 public class StaffLine : MonoBehaviour
 {
-    private List<Note> _notes = new List<Note>();
+    private readonly List<Note> _notes = new();
     public List<Note> Notes => _notes;
-    private int _id;
 
     public ScaleFactor ScaleFactor = ScaleFactor.Screen;
 
@@ -57,24 +56,11 @@ public class StaffLine : MonoBehaviour
         _sprtRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void InitializeLine(Staff parent, int id, PianoNote note, bool visible, bool spaceLine)
+    public void InitializeLine(Staff parent, PianoNote note, bool visible, bool spaceLine)
     {
         this._parent = parent;
         this._isSpaceLine = spaceLine;
         this._isVisible = visible;
-        this._id = id;
 
         // A Staff line PianoNote CANNOT be altered, this stuff have to be handle with the accidental
         if (MusicHelper.IsSharp(note))
@@ -95,45 +81,15 @@ public class StaffLine : MonoBehaviour
         gameObject.transform.localScale = new Vector3(xScale, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
     }
 
-    public void SetAccidental(Accidental accidental)
-    {
-        this._accidental = Accidental;
-    }
+    public void SetAccidental(Accidental accidental) => this._accidental = accidental;
 
-    public void ResetAccidental()
-    {
-        this.SetAccidental(Accidental.Natural);
-    }
+    public void ResetAccidental() => this.SetAccidental(Accidental.Natural);
 
-    public void SpawnRandomNote(float scale, float fromX, float toX, Guid groupId = default)
-    {
-        this.SpawnRandomNote(scale, fromX, toX, false, false, Accidental.Natural, groupId);
-    }
+    public void SpawnRandomNote(float scale, float fromX, float toX, Guid groupId = default) => this.SpawnRandomNote(scale, fromX, toX, false, false, Accidental.Natural, groupId);
 
-    public void SpawnRandomNoteWithAccidental(float scale, float fromX, float toX, Accidental accidental, Guid groupId = default)
-    {
-        this.SpawnRandomNote(scale, fromX, toX, false, true, accidental, groupId);
-    }
+    public void SpawnRandomNoteWithAccidental(float scale, float fromX, float toX, Accidental accidental, Guid groupId = default) => this.SpawnRandomNote(scale, fromX, toX, false, true, accidental, groupId);
 
-    public void SpawnRandomNoteWithRandomAccidental(float scale, float fromX, float toX, Guid groupId = default)
-    {
-        this.SpawnRandomNote(scale, fromX, toX, true, false, Accidental.Natural, groupId);
-    }
-
-    //public void SpawnNote(PianoNote note, float scale, float fromX, float toX, Guid groupId = default)
-    //{
-    //    this.SpawnNote(note, scale, fromX, toX, groupId);
-    //}
-
-    //public void SpawnNoteWithAccidental(PianoNote note, float scale, float fromX, float toX, Accidental accidental, Guid groupId = default)
-    //{
-    //    this.SpawnNote(note, scale, fromX, toX, groupId);
-    //}
-
-    //public void SpawnNoteWithRandomAccidental(PianoNote note, float scale, float fromX, float toX, Guid groupId = default)
-    //{
-    //    this.SpawnNote(note, scale, fromX, toX, groupId);
-    //}
+    public void SpawnRandomNoteWithRandomAccidental(float scale, float fromX, float toX, Guid groupId = default) => this.SpawnRandomNote(scale, fromX, toX, true, false, Accidental.Natural, groupId);
 
     public Note SpawnNote(PianoNote note, float scale, float fromX, float toX, Guid groupId)
     {
@@ -151,8 +107,7 @@ public class StaffLine : MonoBehaviour
     {
         var accidental = Accidental.Natural;
 
-        string resourceToLoad = "";
-
+        string resourceToLoad;
         if (forceAccidental)
         {
             resourceToLoad = StaticResource.GET_PREFAB_NOTE(!IsVisible && !IsSpaceLine, forcedAccidental);
@@ -200,7 +155,7 @@ public class StaffLine : MonoBehaviour
         var noteComponent = go.GetComponent<Note>();
 
         // Initialize note with this line accidental
-        if (groupId == default(Guid))
+        if (groupId == default)
             noteComponent.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, accidental);
         else
             noteComponent.InitializeNote(this, numberOfEmptyLineBelow, numberOfEmptyLineAbove, accidental, groupId);
@@ -214,8 +169,5 @@ public class StaffLine : MonoBehaviour
         return noteComponent;
     }
 
-    private void Note_DestroyEvent(object sender, System.EventArgs args)
-    {
-        _notes.Remove(sender as Note);
-    }
+    private void Note_DestroyEvent(object sender, System.EventArgs args) => _notes.Remove(sender as Note);
 }

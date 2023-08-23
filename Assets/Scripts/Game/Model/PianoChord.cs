@@ -8,25 +8,24 @@ namespace Assets.Scripts.Game.Model
 {
     public class PianoChord
     {
-        private PianoNote _baseNote;
+        private readonly PianoNote _baseNote;
         public PianoNote BaseNote => _baseNote;
 
-        private List<PianoNote> _notes;
+        private readonly List<PianoNote> _notes;
         public List<PianoNote> Notes => _notes;
 
-        private Inversion _inversion;
+        private readonly Inversion _inversion;
         public Inversion Inversion => _inversion;
 
-        private Tonality _tonality;
+        private readonly Tonality _tonality;
         public Tonality Tonality => _tonality;
 
-        private PianoNote _minNote;
-        public PianoNote MinNote => _minNote;
+        public PianoNote MinNote { get; private set; }
 
         private PianoNote _maxNote;
         public PianoNote MaxNote => _maxNote;
 
-        private bool _withAccidental;
+        private readonly bool _withAccidental;
         public bool WithAccidental => _withAccidental;
 
         public PianoChord(PianoNote baseNote, Inversion inversion, Tonality tonality)
@@ -44,8 +43,8 @@ namespace Assets.Scripts.Game.Model
         {
             if(_inversion == Inversion.None)
             {
-                _minNote = _baseNote;
-                _notes.Add(_minNote);
+                MinNote = _baseNote;
+                _notes.Add(MinNote);
 
                 if (_tonality == Tonality.Major)
                     _notes.Add(_baseNote + 4);
@@ -58,12 +57,12 @@ namespace Assets.Scripts.Game.Model
             else if(_inversion == Inversion.firstInverstion)
             {
                 if (_tonality == Tonality.Major)
-                    _minNote = _baseNote - 8;
+                    MinNote = _baseNote - 8;
                 else
-                    _minNote = _baseNote - 9;
+                    MinNote = _baseNote - 9;
 
 
-                _notes.Add(_minNote);
+                _notes.Add(MinNote);
 
                 _notes.Add(_baseNote - 5);
 
@@ -72,8 +71,8 @@ namespace Assets.Scripts.Game.Model
             }
             else if (_inversion == Inversion.secondInversion)
             {
-                _minNote = _baseNote - 5;
-                _notes.Add(_minNote);
+                MinNote = _baseNote - 5;
+                _notes.Add(MinNote);
                 _notes.Add(_baseNote);
 
                 if (_tonality == Tonality.Major)

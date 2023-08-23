@@ -10,7 +10,7 @@ namespace Assets.Scripts.Data
 {
     public class GameModeManager
     {
-        private static List<GameMode> _gameModes = new List<GameMode>();
+        private static readonly List<GameMode> _gameModes = new();
         public static List<GameMode> GameModes
         {
             get

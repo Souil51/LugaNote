@@ -9,14 +9,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
+using static MenuViewModel;
 
 public class MenuViewModel : ViewModelBase
 {
     [SerializeField] private InfoMessage Info;
     [SerializeField] private RadioButtonsGroupViewModel LevelButtons;
-    [SerializeField] private RadioButtonsGroupViewModel ReplacementButtons;
     [SerializeField] private RadioButtonsGroupViewModel IntervalButtons;
     [SerializeField] private RadioButtonsGroupViewModel KeyButtons;
     [SerializeField] private ToggleSwitch AccidentalSwitch;
@@ -24,139 +26,93 @@ public class MenuViewModel : ViewModelBase
     [SerializeField] private ToggleSwitch GuessNameSwitch;
     [SerializeField] private ToggleSwitch ReplacementSwitch;
 
-    public delegate void OpenMidiConfigurationEventHandler(object sender, EventArgs e);
-    public event OpenMidiConfigurationEventHandler OpenMidiConfiguration;
+    public delegate void GenericEventHandler<T>(object sender, T e);
 
-    //public delegate void OpenScoresModeEventHandler(object sender, GameModeEventArgs e);
-    //public event OpenScoresModeEventHandler OpenScores;
+    public event GenericEventHandler<EventArgs> OpenMidiConfiguration;
 
-    //public delegate void CloseScoresModeEventHandler(object sender, EventArgs e);
-    //public event CloseScoresModeEventHandler CloseScores;
+    public event GenericEventHandler<GenericEventArgs<Level>> SelectedLevelChanged;
 
-    public delegate void SelectedLevelChangedEventHandler(object sender, LevelEventArgs e);
-    public event SelectedLevelChangedEventHandler SelectedLevelChanged;
+    public event GenericEventHandler<GenericEventArgs<bool>> SelectedAccidentalsChanged;
 
-    public delegate void SelectedAccidentalsChangedEventHandler(object sender, BoolEventArgs e);
-    public event SelectedAccidentalsChangedEventHandler SelectedAccidentalsChanged;
+    public event GenericEventHandler<GenericEventArgs<bool>> SelectedInversionChanged;
 
-    public delegate void SelectedInversionChangedEventHandler(object sender, BoolEventArgs e);
-    public event SelectedInversionChangedEventHandler SelectedInversionChanged;
+    public event GenericEventHandler<GenericEventArgs<bool>> SelectedGuessNameChanged;
+    
+    public event GenericEventHandler<GenericEventArgs<bool>> SelectedReplacementChanged;
 
-    public delegate void SelectedGuessNameChangedEventHandler(object sender, BoolEventArgs e);
-    public event SelectedGuessNameChangedEventHandler SelectedGuessNameChanged;
+    public event GenericEventHandler<GenericEventArgs<IntervalMode>> SelectedIntervalChanged;
 
-    public delegate void SelectedReplacementChangedEventHandler(object sender, BoolEventArgs e);
-    public event SelectedReplacementChangedEventHandler SelectedReplacementChanged;
-
-    public delegate void SelectedIntervalChangedEventHandler(object sender, IntervalEventArgs e);
-    public event SelectedIntervalChangedEventHandler SelectedIntervalChanged;
-
-    public delegate void SelectedKeyChangedEventHandler(object sender, GameModeTypeEventArgs e);
-    public event SelectedKeyChangedEventHandler SelectedKeyChanged;
+    public event GenericEventHandler<GenericEventArgs<GameModeType>> SelectedKeyChanged;
 
     private bool _isInfoVisible = false;
     public bool IsInfoVisible
     {
         get => _isInfoVisible;
-        private set
-        {
-            _isInfoVisible = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _isInfoVisible, value);
     }
 
     private string _infoText = string.Empty;
     public string InfoText
     {
         get => _infoText;
-        private set
-        {
-            _infoText = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _infoText, value);
     }
 
     private List<string> _infoText_Variables;
     public List<string> InfoText_Variables
     {
         get => _infoText_Variables;
-        private set
-        {
-            _infoText_Variables = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _infoText_Variables, value);
     }
 
     private string _controllerLabel = "MIDI controller (88 keys)";
     public string ControllerLabel
     {
         get => _controllerLabel;
-        private set
-        {
-            _controllerLabel = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _controllerLabel, value);
     }
 
     private bool _isMidiConfigurationVisible;
     public bool IsMidiConfigurationVisible
     {
         get => _isMidiConfigurationVisible;
-        private set
-        {
-            _isMidiConfigurationVisible = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _isMidiConfigurationVisible, value);
     }
 
     private bool _scorePanelVisible = false;
     public bool ScorePanelVisible
     {
         get => _scorePanelVisible;
-        private set
-        {
-            _scorePanelVisible = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _scorePanelVisible, value);
     }
 
     private List<LeaderboardScore> _displayedScores;
     public List<LeaderboardScore> DisplayedScores
     {
         get => _displayedScores;
-        private set
-        {
-            _displayedScores = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _displayedScores, value);
     }
 
     private bool _isMIDIDeviceConnected;
     public bool IsMIDIDeviceConnected
     {
         get => _isMIDIDeviceConnected;
-        private set
-        {
-            _isMIDIDeviceConnected = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _isMIDIDeviceConnected, value);
     }
 
     private bool _lessThan61Keys;
     public bool LessThan61Keys
     {
         get => _lessThan61Keys;
-        private set
-        {
-            _lessThan61Keys = value;
-            OnPropertyChanged();
-        }
+        private set => SetProperty(ref _lessThan61Keys, value);
     }
 
     public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
     public bool IsGuessNameModeVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note;
     public bool IsGuessNameIntervalVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Interval;
     public bool IsGuessNameChordVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
+
+    public List<string> InfoText_Variables1 { get => _infoText_Variables; set => _infoText_Variables = value; }
 
     private void Awake()
     {
@@ -169,7 +125,6 @@ public class MenuViewModel : ViewModelBase
         LevelButtons.SelectedButtonChanged += LevelsButton_SelectedButtonChanged;
         AccidentalSwitch.ValueChanged += AccidentalSwitch_ValueChanged;
         InversionSwitch.ValueChanged += InversionSwitch_ValueChanged;
-        //ReplacementButtons.SelectedButtonChanged += ReplacementButtons_SelectedButtonChanged;
         ReplacementSwitch.ValueChanged += ReplacementSwtch_ValueChanged;
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
@@ -184,23 +139,9 @@ public class MenuViewModel : ViewModelBase
         UpdateDisplayedScores();
     }
 
-    private void Update()
+    private void IntervalButtons_SelectedButtonChanged(object sender, GenericEventArgs<int> e)
     {
-        //if (Input.GetKeyDown(KeyCode.I))
-        //{
-        //    ShowInfo(StaticResource.LOCALIZATION_MENU_INFO_MIDI_CUSTOM_TOUCHES, 2f, "a", "b", "c");
-        //}
-    }
-
-    private void KeyButtons_SelectedButtonChanged(object sender, IntEventArgs e)
-    {
-        SelectedKeyChanged?.Invoke(sender, new GameModeTypeEventArgs((GameModeType)e.Value));
-        UpdateDisplayedScores();
-    }
-
-    private void IntervalButtons_SelectedButtonChanged(object sender, IntEventArgs e)
-    {
-        SelectedIntervalChanged?.Invoke(sender, new IntervalEventArgs((IntervalMode)e.Value));
+        SelectedIntervalChanged?.Invoke(sender, new GenericEventArgs<IntervalMode>((IntervalMode)e.Value));
         UpdateDisplayedScores();
         OnPropertyChanged(nameof(IsInversionModeVisible));
         OnPropertyChanged(nameof(IsGuessNameModeVisible));
@@ -208,45 +149,25 @@ public class MenuViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsGuessNameChordVisible));
     }
 
-    private void ReplacementButtons_SelectedButtonChanged(object sender, IntEventArgs e)
-    {
-        SelectedReplacementChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
-        UpdateDisplayedScores();
-    }
+    private void KeyButtons_SelectedButtonChanged(object sender, GenericEventArgs<int> e) => InvokeAndRefresh(sender, new GenericEventArgs<GameModeType>((GameModeType)e.Value), SelectedKeyChanged);
 
-    private void ReplacementSwtch_ValueChanged(object sender, BoolEventArgs e)
-    {
-        SelectedReplacementChanged?.Invoke(sender, e);
-        UpdateDisplayedScores();
-    }
+    private void ReplacementButtons_SelectedButtonChanged(object sender, GenericEventArgs<int> e) => InvokeAndRefresh(sender, new GenericEventArgs<bool>(e.Value != 0), SelectedReplacementChanged);
 
-    private void AccidentalsButtons_SelectedButtonChanged(object sender, IntEventArgs e)
-    {
-        SelectedAccidentalsChanged?.Invoke(sender, new BoolEventArgs(e.Value != 0));
-        UpdateDisplayedScores();
-    }
+    private void ReplacementSwtch_ValueChanged(object sender, GenericEventArgs<bool> e) => InvokeAndRefresh(sender, e, SelectedReplacementChanged);
 
-    private void AccidentalSwitch_ValueChanged(object sender, BoolEventArgs e)
-    {
-        SelectedAccidentalsChanged?.Invoke(sender, e);
-        UpdateDisplayedScores();
-    }
+    private void AccidentalsButtons_SelectedButtonChanged(object sender, GenericEventArgs<int> e) => InvokeAndRefresh(sender, new GenericEventArgs<bool>(e.Value != 0), SelectedAccidentalsChanged);
 
-    private void InversionSwitch_ValueChanged(object sender, BoolEventArgs e)
-    {
-        SelectedInversionChanged?.Invoke(sender, e);
-        UpdateDisplayedScores();
-    }
+    private void AccidentalSwitch_ValueChanged(object sender, GenericEventArgs<bool> e) => InvokeAndRefresh(sender, e, SelectedAccidentalsChanged);
 
-    private void LevelsButton_SelectedButtonChanged(object sender, IntEventArgs e)
-    {
-        SelectedLevelChanged?.Invoke(sender, new LevelEventArgs((Level)e.Value));
-        UpdateDisplayedScores();
-    }
+    private void InversionSwitch_ValueChanged(object sender, GenericEventArgs<bool> e) => InvokeAndRefresh(sender, e, SelectedInversionChanged);
 
-    private void GuessNameSwitch_ValueChanged(object sender, BoolEventArgs e)
+    private void LevelsButton_SelectedButtonChanged(object sender, GenericEventArgs<int> e) => InvokeAndRefresh(sender, new GenericEventArgs<Level>((Level)e.Value), SelectedLevelChanged);
+
+    private void GuessNameSwitch_ValueChanged(object sender, GenericEventArgs<bool> e) => InvokeAndRefresh(sender, e, SelectedGuessNameChanged);
+
+    private void InvokeAndRefresh<T>(object sender, T args, GenericEventHandler<T> eventHandler)
     {
-        SelectedGuessNameChanged?.Invoke(sender, e);
+        eventHandler?.Invoke(sender, args);
         UpdateDisplayedScores();
     }
 
@@ -266,9 +187,7 @@ public class MenuViewModel : ViewModelBase
     public void InitializeViewModel()
     {
         InitialiserNotifyPropertyChanged();
-
         IsMidiConfigurationVisible = true; // MenuController.Instance.IsMidiConfigurationVisible;
-
     }
 
     public void ShowScorePanel(List<LeaderboardScore> scores)
@@ -291,7 +210,7 @@ public class MenuViewModel : ViewModelBase
 
     private List<LeaderboardScore> GenerateLeaderboardScoreList(GameModeType gameModeType, IntervalMode intervalMode, Level level, bool guessName, bool withRandomAccidental, bool withInversion)
     {
-        List<LeaderboardScore> leaderboard = new List<LeaderboardScore>();
+        List<LeaderboardScore> leaderboard = new();
 
         var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, guessName, withRandomAccidental, withInversion);
         if(gameModeData != null)
@@ -396,6 +315,17 @@ public class MenuViewModel : ViewModelBase
         }
     }
 
+    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, value))
+        {
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+        return false;
+    }
+
     private IEnumerator Co_Info(float duration)
     {
         yield return new WaitForSeconds(duration);
@@ -403,68 +333,13 @@ public class MenuViewModel : ViewModelBase
     }
 }
 
-public class BoolEventArgs : EventArgs
+public class GenericEventArgs<T> : EventArgs
 {
-    private bool _value;
-    public bool Value => _value;
+    private readonly T _value;
+    public T Value => _value;
 
-    public BoolEventArgs(bool value)
+    public GenericEventArgs(T value)
     {
         _value = value;
-    }
-}
-
-public class IntEventArgs : EventArgs
-{
-    private int _value;
-    public int Value => _value;
-
-    public IntEventArgs(int value)
-    {
-        _value = value;
-    }
-}
-
-public class IntervalEventArgs : EventArgs
-{
-    private IntervalMode _interval;
-    public IntervalMode Interval => _interval;
-
-    public IntervalEventArgs(IntervalMode interval)
-    {
-        _interval = interval;
-    }
-}
-
-public class GameModeTypeEventArgs : EventArgs
-{
-    private GameModeType _gameModeType;
-    public GameModeType GameModeType => _gameModeType;
-
-    public GameModeTypeEventArgs(GameModeType gameModeType)
-    {
-        _gameModeType = gameModeType;
-    }
-}
-
-public class LevelEventArgs : EventArgs
-{
-    private Level _level;
-    public Level Level => _level;
-
-    public LevelEventArgs(Level level)
-    {
-        _level = level;
-    }
-}
-
-public class GameModeEventArgs : EventArgs
-{
-    private GameMode _gameMode;
-    public GameMode GameMode => _gameMode;
-
-    public GameModeEventArgs(GameMode gameMode)
-    {
-        _gameMode = gameMode;
     }
 }

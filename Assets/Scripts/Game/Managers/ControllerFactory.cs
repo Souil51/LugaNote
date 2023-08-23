@@ -34,8 +34,7 @@ namespace Assets.Scripts.Game
             if (_controllerInstance != null)
                 return _controllerInstance;
 
-            IController controller = null;
-
+            IController controller;
             switch (Type)
             {
                 case ControllerType.MIDI:

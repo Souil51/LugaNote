@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public delegate void ValueChangedEventHandler(object sender, BoolEventArgs e);
+    public delegate void ValueChangedEventHandler(object sender, GenericEventArgs<bool> e);
     public event ValueChangedEventHandler ValueChanged;
 
     [SerializeField] Image Frame;
@@ -19,8 +19,6 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
 
     private RectTransform FrameRect;
     private RectTransform btRect;
-
-    //private bool pointerDown = false;
 
     private (float, float) FrameXBoundary;
     private Vector2 touchPos;
@@ -63,7 +61,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         if (SwitchState == 0)
         {
             SwitchState = 1;
-            ValueChanged?.Invoke(this, new BoolEventArgs(true));
+            ValueChanged?.Invoke(this, new GenericEventArgs<bool>(true));
         }
     }
 
@@ -72,7 +70,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         if (SwitchState == 1)
         {
             SwitchState = 0;
-            ValueChanged?.Invoke(this, new BoolEventArgs(false));
+            ValueChanged?.Invoke(this, new GenericEventArgs<bool>(false));
         }
     }
 

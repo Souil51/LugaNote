@@ -12,7 +12,7 @@ using UnityEditor.Localization.Plugins.XLIFF.V20;
 /// </summary>
 public class Staff : MonoBehaviour
 {
-    [SerializeField] private List<LinePositionIndicator> Indicators = new List<LinePositionIndicator>();
+    [SerializeField] private List<LinePositionIndicator> Indicators = new();
     [SerializeField] private Clef Clef;
 
     public Clef StaffClef => Clef;
@@ -40,7 +40,7 @@ public class Staff : MonoBehaviour
             return allNotes.OrderBy(x => x.transform.position.x).ToList();
         }    
     }
-    private List<StaffLine> Lines = new List<StaffLine>();
+    private readonly List<StaffLine> Lines = new();
 
     private void Awake()
     {
@@ -88,7 +88,7 @@ public class Staff : MonoBehaviour
             goLine.transform.position = new Vector3(0, currentY, 0);
 
             var staffLine = goLine.GetComponent<StaffLine>();
-            staffLine.InitializeLine(this, i, currentNote, i >= 7 && i <= 15, i % 2 == 0);
+            staffLine.InitializeLine(this, currentNote, i >= 7 && i <= 15, i % 2 == 0);
 
             Lines.Add(staffLine);
 
@@ -143,7 +143,7 @@ public class Staff : MonoBehaviour
         return index;
     }
 
-    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, int maxInterval, bool withRandomAccidental = false)
+    public void SpawnMultipleNotes(int count, List<PianoNote> notesRange, bool withRandomAccidental = false)
     {
         Guid groupId = Guid.NewGuid();
         var _availableLines = Lines.Where(x => notesRange.Contains(x.Note)).ToList();

@@ -12,11 +12,10 @@ public class GameInputManager : MonoBehaviour
     public delegate void GuessEventHandler(object sender, GuessEventArgs e);
     public event GuessEventHandler Guess;
 
-    public delegate void PauseEventHandler(object sender, EventArgs e);
-    public event PauseEventHandler Pause;
+    public event EventHandler Pause;
 
     // Used to store pending notes when playing intervals/chords mode
-    private List<ControllerNote> _noteBuffer = new List<ControllerNote>();
+    private readonly List<ControllerNote> _noteBuffer = new();
     private int maxNoteCount = 1;
 
     // Start is called before the first frame update
@@ -141,7 +140,7 @@ public class GuessEventArgs : EventArgs
 {
     public bool Result;
 
-    private List<ControllerType> _usedControllers;
+    private readonly List<ControllerType> _usedControllers;
     public List<ControllerType> UsedControllers => _usedControllers;
 
     public GuessEventArgs(bool result, List<ControllerType> usedControllers)

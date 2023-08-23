@@ -3,19 +3,15 @@ using Assets.Scripts.Data;
 using Assets.Scripts.Game;
 using Assets.Scripts.Game.Model;
 using Assets.Scripts.Game.Save;
-using Assets.Scripts.Utils;
 using DataBinding.Core;
 using MidiJack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor.Experimental;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Localization.Settings;
 
 /// <summary>
 /// Main menu script
@@ -82,8 +78,8 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         GameSceneManager.Instance.SceneLoaded += GameSceneManager_SceneLoaded;
 
         _controller = ControllerFactory.Instance.GetController();
-        _controller.Configuration += controller_Configuration;
-        _controller.ConfigurationDestroyed += _controller_ConfigurationDestroyed;
+        _controller.Configuration += Controller_Configuration;
+        _controller.ConfigurationDestroyed += Controller_ConfigurationDestroyed;
     }
 
     private void OnEnable()
@@ -91,8 +87,6 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         Transition.Closed += Transition_Closed;
 
         ViewModel.OpenMidiConfiguration += ViewModel_OpenMidiConfiguration;
-        //ViewModel.OpenScores += ViewModel_OpenScores;
-        //ViewModel.CloseScores += ViewModel_CloseScores;
         ViewModel.SelectedLevelChanged += ViewModel_SelectedLevelChanged;
         ViewModel.SelectedAccidentalsChanged += ViewModel_SelectedAccidentalsChanged;
         ViewModel.SelectedInversionChanged += ViewModel_SelectedInversionChanged;
@@ -109,11 +103,9 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     {
         GameSceneManager.Instance.SceneLoaded -= GameSceneManager_SceneLoaded;
         Transition.Closed -= Transition_Closed;
-        _controller.Configuration -= controller_Configuration;
+        _controller.Configuration -= Controller_Configuration;
 
         ViewModel.OpenMidiConfiguration -= ViewModel_OpenMidiConfiguration;
-        //ViewModel.OpenScores -= ViewModel_OpenScores;
-        //ViewModel.CloseScores -= ViewModel_CloseScores;
 
         ViewModel.SelectedLevelChanged -= ViewModel_SelectedLevelChanged;
         ViewModel.SelectedAccidentalsChanged -= ViewModel_SelectedAccidentalsChanged;
@@ -130,6 +122,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private async void Start()
     {
         SoundManager.LoadAllSounds();
+        LocalizationSettings.SelectedLocaleChanged += LocalizationSettings_SelectedLocaleChanged;
 
         Save save = SaveManager.Save;
         var currentControllerType = ControllerFactory.Instance.GetCurrentType();
@@ -151,31 +144,21 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
         ViewModel.HideInfo();
 
-        await _controller.UpdateLabel();
-        _controllerLabel = _controller.Label;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
+        await UpdateControllerLabel();
         ViewModel.InitializeViewModel();
         ViewModel.UpdateRecommendation();
     }
 
-    // Update is called once per frame
-    void Update()
+    private async void LocalizationSettings_SelectedLocaleChanged(UnityEngine.Localization.Locale obj) => await UpdateControllerLabel();
+
+    /// <summary>
+    /// Controller label is a concatenation of localized strings so we handle it
+    /// </summary>
+    private async Task UpdateControllerLabel()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            AudioSourceTest.clip = SoundManager.GetNoteClip(PianoNote.C4);
-            AudioSourceTest.Play();
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            SoundManager.PlayNote(PianoNote.C4);
-        }
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            // DisplayedScores = new List<LeaderboardScore>() { new LeaderboardScore(1, 99, DateTime.Now) };
-        }
+        await _controller.UpdateLabel();
+        _controllerLabel = _controller.Label;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ControllerLabel)));
     }
 
     #endregion
@@ -185,9 +168,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         bool stateChanged = false;
 
         if (CurrentState == MenuState.Loaded && newState == MenuState.Idle)
-        {
             stateChanged = true;
-        }
         else if (CurrentState == MenuState.Idle && newState == MenuState.Configuration)
         {
             var save = SaveManager.Save;
@@ -202,25 +183,15 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             stateChanged = true;
         }
         else if(CurrentState == MenuState.Idle && newState == MenuState.ViewScore)
-        {
             stateChanged = true;
-        }
-        else if ((CurrentState == MenuState.Configuration || CurrentState == MenuState.ViewScore)
-            && newState == MenuState.Idle)
-        {
+        else if ((CurrentState == MenuState.Configuration || CurrentState == MenuState.ViewScore) && newState == MenuState.Idle)
             stateChanged = true;
-        }
 
         if (stateChanged)
-        {
             CurrentState = newState;
-        }
     }
 
-    private void ShowInfo(string info, float duration = 2f, params string[] variables)
-    {
-        ViewModel.ShowInfo(info, duration, variables);
-    }
+    private void ShowInfo(string info, float duration = 2f, params string[] variables) => ViewModel.ShowInfo(info, duration, variables);
 
     public void LoadGameMode(GameMode gameMode, bool replacementMode)
     {
@@ -236,35 +207,28 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         _replacementMode = replacementMode;
     }
 
-    public bool IsMidiConnected()
-    {
-        return !String.IsNullOrEmpty(MidiMaster.GetDeviceName());
-    }
+    public bool IsMidiConnected() => !String.IsNullOrEmpty(MidiMaster.GetDeviceName());
 
     #region Events callbacks
-    private void controller_Configuration(object sender, ConfigurationEventArgs e)
+    private void Controller_Configuration(object sender, ConfigurationEventArgs e)
     {
         if (e.Result)
         {
-            string info = "";
+            string info;
             UpdateFooter();
+            var variablesList = new List<string>();
 
             if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 88)
-            {
                 info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_88_TOUCHES);
-                ShowInfo(info);
-            }
             else if ((int)_controller.HigherNote - (int)_controller.LowerNote + 1 == 61)
-            {
                 info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_61_TOUCHES);
-                ShowInfo(info);
-            }
             else
             {
                 info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
-                ShowInfo(info, 2f, ((PianoNote)(_controller.HigherNote - _controller.LowerNote)).ToString(), _controller.LowerNote.ToString(), _controller.HigherNote.ToString());
+                variablesList = new List<string>() { ((PianoNote)(_controller.HigherNote - _controller.LowerNote)).ToString(), _controller.LowerNote.ToString(), _controller.HigherNote.ToString() };
             }
 
+            ShowInfo(info, 2f, variablesList.ToArray());
             Save save = SaveManager.Save;
             save.SetControllerData(ControllerFactory.Instance.GetCurrentType(), MidiMaster.GetDeviceName(), _controller.LowerNote, _controller.HigherNote);
             SaveManager.SaveGame();
@@ -274,10 +238,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.UpdateRecommendation();
     }
 
-    private void _controller_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
-    {
-        ViewModel.CallGameObjectDestroyed(sender, e);
-    }
+    private void Controller_ConfigurationDestroyed(object sender, GameObjectEventArgs e) => ViewModel.CallGameObjectDestroyed(sender, e);
 
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
     {
@@ -290,50 +251,24 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    private void Transition_Closed(object sender, System.EventArgs e)
-    {
-        GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
-    }
+    private void Transition_Closed(object sender, EventArgs e) => GameSceneManager.Instance.LoadScene(StaticResource.SCENE_MAIN_SCENE);
 
-    private void ViewModel_SelectedLevelChanged(object sender, LevelEventArgs e)
-    {
-        _selectedLevel = e.Level;
-    }
+    private void ViewModel_SelectedLevelChanged(object sender, GenericEventArgs<Level> e) => _selectedLevel = e.Value;
 
-    private void ViewModel_SelectedKeyChanged(object sender, GameModeTypeEventArgs e)
-    {
-        _gameModeType = e.GameModeType;
-    }
+    private void ViewModel_SelectedKeyChanged(object sender, GenericEventArgs<GameModeType> e) => _gameModeType = e.Value;
 
-    private void ViewModel_SelectedIntervalChanged(object sender, IntervalEventArgs e)
-    {
-        _intervalMode = e.Interval;
-    }
+    private void ViewModel_SelectedIntervalChanged(object sender, GenericEventArgs<IntervalMode> e) => _intervalMode = e.Value;
 
-    private void ViewModel_SelectedReplacementChanged(object sender, BoolEventArgs e)
-    {
-        _replacementMode = e.Value;
-    }
+    private void ViewModel_SelectedReplacementChanged(object sender, GenericEventArgs<bool> e) => _replacementMode = e.Value;
 
-    private void ViewModel_SelectedAccidentalsChanged(object sender, BoolEventArgs e)
-    {
-        _withAccidental = e.Value;
-    }
+    private void ViewModel_SelectedAccidentalsChanged(object sender, GenericEventArgs<bool> e) => _withAccidental = e.Value;
 
-    private void ViewModel_SelectedInversionChanged(object sender, BoolEventArgs e)
-    {
-        _withInversion = e.Value;
-    }
+    private void ViewModel_SelectedInversionChanged(object sender, GenericEventArgs<bool> e) => _withInversion = e.Value;
 
-    private void ViewModel_SelectedGuessNameChanged(object sender, BoolEventArgs e)
-    {
-        _guessName = e.Value;
-    }
+    private void ViewModel_SelectedGuessNameChanged(object sender, GenericEventArgs<bool> e) => _guessName = e.Value;
 
     private void MidiMaster_DeviceConnected(string deviceName)
     {
-        Debug.Log("MidiMaster_DeviceConnected");
-
         if(Controller is MultipleController multipleCtrl)
         {
             multipleCtrl.EnableMIDI();
@@ -347,26 +282,20 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         if(controllerData != null)
         {
             if(Controller is MultipleController multipleController)
-            {
                 multipleController.SetControllerData(controllerData);
-            }
             else if(Controller is MidiController midiController)
-            {
                 midiController.SetControllerData(controllerData);
-            }
+
             ViewModel.UpdateRecommendation();
         }
         else // if device not exists, open configuration
-        {
             ViewModel_OpenMidiConfiguration(this, EventArgs.Empty);
-        }
 
         ViewModel.UpdateMidiConnection();
     }
 
     private void MidiMaster_DeviceDisconnected(string deviceName)
     {
-        Debug.Log("MidiMaster_DeviceDisconnected");
         if (Controller is MultipleController multipleCtrl)
         {
             multipleCtrl.DisableMIDI();
@@ -402,16 +331,6 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         SaveManager.SaveGame();
 
         Transition.Close();
-    }
-
-    private void ViewModel_CloseScores(object sender, EventArgs e)
-    {
-        ChangeState(MenuState.Idle);
-    }
-
-    private void ViewModel_OpenScores(object sender, GameModeEventArgs e)
-    {
-        ChangeState(MenuState.ViewScore);
     }
 
     private void ViewModel_OpenMidiConfiguration(object sender, EventArgs e)

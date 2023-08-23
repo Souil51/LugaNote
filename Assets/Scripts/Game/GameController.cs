@@ -106,7 +106,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     public IController Controller => _controller;
     private Coroutine _notesCoroutine = null;
     private static GameController _instance;
-    private List<ControllerType> _usedControllers = new List<ControllerType>();
+    private List<ControllerType> _usedControllers = new();
 
     public static GameController Instance => _instance;
     #endregion
@@ -306,10 +306,15 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     public List<Note> GetFirstNotes()
     {
         var firstNotes = new List<Note>();
-        var nearestNotesGroupId = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).Where(x => x.IsActive).FirstOrDefault()?.GroupId;
-        if(nearestNotesGroupId != null && nearestNotesGroupId != Guid.Empty)
+        var nearestNote = Staffs.SelectMany(x => x.Notes).OrderBy(x => x.CreationTimestamp).FirstOrDefault(x => x.IsActive);
+
+        var nearestNotesGroupId = Guid.Empty;
+        if (nearestNote != null)
+            nearestNotesGroupId = nearestNote.GroupId;
+
+        if (nearestNotesGroupId != Guid.Empty)
         {
-            firstNotes = Staffs.SelectMany(x => x.Notes).Where(x => x.GroupId == nearestNotesGroupId.Value).ToList();
+            firstNotes = Staffs.SelectMany(x => x.Notes).Where(x => x.GroupId == nearestNotesGroupId).ToList();
         }
         return firstNotes;
     }
@@ -432,7 +437,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
     // TEST
     // For testing all notes in order with accidentals
-    private List<PianoNote> _listeTEST = new List<PianoNote>()
+    private readonly List<PianoNote> _listeTEST = new()
     {
         PianoNote.C4,
         PianoNote.D4,
@@ -520,7 +525,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                             var noteList = MusicHelper.GetNotesForLevel(this.GameMode.Level, staffs[i].StaffClef);
 
                             // 12 interval max for the octave
-                            staffs[i].SpawnMultipleNotes(noteCount, noteList, 12, GameMode.WithRandomAccidental);
+                            staffs[i].SpawnMultipleNotes(noteCount, noteList, GameMode.WithRandomAccidental);
                             yield return new WaitForSeconds(0.5f / Staffs.Count);
                         }
                     }

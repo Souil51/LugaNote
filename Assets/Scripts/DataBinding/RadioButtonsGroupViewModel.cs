@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class RadioButtonsGroupViewModel : ViewModelBase
 {
-    public delegate void SelectedButtonChangedEventHandler(object sender, IntEventArgs e);
+    public delegate void SelectedButtonChangedEventHandler(object sender, GenericEventArgs<int> e);
     public event SelectedButtonChangedEventHandler SelectedButtonChanged;
 
     [SerializeField] private List<GameObject> Buttons = new List<GameObject>();
@@ -201,6 +201,6 @@ public class RadioButtonsGroupViewModel : ViewModelBase
         _selectedIndex = index;
         UpdateButtons();
 
-        SelectedButtonChanged?.Invoke(this, new IntEventArgs(SelectedIndex));
+        SelectedButtonChanged?.Invoke(this, new GenericEventArgs<int>(SelectedIndex));
     }
 }

@@ -18,8 +18,7 @@ public class Note : MonoBehaviour
     [SerializeField] private SpriteRenderer SpriteGoodGuess;
     [SerializeField] private SpriteRenderer SpriteBadGuess;
 
-    public delegate void DestroyEventHandler(object sender, EventArgs args);
-    public event DestroyEventHandler DestroyEvent;
+    public event EventHandler DestroyEvent;
 
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;

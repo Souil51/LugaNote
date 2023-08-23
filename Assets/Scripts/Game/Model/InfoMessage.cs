@@ -15,11 +15,6 @@ public class InfoMessage : MonoBehaviour
         _animator.enabled = true;
     }
 
-    private void OnDisable()
-    {
-        // _animator.enabled = false;
-    }
-
     public void Disappear()
     {
         if(_animator.enabled)
