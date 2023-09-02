@@ -234,6 +234,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!1 &28690515
 GameObject:
   m_ObjectHideFlags: 0
@@ -759,6 +760,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &278443313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -939,6 +941,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &396585574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1068,6 +1071,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!1 &412764554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1206,6 +1210,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &420099171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1533,6 +1538,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 457054464}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &457054467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1683,6 +1689,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &466785385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1832,6 +1839,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!1 &470014277
 GameObject:
   m_ObjectHideFlags: 0
@@ -4127,6 +4135,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &1135942127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7351,6 +7360,7 @@ MonoBehaviour:
     AfterConcatenationString: 
   Converter: {fileID: 0}
   localize: {fileID: 0}
+  LocalizationEntryBinding: 0
 --- !u!114 &2125437390
 MonoBehaviour:
   m_ObjectHideFlags: 0

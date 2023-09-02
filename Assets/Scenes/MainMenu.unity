@@ -36808,7 +36808,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Info: {fileID: 1983145724}
   LevelButtons: {fileID: 1526492029}
-  ReplacementButtons: {fileID: 0}
   IntervalButtons: {fileID: 1434519120}
   KeyButtons: {fileID: 1997757967}
   AccidentalSwitch: {fileID: 1179980890}

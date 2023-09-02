@@ -215,7 +215,7 @@ public class MenuViewModel : ViewModelBase
         var gameModeData = SaveManager.Save.GetGameModeData(gameModeType, intervalMode, level, guessName, withRandomAccidental, withInversion);
         if(gameModeData != null)
         {
-            var scores = gameModeData.Scores.OrderByDescending(x => x.Value).ToList();
+            var scores = gameModeData.Scores.OrderByDescending(x => x.Value).Take(25).ToList();
 
             for (int i = 0; i < scores.Count; i++)
             {
@@ -256,15 +256,6 @@ public class MenuViewModel : ViewModelBase
         InfoText = info;
 
         InfoText_Variables = variables?.ToList();
-
-        /*if (variables.Length > 0)
-            InfoText_FirstVariable = variables[0];
-
-        if (variables.Length > 1)
-            InfoText_SecondVariable = variables[1];
-
-        if (variables.Length > 2)
-            InfoText_ThirdVariable = variables[2];*/
 
         IsInfoVisible = true;
 

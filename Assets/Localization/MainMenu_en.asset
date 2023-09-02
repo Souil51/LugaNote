@@ -198,10 +198,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 44730894917632
-    m_Localized: MIDI controller ({first} to {second})
+    m_Localized: MIDI controller ({0} to {1})
     m_Metadata:
-      m_Items:
-      - rid: 8439659353169461250
+      m_Items: []
   - m_Id: 86168156381184
     m_Localized: keyboard
     m_Metadata:
@@ -216,4 +215,4 @@ MonoBehaviour:
     - rid: 8439659353169461250
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00201ab9ae28000000205a344f280000
+        m_Entries: 00205a344f280000

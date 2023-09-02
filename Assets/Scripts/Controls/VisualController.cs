@@ -477,7 +477,7 @@ public class VisualController : MonoBehaviour, IController
     {
         _mode = mode;
 
-        Debug.Log("Change visual mode to " + mode);
+        //Debug.Log("Change visual mode to " + mode);
     }
 
     public async Task UpdateLabel()

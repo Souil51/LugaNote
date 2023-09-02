@@ -186,7 +186,7 @@ public class Staff : MonoBehaviour
 
         foreach(var note in chordToPlay)
         {
-            Debug.Log(note);
+            //Debug.Log(note);
             var line = Lines.Where(x => x.NaturalNote == MusicHelper.ConvertToNaturalNote(note)).First();
             line.SpawnNote(note, transform.localScale.x, StartingPointPosition, DisappearPointPosition, groupId);
         }

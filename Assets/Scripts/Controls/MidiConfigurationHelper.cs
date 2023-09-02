@@ -289,9 +289,7 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 
         if (_lowerNote > _higherNote) // if the user reverse the two notes
         {
-            var tmp = _lowerNote;
-            _lowerNote = _higherNote;
-            _higherNote = tmp;
+            (_higherNote, _lowerNote) = (_lowerNote, _higherNote);
         }
 
         ConfigurationEnded?.Invoke(this, new MidiConfigurationReturn(true, _higherNote, _lowerNote));

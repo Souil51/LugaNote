@@ -107,6 +107,14 @@ namespace DataBinding.Core
                     propInfo.PropertyType.GetProperty(splitName[1]);
             }*/
 
+            if (Converter != null && _converter == null)
+            {
+                if (!(Converter is IBindingConverter))
+                    throw new Exception("Converter does not implement IBindingConverter in ChangedValue");
+
+                _converter = Converter.GetComponent<IBindingConverter>();
+            }
+
             if (Converter != null && _converter != null)
             {
                 value = _converter.GetConvertedValue(value, null);

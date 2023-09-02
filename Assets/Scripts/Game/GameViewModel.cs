@@ -97,7 +97,7 @@ public class GameViewModel : ViewModelBase
         InitialiserNotifyPropertyChanged();
 
         UIButtonVisible = GameController.Instance.HasControllerUI;
-        UpdateVisualKeysVisibilityText();
+        // UpdateVisualKeysVisibilityText();
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -149,7 +149,7 @@ public class GameViewModel : ViewModelBase
         ToggleVisualKeysVisibility?.Invoke(this, EventArgs.Empty);
 
         VisualKeysVisibilityVisibility = !VisualKeysVisibilityVisibility;
-        UpdateVisualKeysVisibilityText();
+        // UpdateVisualKeysVisibilityText();
     }
 
     private void UpdateVisualKeysVisibilityText()

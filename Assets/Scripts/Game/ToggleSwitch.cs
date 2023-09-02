@@ -165,7 +165,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
                 new Vector3(FrameXBoundary.Item2 - (btRect.rect.width / 2) - RightMargin, SlideButton.transform.localPosition.y, SlideButton.transform.localPosition.z), 
                 timeElapsed / LerpDuration);
             BGFading.color = new Color(BGFading.color.r, BGFading.color.g, BGFading.color.b, timeElapsed);
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.unscaledDeltaTime;
 
             if (timeElapsed / LerpDuration >= 1) // if reach button state 1
             {
@@ -186,7 +186,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
                 new Vector3(FrameXBoundary.Item2 - (btRect.rect.width / 2) - RightMargin, SlideButton.transform.localPosition.y, SlideButton.transform.localPosition.z),
                 timeElapsed / LerpDuration);
             BGFading.color = new Color(BGFading.color.r, BGFading.color.g, BGFading.color.b, timeElapsed / LerpDuration);
-            timeElapsed -= Time.deltaTime;
+            timeElapsed -= Time.unscaledDeltaTime;
 
             if (timeElapsed / LerpDuration <= 0) // if reach 0 button state
             {

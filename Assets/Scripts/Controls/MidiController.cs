@@ -18,13 +18,13 @@ public class MidiController : MonoBehaviour, IController
     private bool _isEnabled = false;
     public bool IsEnabled => _isEnabled;
 
-    private List<ControllerNote> _notesDown = new List<ControllerNote>();
+    private List<ControllerNote> _notesDown = new();
     public List<ControllerNote> NotesDown => _notesDown;
 
-    private List<ControllerNote> _notesUp = new List<ControllerNote>();
+    private List<ControllerNote> _notesUp = new();
     public List<ControllerNote> NotesUp => _notesUp;
 
-    private List<ControllerNote> _notes = new List<ControllerNote>();
+    private List<ControllerNote> _notes = new();
     public List<ControllerNote> Notes => _notes;
 
     private PianoNote _higherNote;
@@ -40,13 +40,13 @@ public class MidiController : MonoBehaviour, IController
     public PianoNote HigherNoteWithOffset => HigherNote + C4Offset;
     public PianoNote LowerNoteWithOffset => LowerNote + C4Offset;
 
-    private List<ControllerNote> _notesWithOffset = new List<ControllerNote>();
+    private List<ControllerNote> _notesWithOffset = new();
     public List<ControllerNote> NotesWithOffset => _notesWithOffset;
 
-    private List<ControllerNote> _notesDownWithOffset = new List<ControllerNote>();
+    private List<ControllerNote> _notesDownWithOffset = new();
     public List<ControllerNote> NotesDownWithOffset => _notesDownWithOffset;
 
-    private List<ControllerNote> _notesUpWithOffset = new List<ControllerNote>();
+    private List<ControllerNote> _notesUpWithOffset = new();
     public List<ControllerNote> NotesUpWithOffset => _notesUpWithOffset;
 
     private string _label;
@@ -77,7 +77,7 @@ public class MidiController : MonoBehaviour, IController
 
     private MidiConfigurationHelper _configurationHelper;
 
-    private List<ControllerType> _midiControllerTypeList = new List<ControllerType>()
+    private List<ControllerType> _midiControllerTypeList = new()
     {
         ControllerType.MIDI,
         ControllerType.KeyboardAndMidi,
@@ -173,16 +173,16 @@ public class MidiController : MonoBehaviour, IController
         // go.transform.SetParent(canvas.transform);
         _configurationHelper = go.GetComponent<MidiConfigurationHelper>();
         _configurationHelper.ConfigurationEnded += Config_ConfigurationEnded;
-        _configurationHelper.ConfigurationDestroyed += _configurationHelper_ConfigurationDestroyed;
+        _configurationHelper.ConfigurationDestroyed += ConfigurationHelper_ConfigurationDestroyed;
 
         _configurationHelper.Initialize(this, newDevice);
 
         return go;
     }
 
-    private void _configurationHelper_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
+    private void ConfigurationHelper_ConfigurationDestroyed(object sender, GameObjectEventArgs e)
     {
-        _configurationHelper.ConfigurationDestroyed -= _configurationHelper_ConfigurationDestroyed;
+        _configurationHelper.ConfigurationDestroyed -= ConfigurationHelper_ConfigurationDestroyed;
 
         ConfigurationDestroyed?.Invoke(sender, e);
     }
@@ -219,7 +219,7 @@ public class MidiController : MonoBehaviour, IController
         }
         else
         {
-            Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_MENU_MIDI_CUSTOM_TOUCHES);
+            Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_MENU_MIDI_CUSTOM_TOUCHES, new List<string>() { LowerNote.ToString(), HigherNote.ToString() });
         }
     }
 }

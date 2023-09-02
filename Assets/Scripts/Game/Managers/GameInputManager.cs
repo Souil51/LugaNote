@@ -45,7 +45,7 @@ public class GameInputManager : MonoBehaviour
                 // Store notes pressed
                 foreach (var note in GameController.Instance.Controller.NotesDownWithOffset)
                 {
-                    Debug.Log("Adding " + note.Note + " note in buffer");
+                    //Debug.Log("Adding " + note.Note + " note in buffer");
                     var noteToAdd = note;
 
                     // For interval "guess name" mode, the notes in NotesDown/UpWithOffset are A0 and (A0 + interval name)
@@ -79,7 +79,7 @@ public class GameInputManager : MonoBehaviour
                 // If new note in buffer, check if one note is wrong
                 if (_noteBuffer.Count <= maxNoteCount && _noteBuffer.Count > 0 && bufferChanged)
                 {
-                    Debug.Log("Low : " + firstNotes.Select(x => x.PianoNote).Min() + " - High : " + firstNotes.Select(x => x.PianoNote).Max());
+                    //Debug.Log("Low : " + firstNotes.Select(x => x.PianoNote).Min() + " - High : " + firstNotes.Select(x => x.PianoNote).Max());
                     // Debug.Log("Buffer if : " + _noteBuffer[0].Note + " - " + _noteBuffer[1].Note);
 
                     var firstPianoNotes = firstNotes.Select(x => x.PianoNote).ToList();
@@ -112,7 +112,25 @@ public class GameInputManager : MonoBehaviour
                     }
                     else if (_noteBuffer.Count == maxNoteCount) // Else if buffer in full -> good guess
                     {
-                        firstNotes.Where(x => x.PianoNote != _noteBuffer.Select(x => x.Note).Last()).ToList().ForEach(x => SoundManager.PlayNote(x.PianoNote));
+                        // PlaySound for all note that are not the last note played (buffered)
+                        // To get the interval/chord sound when it's a good guess
+                        var notesToPlay = new List<Note>();
+
+                        foreach(var note in firstNotes)
+                        {
+                            var lastBufferedNote = _noteBuffer.Last();
+                            bool replaceNote = lastBufferedNote.IsReplaceableByDefault || GameController.Instance.GameReplacementMode;
+
+                            if ((!replaceNote && note.PianoNote != lastBufferedNote.Note)
+                                || (replaceNote && note.PianoNoteForReplaceValue != lastBufferedNote.PianoNoteForReplaceValue))
+                            {
+                                notesToPlay.Add(note);
+                            }
+                        }
+
+                        notesToPlay.ForEach(x => SoundManager.PlayNote(x.PianoNote));
+
+                        // Good guess
                         firstNotes.ForEach(x => x.ShowGoodGuess());
                         guessValue = true;
                     }
