@@ -298,7 +298,7 @@ namespace MidiJack
 #endif
                     if (Application.isPlaying)
                     {
-                        MidiStateUpdater.CreateGameObject(
+                        MidiStateUpdater.CreateGameObject( 
                             new MidiStateUpdater.Callback(_instance.Update),
                             new MidiStateUpdater.DeviceCallback(_instance.DeviceCallback));
 

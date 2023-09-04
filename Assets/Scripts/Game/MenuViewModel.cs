@@ -109,8 +109,11 @@ public class MenuViewModel : ViewModelBase
 
     public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
     public bool IsGuessNameModeVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note;
+    public bool IsGuessNameCompatibilityVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note && IsMIDIDeviceConnected;
     public bool IsGuessNameIntervalVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Interval;
     public bool IsGuessNameChordVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
+
+    public bool IsReplacementModeVisible => IsMIDIDeviceConnected;
 
     public List<string> InfoText_Variables1 { get => _infoText_Variables; set => _infoText_Variables = value; }
 
@@ -282,6 +285,9 @@ public class MenuViewModel : ViewModelBase
     public void UpdateMidiConnection()
     {
         IsMIDIDeviceConnected = MenuController.Instance.Controller.IsConfigurable && MenuController.Instance.IsMidiConnected();
+        OnPropertyChanged(nameof(IsMIDIDeviceConnected));
+        OnPropertyChanged(nameof(IsGuessNameModeVisible));
+        OnPropertyChanged(nameof(IsReplacementModeVisible));
     }
 
     private void Info_Disappeared(object sender, System.EventArgs e)

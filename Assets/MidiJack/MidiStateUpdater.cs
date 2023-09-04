@@ -66,12 +66,13 @@ namespace MidiJack
 
         void Update()
         {
-            if (_started && _deviceCoroutine == null)
+            if (_started && _deviceCoroutine == null && _deviceCallback != null)
             {
                 StartDeviceCoroutine();
             }
 
-            _callback();
+            if(_callback != null)
+                _callback();
         }
 
         void StartDeviceCoroutine()
