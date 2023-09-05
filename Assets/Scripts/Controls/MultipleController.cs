@@ -1,3 +1,4 @@
+using Assets.Scripts.Controls;
 using Assets.Scripts.Game.Model;
 using Assets.Scripts.Game.Save;
 using Assets.Scripts.Utils;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 using UnityEditor.Hardware;
 using UnityEngine;
 
-public class MultipleController : MonoBehaviour, IController
+public class MultipleController : MonoBehaviour, IControllerWithUI
 {
     public bool IsEnabled => true;
 

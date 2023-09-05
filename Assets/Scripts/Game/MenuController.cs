@@ -202,6 +202,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             _selectedLevel = gameMode.Level;
             _withAccidental = gameMode.WithRandomAccidental;
             _withInversion = gameMode.WithInversion;
+            _guessName = gameMode.GuessName;
         }
 
         _replacementMode = replacementMode;

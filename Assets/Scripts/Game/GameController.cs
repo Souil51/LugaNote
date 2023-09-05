@@ -11,6 +11,7 @@ using UnityEngine;
 using DG.Tweening;
 using Assets.Scripts.Game.Save;
 using MidiJack;
+using Assets.Scripts.Controls;
 
 /// <summary>
 /// 
@@ -245,6 +246,20 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if (State == GameState.Starting && newState == GameState.Started)
         {
+            if (Controller is IControllerWithUI controllerWithUI)
+            {
+                if (GameMode.GuessName)
+                {
+                    controllerWithUI.ChangeMode(GetVisualModeFromGameMode());
+                    controllerWithUI.GenerateUI();
+                }
+                else
+                {
+                    controllerWithUI.ChangeMode(VisualControllerMode.Classic);
+                    controllerWithUI.GenerateUI();
+                }
+            }
+
             _controller.ShowControllerUI();
 
             TimeScaleManager.UnpauseGame();
@@ -431,6 +446,17 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         ChangeState(GameState.Starting);
         ChangeState(GameState.Started);
     }
+
+    private VisualControllerMode GetVisualModeFromGameMode()
+    {
+        if (_gameMode.IntervalMode == IntervalMode.Interval)
+            return VisualControllerMode.IntervalName;
+        else if (_gameMode.IntervalMode == IntervalMode.Chord)
+            return VisualControllerMode.ChordName;
+
+        return VisualControllerMode.Classic;
+    }
+
     #endregion
 
     #region Coroutines

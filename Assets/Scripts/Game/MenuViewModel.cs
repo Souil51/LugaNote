@@ -248,6 +248,7 @@ public class MenuViewModel : ViewModelBase
             LevelButtons.SelectButton((int)gameMode.Level);
             AccidentalSwitch.InitialState(gameMode.WithRandomAccidental);
             InversionSwitch.InitialState(gameMode.WithInversion);
+            GuessNameSwitch.InitialState(gameMode.GuessName);
         }
         
         //ReplacementButtons.SelectButton(replacementMode ? 1 : 0);

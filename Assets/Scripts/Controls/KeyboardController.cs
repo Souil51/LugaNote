@@ -181,12 +181,12 @@ public class KeyboardController : MonoBehaviour, IController
 
     public void ShowControllerUI()
     {
-        // Do nothing (qwerty / azerty handle here ?)
+        // Do nothing (qwerty / azerty handle here ?, show layout or touhc pressed ?)
     }
 
     public void HideControllerUI()
     {
-        // Do nothing (qwerty / azerty handle here ?)
+        // Do nothing (qwerty / azerty handle here ?, show layout or touhc pressed ?)
     }
 
     public async Task UpdateLabel()

@@ -1,3 +1,4 @@
+using Assets.Scripts.Controls;
 using Assets.Scripts.Game.Model;
 using Assets.Scripts.Utils;
 using DataBinding.Core;
@@ -11,8 +12,9 @@ using UnityEditor.Experimental.GraphView;
 using UnityEditor.Hardware;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class VisualController : MonoBehaviour, IController
+public class VisualController : MonoBehaviour, IControllerWithUI
 {
     public bool IsEnabled => true;
 
@@ -292,7 +294,10 @@ public class VisualController : MonoBehaviour, IController
 
         float spaceBetween = 5f;
         float currentX = -(totalWidth / 4) - (buttonsCount * spaceBetween / 2);
-        float startingY = -(rectTmpButton.sizeDelta.x / 4);
+        float startingY = -(rectTmpButton.sizeDelta.x / 4) + 10f;
+
+        var startColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_ULTRALIGHT_RED);
+        float colorStep = 0.033f;
 
         // Destroy the 2 temp prefabs
         Destroy(goTmpButton);
@@ -321,6 +326,9 @@ public class VisualController : MonoBehaviour, IController
             // Add the button down and button up event here because UI Button only have Click event
             // But we want to know when button is up or held
             var buttonEventTrigger = goButtonNote.GetComponent<EventTrigger>();
+
+            var image = goButtonNote.GetComponent<Image>();
+            image.color = new Color(startColor.r, startColor.g - (index * colorStep), startColor.b - (index * colorStep));
 
             // PointerDown and PointerUp just fill list to track which button is pressed and which is not
             // PianoNote list used by the game are managed in the update method, like other controllers
@@ -387,6 +395,9 @@ public class VisualController : MonoBehaviour, IController
         float currentX = startingX;
         float currentY = startingY;
 
+        var colorMajor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_ULTRALIGHT_GREEN);
+        var colorMinor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_ULTRALIGHT_BLUE);
+
         // Destroy the 2 temp prefabs
         Destroy(goTmpButton);
 
@@ -435,6 +446,8 @@ public class VisualController : MonoBehaviour, IController
                 // But we want to know when button is up or held
                 var buttonEventTrigger = goButtonNote.GetComponent<EventTrigger>();
 
+                var image = goButtonNote.GetComponent<Image>();
+                image.color = tonality == Tonality.Major ? colorMajor : colorMinor;
                 // PointerDown and PointerUp just fill list to track which button is pressed and which is not
                 // PianoNote list used by the game are managed in the update method, like other controllers
                 // It's possible to handle this in callbacks but easier to do like this others controllers

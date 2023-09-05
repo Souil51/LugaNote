@@ -70,6 +70,10 @@ public static class StaticResource
 
     public static string COLOR_HEX_LIGHT_BLUE => "0984E3";
 
+    public static string COLOR_HEX_ULTRALIGHT_GREEN => "B7FFB4";
+    public static string COLOR_HEX_ULTRALIGHT_BLUE => "B9E2FF";
+    public static string COLOR_HEX_ULTRALIGHT_RED => "FFEBEB";
+    
     public static int PIANO_KEY_COUNT => 88;
 
     public static string GET_PREFAB_NOTE(bool withLine, Accidental accidental)
