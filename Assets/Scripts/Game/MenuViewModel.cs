@@ -190,7 +190,7 @@ public class MenuViewModel : ViewModelBase
     public void InitializeViewModel()
     {
         InitialiserNotifyPropertyChanged();
-        IsMidiConfigurationVisible = true; // MenuController.Instance.IsMidiConfigurationVisible;
+        IsMidiConfigurationVisible = MenuController.Instance.IsMidiConfigurationVisible;
     }
 
     public void ShowScorePanel(List<LeaderboardScore> scores)

@@ -1,10 +1,7 @@
 using Guid = System.Guid;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 /// <summary>
 /// Staff script

@@ -53,23 +53,33 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         btRect = (RectTransform)SlideButton.transform;
 
         FrameXBoundary = (Frame.transform.localPosition.x - (FrameRect.rect.width / 2),
-            Frame.transform.localPosition.x + (FrameRect.rect.width / 2));
+        Frame.transform.localPosition.x + (FrameRect.rect.width / 2));
+
+        timeElapsed = LerpDuration;
     }
 
     void SwitchOn()
     {
+        Debug.Log("Switch ON");
+        Debug.Log(SwitchState);
+        Debug.Log(ButtonSwitchState);
         if (SwitchState == 0)
         {
             SwitchState = 1;
+            timeElapsed = 0;
             ValueChanged?.Invoke(this, new GenericEventArgs<bool>(true));
         }
     }
 
     void SwitchOff()
     {
+        Debug.Log("Switch OFF");
+        Debug.Log(SwitchState);
+        Debug.Log(ButtonSwitchState);
         if (SwitchState == 1)
         {
             SwitchState = 0;
+            timeElapsed = LerpDuration;
             ValueChanged?.Invoke(this, new GenericEventArgs<bool>(false));
         }
     }
@@ -166,7 +176,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
                 timeElapsed / LerpDuration);
             BGFading.color = new Color(BGFading.color.r, BGFading.color.g, BGFading.color.b, timeElapsed);
             timeElapsed += Time.unscaledDeltaTime;
-
+            Debug.Log(timeElapsed + " | " + Time.unscaledDeltaTime);
             if (timeElapsed / LerpDuration >= 1) // if reach button state 1
             {
                 ButtonSwitchState = 1;
@@ -187,7 +197,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
                 timeElapsed / LerpDuration);
             BGFading.color = new Color(BGFading.color.r, BGFading.color.g, BGFading.color.b, timeElapsed / LerpDuration);
             timeElapsed -= Time.unscaledDeltaTime;
-
+            Debug.Log(timeElapsed + " | " + Time.unscaledDeltaTime);
             if (timeElapsed / LerpDuration <= 0) // if reach 0 button state
             {
                 ButtonSwitchState = 0;

@@ -321,6 +321,11 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ChangeScene();
     }
 
+    public void UI_Quit()
+    {
+        Application.Quit();
+    }
+
     private void ChangeScene()
     {
         var gameMode = GameModeManager.GetGameMode(_gameModeType, _intervalMode, _selectedLevel, _guessName, _withAccidental, _withInversion);
@@ -338,6 +343,11 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     {
         if (CurrentState == MenuState.Idle)
             ChangeState(MenuState.Configuration);
+    }
+
+    public void UI_ButtonClick()
+    {
+        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_CLICK, 1f);
     }
 
     #endregion

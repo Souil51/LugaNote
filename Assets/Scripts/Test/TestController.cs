@@ -1,7 +1,6 @@
 using DataBinding.Core;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Localization;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;

@@ -24,7 +24,7 @@ public class OneShotSound : MonoBehaviour
         _audioSource.volume = volume;
         _audioSource.Play();
 
-        yield return new WaitForSecondsRealtime(clip.length);
+        yield return new WaitForSecondsRealtime(clip.length + 0.1f);
 
         Destroy(this.gameObject);
     }

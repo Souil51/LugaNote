@@ -6,7 +6,6 @@ using DataBinding.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEditor.Hardware;
 using UnityEngine;
 
 public class MultipleController : MonoBehaviour, IControllerWithUI
@@ -260,7 +259,7 @@ public class MultipleController : MonoBehaviour, IControllerWithUI
     {
         Label = "";
 
-        foreach(var controller in _controllers)
+        foreach(var controller in _controllers.Where(x => x.IsEnabled))
         {
             await controller.UpdateLabel();
 
