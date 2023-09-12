@@ -44,6 +44,8 @@ public class MenuViewModel : ViewModelBase
 
     public event GenericEventHandler<GenericEventArgs<GameModeType>> SelectedKeyChanged;
 
+    public event GenericEventHandler<EventArgs> QuitClicked;
+
     private bool _isInfoVisible = false;
     public bool IsInfoVisible
     {
@@ -105,6 +107,13 @@ public class MenuViewModel : ViewModelBase
     {
         get => _lessThan61Keys;
         private set => SetProperty(ref _lessThan61Keys, value);
+    }
+
+    private bool _menuQuitVisible;
+    public bool MenuQuitVisible
+    {
+        get => _menuQuitVisible;
+        private set => SetProperty(ref _menuQuitVisible, value);
     }
 
     public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
@@ -312,6 +321,12 @@ public class MenuViewModel : ViewModelBase
             IsMidiConfigurationVisible = true; // MenuController.Instance.IsMidiConfigurationVisible;
         }
     }
+
+    public void UI_OpenMenuClick() => MenuQuitVisible = true;
+
+    public void UI_Quit() => QuitClicked?.Invoke(this, EventArgs.Empty);
+
+    public void UI_CancelQuit() => MenuQuitVisible = false;
 
     protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
     {

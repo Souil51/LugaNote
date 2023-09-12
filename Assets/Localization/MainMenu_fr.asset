@@ -210,6 +210,18 @@ MonoBehaviour:
     m_Localized: clavier tactile
     m_Metadata:
       m_Items: []
+  - m_Id: 7681962322493440
+    m_Localized: Quitter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7682019117563904
+    m_Localized: Quitter le jeu ?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7682081159708672
+    m_Localized: Voulez-vous quitter ?
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

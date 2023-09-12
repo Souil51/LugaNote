@@ -295,6 +295,11 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         ConfigurationEnded?.Invoke(this, new MidiConfigurationReturn(true, _higherNote, _lowerNote));
         _controller.NoteDown -= Controller_NoteDown;
     }
+
+    public void UI_ButtonClick()
+    {
+        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_CLICK, 1f);
+    }
 }
 
 public class MidiConfigurationReturn : EventArgs

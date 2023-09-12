@@ -209,6 +209,18 @@ MonoBehaviour:
     m_Localized: touch keyboard
     m_Metadata:
       m_Items: []
+  - m_Id: 7681962322493440
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7682019117563904
+    m_Localized: Quit the game ?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7682081159708672
+    m_Localized: Do you want to leave ?
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

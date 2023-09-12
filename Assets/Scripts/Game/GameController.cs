@@ -583,5 +583,10 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         yield return new WaitForSecondsRealtime(.25f);
         Transition.Open_2();
     }
+
+    public void UI_ButtonClick()
+    {
+        SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_CLICK, 1f);
+    }
     #endregion
 }

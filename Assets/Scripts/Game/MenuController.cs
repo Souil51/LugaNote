@@ -42,7 +42,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private string _controllerLabel = "MIDI controller (88 keys)";
     public string ControllerLabel => _controllerLabel;
 
-    public bool IsMidiConfigurationVisible => _controller.IsConfigurable;
+    public bool IsMidiConfigurationVisible => true; // _controller.IsConfigurable;
 
     private bool _withAccidental = false;
     public bool WithAccidental => _withAccidental;
@@ -94,6 +94,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.SelectedIntervalChanged += ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged += ViewModel_SelectedKeyChanged;
         ViewModel.SelectedGuessNameChanged += ViewModel_SelectedGuessNameChanged;
+        ViewModel.QuitClicked += ViewModel_QuitClicked;
 
         MidiMaster.deviceConnectedDelegate += MidiMaster_DeviceConnected;
         MidiMaster.deviceDisconnectedDelegate += MidiMaster_DeviceDisconnected;
@@ -114,6 +115,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         ViewModel.SelectedIntervalChanged -= ViewModel_SelectedIntervalChanged;
         ViewModel.SelectedKeyChanged -= ViewModel_SelectedKeyChanged;
         ViewModel.SelectedGuessNameChanged -= ViewModel_SelectedGuessNameChanged;
+        ViewModel.QuitClicked -= ViewModel_QuitClicked;
 
         MidiMaster.deviceConnectedDelegate -= MidiMaster_DeviceConnected;
         MidiMaster.deviceDisconnectedDelegate -= MidiMaster_DeviceDisconnected;
@@ -303,6 +305,16 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             UpdateFooter();
         }
     }
+
+    private void ViewModel_QuitClicked(object sender, EventArgs e)
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     private void UpdateFooter()
     {
         _controllerLabel = _controller.Label;
@@ -319,11 +331,6 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
         if (CurrentState != MenuState.Idle) return;
 
         ChangeScene();
-    }
-
-    public void UI_Quit()
-    {
-        Application.Quit();
     }
 
     private void ChangeScene()

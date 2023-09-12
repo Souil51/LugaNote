@@ -203,6 +203,18 @@ MonoBehaviour:
     m_Key: controller_label_visual
     m_Metadata:
       m_Items: []
+  - m_Id: 7681962322493440
+    m_Key: menu_quit_confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7682019117563904
+    m_Key: menu_quit_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7682081159708672
+    m_Key: menu_quit_body
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

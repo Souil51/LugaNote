@@ -626,6 +626,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8201509141932385875}
+        m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
+        m_MethodName: UI_ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8201509140264532567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1251,6 +1263,18 @@ MonoBehaviour:
       - m_Target: {fileID: 8201509141932385875}
         m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
         m_MethodName: Touches61_Click
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8201509141932385875}
+        m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
+        m_MethodName: UI_ButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2145,6 +2169,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8201509141932385875}
+        m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
+        m_MethodName: UI_ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8201509140725063916
 GameObject:
   m_ObjectHideFlags: 0
@@ -2660,6 +2696,18 @@ MonoBehaviour:
       - m_Target: {fileID: 8201509141932385875}
         m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
         m_MethodName: Custom_Click
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8201509141932385875}
+        m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
+        m_MethodName: UI_ButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3993,6 +4041,18 @@ MonoBehaviour:
       - m_Target: {fileID: 8201509141932385875}
         m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
         m_MethodName: Touches88_Click
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8201509141932385875}
+        m_TargetAssemblyTypeName: MidiConfigurationHelper, Assembly-CSharp
+        m_MethodName: UI_ButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
