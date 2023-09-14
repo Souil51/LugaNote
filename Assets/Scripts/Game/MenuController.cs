@@ -42,7 +42,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     private string _controllerLabel = "MIDI controller (88 keys)";
     public string ControllerLabel => _controllerLabel;
 
-    public bool IsMidiConfigurationVisible => true; // _controller.IsConfigurable;
+    public bool IsMidiConfigurationVisible => _controller.IsConfigurable;
 
     private bool _withAccidental = false;
     public bool WithAccidental => _withAccidental;
