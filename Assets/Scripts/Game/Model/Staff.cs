@@ -2,6 +2,7 @@ using Guid = System.Guid;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Staff script
@@ -11,6 +12,7 @@ public class Staff : MonoBehaviour
 {
     [SerializeField] private List<LinePositionIndicator> Indicators = new();
     [SerializeField] private Clef Clef;
+    [SerializeField] private SpriteRenderer Sprite;
 
     public Clef StaffClef => Clef;
 
@@ -49,9 +51,10 @@ public class Staff : MonoBehaviour
         InitializeClef();
 
         var firstLine = Lines[0];
-        _startingPointPosition = firstLine.Width / 2;
+        _startingPointPosition =  firstLine.Width / 2;
         _disappearPointPosition = -(firstLine.Width / 2f);
         _endingPointPosition = _disappearPointPosition + SpriteWidth;
+        Sprite.transform.position = transform.position + new Vector3(-2f, 0f, 0f);
     }
 
     /// <summary>

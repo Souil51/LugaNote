@@ -4,9 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Splines.Interpolators;
 
 public class GameViewModel : ViewModelBase
 {
+    [SerializeField] private Color SliderStartColor;
+    [SerializeField] private Color SliderEndColor;
+
     public event EventHandler PlayAgain;
     public event EventHandler NavigateToMenu;
     public event EventHandler Resume;
@@ -85,6 +89,20 @@ public class GameViewModel : ViewModelBase
         set => SetProperty(ref _uIButtonsVisible, value);
     }
 
+    private float _uiSlider;
+    public float UISlider
+    {
+        get { return _uiSlider; }
+        set => SetProperty(ref _uiSlider, value);
+    }
+
+    private Color _uiSliderColor;
+    public Color UISliderColor
+    {
+        get { return _uiSliderColor; }
+        set => SetProperty(ref _uiSliderColor, value);
+    }
+
     #endregion
 
     private void Awake()
@@ -97,7 +115,6 @@ public class GameViewModel : ViewModelBase
         InitialiserNotifyPropertyChanged();
 
         UIButtonVisible = GameController.Instance.HasControllerUI;
-        // UpdateVisualKeysVisibilityText();
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -106,12 +123,19 @@ public class GameViewModel : ViewModelBase
         {
             Points = GameController.Instance.Points;
         }
-        else if(e.PropertyName == nameof(GameController.Instance.TimeLeft))
+        else if(e.PropertyName == nameof(GameController.Instance.TimeLeftInSeconds))
         {
-            if(GameController.Instance.TimeLeft == 0)
-                TimeLeft = (((int)(GameController.Instance.TimeLeft))).ToString();
+            if(GameController.Instance.TimeLeftInSeconds == 0)
+                TimeLeft = (((int)(GameController.Instance.TimeLeftInSeconds))).ToString();
             else
-                TimeLeft = (((int)(GameController.Instance.TimeLeft)) + 1).ToString();
+                TimeLeft = (((int)(GameController.Instance.TimeLeftInSeconds)) + 1).ToString();
+        }
+        else if (e.PropertyName == nameof(GameController.Instance.TimeLeft))
+        {
+            UISlider = 1f - (GameController.Instance.TimeLeft / GameController.Instance.Duration);
+
+            float colorLerpValue = UISlider <= 0.75f ? 0f : 4 * (UISlider - 0.75f);
+            UISliderColor = Color.Lerp(SliderStartColor, SliderEndColor, colorLerpValue);
         }
         else if (e.PropertyName == nameof(GameController.Instance.State))
         {

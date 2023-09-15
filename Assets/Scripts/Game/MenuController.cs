@@ -245,7 +245,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
     {
-        Screen.orientation = ScreenOrientation.LandscapeRight;
+        //Screen.orientation = ScreenOrientation.LandscapeRight;
 
         if (e.Scene.name == StaticResource.SCENE_MAIN_MENU)
         {

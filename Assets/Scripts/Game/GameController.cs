@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] private float OneStaffScale;
     [SerializeField] private float TwoStaffScale;
     [SerializeField] private float StaffSeparatorYPosition;
+    [SerializeField] private float GameDuration;
     
     private GameMode _gameMode;
     public GameMode GameMode => _gameMode;
@@ -68,19 +69,34 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
+    private float _timeLeftInSeconds;
+    public float TimeLeftInSeconds
+    {
+        get => _timeLeftInSeconds;
+        private set
+        {
+            bool updateString = (int)value != (int)_timeLeftInSeconds || value > _timeLeftInSeconds;
+            _timeLeftInSeconds = value;
+
+            if(updateString)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeLeftInSeconds)));
+        }
+    }
+
     private float _timeLeft;
     public float TimeLeft
     {
         get => _timeLeft;
         private set
         {
-            bool updateString = (int)value != (int)_timeLeft || value > _timeLeft;
             _timeLeft = value;
-
-            if(updateString)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeLeft)));
+            TimeLeftInSeconds = value;
+            
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeLeft)));
         }
     }
+
+    public float Duration => GameDuration;
 
     private int _points = 0;
     public int Points
@@ -160,7 +176,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            _gameMode = new GameMode(1, GameModeType.Treble, IntervalMode.Interval, Level.C3_C6, true, false, false);
+            _gameMode = new GameMode(1, GameModeType.Treble, IntervalMode.Note, Level.C4, true, false, false);
 
             if (Controller is MultipleController multipleController)
             {
@@ -214,7 +230,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         if(State == GameState.Started)
             TimeLeft -= Time.unscaledDeltaTime;
 
-        if(State == GameState.Started && TimeLeft <= 0 ) // Stop de game and show end screen
+        if(State == GameState.Started && TimeLeftInSeconds <= 0 ) // Stop de game and show end screen
         {
             ChangeState(GameState.Ended);
         }
@@ -237,7 +253,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
             IsGameStarted = false;
 
             Points = 0;
-            TimeLeft = 30f;
+            TimeLeftInSeconds = TimeLeft = GameDuration;
 
             if (_notesCoroutine != null)
                 StopCoroutine(_notesCoroutine);
@@ -273,7 +289,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         {
             _controller.HideControllerUI();
 
-            TimeLeft = 0f;
+            TimeLeftInSeconds = 0f;
             IsGameEnded = true;
             TimeScaleManager.PauseGame(0f);
 
@@ -347,7 +363,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
     #region Events callbacks
     private void GameSceneManager_SceneLoaded(object sender, SceneEventArgs e)
     {
-        Screen.orientation = ScreenOrientation.LandscapeRight;
+        //Screen.orientation = ScreenOrientation.LandscapeRight;
 
         if (e.Scene.name == StaticResource.SCENE_MAIN_SCENE)
         {

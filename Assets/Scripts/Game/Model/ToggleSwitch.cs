@@ -60,9 +60,9 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
 
     void SwitchOn()
     {
-        Debug.Log("Switch ON");
-        Debug.Log(SwitchState);
-        Debug.Log(ButtonSwitchState);
+        // Debug.Log("Switch ON");
+        // Debug.Log(SwitchState);
+        // Debug.Log(ButtonSwitchState);
         if (SwitchState == 0)
         {
             SwitchState = 1;
@@ -73,9 +73,9 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
 
     void SwitchOff()
     {
-        Debug.Log("Switch OFF");
-        Debug.Log(SwitchState);
-        Debug.Log(ButtonSwitchState);
+        // Debug.Log("Switch OFF");
+        // Debug.Log(SwitchState);
+        // Debug.Log(ButtonSwitchState);
         if (SwitchState == 1)
         {
             SwitchState = 0;
@@ -176,7 +176,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
                 timeElapsed / LerpDuration);
             BGFading.color = new Color(BGFading.color.r, BGFading.color.g, BGFading.color.b, timeElapsed);
             timeElapsed += Time.unscaledDeltaTime;
-            Debug.Log(timeElapsed + " | " + Time.unscaledDeltaTime);
+            // Debug.Log(timeElapsed + " | " + Time.unscaledDeltaTime);
             if (timeElapsed / LerpDuration >= 1) // if reach button state 1
             {
                 ButtonSwitchState = 1;
@@ -197,7 +197,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler, IPointerDownHan
                 timeElapsed / LerpDuration);
             BGFading.color = new Color(BGFading.color.r, BGFading.color.g, BGFading.color.b, timeElapsed / LerpDuration);
             timeElapsed -= Time.unscaledDeltaTime;
-            Debug.Log(timeElapsed + " | " + Time.unscaledDeltaTime);
+            // Debug.Log(timeElapsed + " | " + Time.unscaledDeltaTime);
             if (timeElapsed / LerpDuration <= 0) // if reach 0 button state
             {
                 ButtonSwitchState = 0;
