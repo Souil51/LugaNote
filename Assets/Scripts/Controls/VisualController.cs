@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -75,6 +76,10 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
     private GameObject _currentButtonsCanvas = null;
 
+    private List<PianoNote> _notesList = new List<PianoNote>();
+    private List<List<PianoNote>> _intervalsList = new List<List<PianoNote>>();
+    private List<PianoChord> _chordsList = new List<PianoChord>();
+
     // These contains notes pressed based on Buttons callback on PointerDown and PointerUp
     // As this is note like Input.Key and button don't have "KeyDown" (PointerDown trigger each frame if button is pressed)
     // I use list to track which button is down or not
@@ -128,6 +133,11 @@ public class VisualController : MonoBehaviour, IControllerWithUI
             NoteDown?.Invoke(this, new ControllerNoteEventArgs(_notesDown[0]));
 
         _lastUpdateButtonsNoteDown = new List<PianoNote>(_buttonsNoteDown);
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            // StartCoroutine(Co_Test());
+        }
     }
 
     private void Awake()
@@ -177,7 +187,9 @@ public class VisualController : MonoBehaviour, IControllerWithUI
     /// </summary>
     private GameObject GenerateButtons()
     {
-        if(_currentButtonsCanvas != null)
+        _notesList.Clear();
+
+        if (_currentButtonsCanvas != null)
             Destroy(_currentButtonsCanvas);
 
         // UI Canvas that will contains all buttons
@@ -221,6 +233,7 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
             string prefabName = MusicHelper.IsNatural(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
+            _notesList.Add(note);
             goButtonNote.transform.SetParent(btnPanel);
 
             var buttonTransform = goButtonNote.GetComponent<RectTransform>();
@@ -264,6 +277,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
     private GameObject GenerateButtonsIntervalsName()
     {
+        _intervalsList.Clear();
+
         if (_currentButtonsCanvas != null)
             Destroy(_currentButtonsCanvas);
 
@@ -309,6 +324,7 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
             string prefabName = StaticResource.PREFAB_NOTE_BUTTON;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
+            _intervalsList.Add(new List<PianoNote>() { baseNote, intervalNote });
             goButtonNote.transform.SetParent(btnPanel);
 
             var buttonTransform = goButtonNote.GetComponent<RectTransform>();
@@ -336,13 +352,17 @@ public class VisualController : MonoBehaviour, IControllerWithUI
             var pointerUp = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
             pointerUp.callback.AddListener((data) =>
             {
-                _buttonsNoteDown.Remove(baseNote);
-                _buttonsNoteDown.Remove(intervalNote);
+                _buttonsNoteDown.Clear(); // Clear buttons to be sure that we input only this interval
+
+                //_buttonsNoteDown.Remove(baseNote);
+                //_buttonsNoteDown.Remove(intervalNote);
             });
 
             var pointerDown = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerDown).FirstOrDefault();
             pointerDown.callback.AddListener((data) =>
             {
+                _buttonsNoteDown.Clear(); // Clear buttons to be sure that we input only this interval
+
                 if (!_buttonsNoteDown.Contains(baseNote))
                     _buttonsNoteDown.Add(baseNote);
 
@@ -360,6 +380,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
     private GameObject GenerateButtonsChordsName()
     {
+        _chordsList.Clear();
+
         if (_currentButtonsCanvas != null)
             Destroy(_currentButtonsCanvas);
 
@@ -408,7 +430,11 @@ public class VisualController : MonoBehaviour, IControllerWithUI
             // Generating text for minor and major
             var tonalityGo = Instantiate(new GameObject());
             var tonalityText = tonalityGo.AddComponent<TextMeshProUGUI>();
-            tonalityGo.AddComponent<CanvasRenderer>();
+
+            var canvasRenderer = tonalityGo.GetComponent<CanvasRenderer>();
+            if(canvasRenderer == null)
+                tonalityGo.AddComponent<CanvasRenderer>();
+
             tonalityText.text = tonality == Tonality.Major ? "Major" : "Minor";
             tonalityText.color = Color.black;
             tonalityText.verticalAlignment = VerticalAlignmentOptions.Middle;
@@ -428,6 +454,7 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
                 string prefabName = StaticResource.PREFAB_NOTE_BUTTON_SMALL;
                 GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
+                _chordsList.Add(chord);
                 goButtonNote.transform.SetParent(btnPanel);
 
                 var buttonTransform = goButtonNote.GetComponent<RectTransform>();
@@ -454,16 +481,20 @@ public class VisualController : MonoBehaviour, IControllerWithUI
                 var pointerUp = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerUp).FirstOrDefault();
                 pointerUp.callback.AddListener((data) =>
                 {
-                    foreach(var chordNote in chord.Notes)
-                    {
-                        var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
-                        _buttonsNoteDown.Remove(noteToAdd);
-                    }
+                    _buttonsNoteDown.Clear(); // clear to be sure we input only one chord at a time
+
+                    //foreach (var chordNote in chord.Notes)
+                    //{
+                    //    var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
+                    //    _buttonsNoteDown.Remove(noteToAdd);
+                    //}
                 });
 
                 var pointerDown = buttonEventTrigger.triggers.Where(x => x.eventID == EventTriggerType.PointerDown).FirstOrDefault();
                 pointerDown.callback.AddListener((data) =>
                 {
+                    _buttonsNoteDown.Clear(); // clear to be sure we input only one chord at a time
+
                     foreach (var chordNote in chord.Notes)
                     {
                         var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
@@ -494,5 +525,90 @@ public class VisualController : MonoBehaviour, IControllerWithUI
     public async Task UpdateLabel()
     {
         Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_CONTROLLER_LABEL_VISUAL);
+    }
+
+    private IEnumerator Co_Test()
+    {
+        Debug.Log("CLICK");
+
+        if (Mode == VisualControllerMode.Classic)
+        {
+            for (int j = 0; j < _notesList.Count; j++)
+            {
+                for (int i = 0; i < 30; i++)
+                {
+                    PianoNote note = _notesList[j];
+
+                    if (!_buttonsNoteDown.Contains(note))
+                    {
+                        _buttonsNoteDown.Add(note);
+                    }
+
+                    yield return new WaitForSecondsRealtime(0.1f);
+
+                    _buttonsNoteDown.Remove(note);
+
+                    yield return new WaitForSecondsRealtime(0.1f);
+                }
+            }
+        }
+        else if (Mode == VisualControllerMode.IntervalName)
+        {
+            List<PianoNote> notes = null;
+
+            Debug.Log("DEBUT TEST");
+            for (int j = 0; j < _intervalsList.Count; j++)
+            {
+                for (int i = 0; i < 30; i++)
+                {
+                    notes = _intervalsList[j];
+
+                    if (!_buttonsNoteDown.Contains(notes[0]))
+                        _buttonsNoteDown.Add(notes[0]);
+
+                    if (!_buttonsNoteDown.Contains(notes[1]))
+                        _buttonsNoteDown.Add(notes[1]);
+
+                    yield return new WaitForSecondsRealtime(0.1f);
+
+                    _buttonsNoteDown.Remove(notes[0]);
+                    _buttonsNoteDown.Remove(notes[1]);
+
+                    yield return new WaitForSecondsRealtime(0.1f);
+                }
+            }
+            Debug.Log("FIN TEST");
+        }
+        else
+        {
+            PianoChord chord = null;
+
+            Debug.Log("DEBUT TEST");
+            for (int j = 0; j < _chordsList.Count; j++)
+            {
+                for (int i = 0; i < 30; i++)
+                {
+                    chord = _chordsList[j];
+
+                    foreach (var chordNote in chord.Notes)
+                    {
+                        var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
+                        if (!_buttonsNoteDown.Contains(noteToAdd))
+                            _buttonsNoteDown.Add(noteToAdd);
+                    }
+
+                    yield return new WaitForSecondsRealtime(0.1f);
+
+                    foreach (var chordNote in chord.Notes)
+                    {
+                        var noteToAdd = (PianoNote)((int)chordNote + (int)PianoNote.A3);
+                        _buttonsNoteDown.Remove(noteToAdd);
+                    }
+
+                    yield return new WaitForSecondsRealtime(0.1f);
+                }
+            }
+            Debug.Log("FIN TEST");
+        }
     }
 }

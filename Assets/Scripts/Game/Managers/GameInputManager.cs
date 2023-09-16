@@ -102,6 +102,12 @@ public class GameInputManager : MonoBehaviour
                         }
                     }
 
+                    // Security to handle weird controller behaviour if clicking fast on multiple button in guessName mode
+                    if(GameController.Instance.GameMode.GuessName && _noteBuffer.Count != maxNoteCount)
+                    {
+                        oneBadNote = true;
+                    }
+
                     if (oneBadNote) // If one bad note -> bad guess
                     {
                         SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_BAD_GUESS, .4f);

@@ -176,16 +176,16 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            _gameMode = new GameMode(1, GameModeType.Treble, IntervalMode.Note, Level.C4, true, false, false);
+            _gameMode = new GameMode(1, GameModeType.TrebleBass, IntervalMode.Chord, Level.C4, true, false, false);
 
             if (Controller is MultipleController multipleController)
             {
-                multipleController.ChangeMode(VisualControllerMode.IntervalName);
+                multipleController.ChangeMode(VisualControllerMode.ChordName);
                 multipleController.GenerateUI();
             }
             else if (Controller is VisualController visualController)
             {
-                visualController.ChangeMode(VisualControllerMode.IntervalName);
+                visualController.ChangeMode(VisualControllerMode.ChordName);
                 visualController.GenerateUI();
             }
         }
