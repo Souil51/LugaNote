@@ -120,7 +120,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3732462510080
-    m_Localized: Not recommended with less than 61 keys
+    m_Localized: Recommended with less than 61 keys
     m_Metadata:
       m_Items: []
   - m_Id: 3836359614464
