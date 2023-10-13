@@ -146,6 +146,8 @@ public class MenuViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsGuessNameModeVisible));
         OnPropertyChanged(nameof(IsGuessNameIntervalVisible));
         OnPropertyChanged(nameof(IsGuessNameChordVisible));
+        OnPropertyChanged(nameof(IsGuessNameCompatibilityVisible));
+        OnPropertyChanged(nameof(LessThan61Keys));
 
         UpdateMidiConnection();
         UpdateDisplayedScores();
@@ -159,6 +161,8 @@ public class MenuViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsGuessNameModeVisible));
         OnPropertyChanged(nameof(IsGuessNameIntervalVisible));
         OnPropertyChanged(nameof(IsGuessNameChordVisible));
+        OnPropertyChanged(nameof(IsGuessNameCompatibilityVisible));
+        OnPropertyChanged(nameof(LessThan61Keys));
     }
 
     private void KeyButtons_SelectedButtonChanged(object sender, GenericEventArgs<int> e) => InvokeAndRefresh(sender, new GenericEventArgs<GameModeType>((GameModeType)e.Value), SelectedKeyChanged);
@@ -264,7 +268,7 @@ public class MenuViewModel : ViewModelBase
         ReplacementSwitch.InitialState(replacementMode);
     }
 
-    public void ShowInfo(string info, float duration = 2f, params string[] variables)
+    public void ShowInfo(string info, float duration = 3f, params string[] variables)
     {
         InfoText = info;
 
@@ -298,6 +302,8 @@ public class MenuViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsMIDIDeviceConnected));
         OnPropertyChanged(nameof(IsGuessNameModeVisible));
         OnPropertyChanged(nameof(IsReplacementModeVisible));
+        OnPropertyChanged(nameof(IsGuessNameCompatibilityVisible));
+        OnPropertyChanged(nameof(LessThan61Keys));
     }
 
     private void Info_Disappeared(object sender, System.EventArgs e)

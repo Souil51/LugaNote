@@ -193,7 +193,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             CurrentState = newState;
     }
 
-    private void ShowInfo(string info, float duration = 2f, params string[] variables) => ViewModel.ShowInfo(info, duration, variables);
+    private void ShowInfo(string info, float duration = 3f, params string[] variables) => ViewModel.ShowInfo(info, duration, variables);
 
     public void LoadGameMode(GameMode gameMode, bool replacementMode)
     {
@@ -228,10 +228,10 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
             else
             {
                 info = string.Format(StaticResource.LOCALIZATION_MENU_INFO_MIDI_CUSTOM_TOUCHES, _controller.HigherNote - _controller.LowerNote, _controller.LowerNote, _controller.HigherNote);
-                variablesList = new List<string>() { ((PianoNote)(_controller.HigherNote - _controller.LowerNote)).ToString(), _controller.LowerNote.ToString(), _controller.HigherNote.ToString() };
+                variablesList = new List<string>() { ((int)(_controller.HigherNote - _controller.LowerNote) + 1).ToString(), _controller.LowerNote.ToString(), _controller.HigherNote.ToString() };
             }
 
-            ShowInfo(info, 2f, variablesList.ToArray());
+            ShowInfo(info, 3f, variablesList.ToArray());
             Save save = SaveManager.Save;
             save.SetControllerData(ControllerFactory.Instance.GetCurrentType(), MidiMaster.GetDeviceName(), _controller.LowerNote, _controller.HigherNote);
             SaveManager.SaveGame();

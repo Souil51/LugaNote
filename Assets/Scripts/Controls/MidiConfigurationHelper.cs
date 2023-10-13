@@ -136,6 +136,9 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
     void Start()
     {
         InitialiserNotifyPropertyChanged();
+
+        LowerPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIME);
+        HigherPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_GRAY);
     }
 
     public void Initialize(IController controller, bool newDevice = false)
@@ -234,6 +237,9 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         {
             IsLowerNoteComplete = true;
             LowerPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_DARKGREEN);
+            HigherPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIME);
+
+            SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_CLICK);
 
             Debug.Log("Lower note configured : " + _lowerNote);
             stateChanged = true;
@@ -244,6 +250,8 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 
             IsHigherNoteComplete = true;
             HigherPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_DARKGREEN);
+
+            SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_CLICK);
 
             ConfirmInteractable = true;
             ConfirmTextColor = Color.white;

@@ -54,7 +54,7 @@ public class Staff : MonoBehaviour
         _startingPointPosition =  firstLine.Width / 2;
         _disappearPointPosition = -(firstLine.Width / 2f);
         _endingPointPosition = _disappearPointPosition + SpriteWidth;
-        Sprite.transform.position = transform.position + new Vector3(-2f, 0f, 0f);
+        Sprite.transform.position = transform.position; // + new Vector3(-2f, 0f, 0f);
     }
 
     /// <summary>

@@ -186,7 +186,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 44320645849088
-    m_Localized: "Clavieaar MIDI modifi\xE9 : {first} touches ({second} to {third})"
+    m_Localized: "Clavier MIDI modifi\xE9 : {first} touches ({second} to {third})"
     m_Metadata:
       m_Items:
       - rid: 8439659353169461251

@@ -529,7 +529,7 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
     private IEnumerator Co_Test()
     {
-        Debug.Log("CLICK");
+        // Debug.Log("CLICK");
 
         if (Mode == VisualControllerMode.Classic)
         {
@@ -556,7 +556,7 @@ public class VisualController : MonoBehaviour, IControllerWithUI
         {
             List<PianoNote> notes = null;
 
-            Debug.Log("DEBUT TEST");
+            // Debug.Log("DEBUT TEST");
             for (int j = 0; j < _intervalsList.Count; j++)
             {
                 for (int i = 0; i < 30; i++)
@@ -577,13 +577,13 @@ public class VisualController : MonoBehaviour, IControllerWithUI
                     yield return new WaitForSecondsRealtime(0.1f);
                 }
             }
-            Debug.Log("FIN TEST");
+            // Debug.Log("FIN TEST");
         }
         else
         {
             PianoChord chord = null;
 
-            Debug.Log("DEBUT TEST");
+            // Debug.Log("DEBUT TEST");
             for (int j = 0; j < _chordsList.Count; j++)
             {
                 for (int i = 0; i < 30; i++)
@@ -608,7 +608,7 @@ public class VisualController : MonoBehaviour, IControllerWithUI
                     yield return new WaitForSecondsRealtime(0.1f);
                 }
             }
-            Debug.Log("FIN TEST");
+            // Debug.Log("FIN TEST");
         }
     }
 }
