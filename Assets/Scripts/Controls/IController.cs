@@ -53,6 +53,8 @@ public interface IController
     void ShowControllerUI();
     void HideControllerUI();
 
+    void ResetInputs();
+
     Task UpdateLabel();
 }
 

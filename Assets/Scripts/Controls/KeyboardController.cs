@@ -115,10 +115,6 @@ public class KeyboardController : MonoBehaviour, IController
     // Update is called once per frame
     void Update()
     {
-        _notesDown.Clear();
-        _notesUp.Clear();
-        _notes.Clear();
-
         foreach(var kvp in keys)
         {
             if (Input.GetKeyDown(kvp.Key))
@@ -192,5 +188,12 @@ public class KeyboardController : MonoBehaviour, IController
     public async Task UpdateLabel()
     {
         Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_CONTROLLER_LABEL_KEYBOARD);
+    }
+
+    public void ResetInputs()
+    {
+        _notesDown.Clear();
+        _notesUp.Clear();
+        _notes.Clear();
     }
 }

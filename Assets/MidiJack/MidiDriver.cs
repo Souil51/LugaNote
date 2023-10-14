@@ -213,6 +213,8 @@ namespace MidiJack
 
         protected virtual void Update()
         {
+            //Debug.Log("Update MidiDriver " + Time.frameCount);
+
             // Update the note state array.
             foreach (var cs in _channelArray)
             {

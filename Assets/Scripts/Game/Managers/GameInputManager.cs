@@ -17,15 +17,32 @@ public class GameInputManager : MonoBehaviour
     private readonly List<ControllerNote> _noteBuffer = new();
     private int maxNoteCount = 1;
 
+    // When playing multiple note on a MIDI device, we won't count bad guess for notes played at the same time or note played at few ms interval
+    private float bounceTimeLeft = 0;
+
     // Start is called before the first frame update
     void Start()
     {
+        GameController.Instance.Controller.ResetInputs();
         maxNoteCount = (int)GameController.Instance.GameMode.IntervalMode + 1;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Debug.Log(bounceTimeLeft);
+        if (bounceTimeLeft > 0)
+        {
+            _noteBuffer.Clear();
+            bounceTimeLeft -= Time.unscaledDeltaTime;
+            if(bounceTimeLeft < 0)
+            {
+                bounceTimeLeft = 0;
+            }
+        }
+
+        //Debug.Log("Update GameInputManager " + Time.frameCount);
+
         // Guessing system
         var firstSingleNote = GameController.Instance.GetFirstNote();
         var firstNotes = GameController.Instance.GetFirstNotes();
@@ -39,11 +56,15 @@ public class GameInputManager : MonoBehaviour
 
             if (firstNotes.Count > 0 && !GameController.Instance.IsPaused)
             {
+                if (bounceTimeLeft > 0) // We just make a bad guess, we won't handle note for a short time
+                    return;
+
                 var lowerFirstNote = firstNotes.Select(x => x.PianoNote).Min();
                 bool bufferChanged = false;
                 // Store notes pressed
                 foreach (var note in GameController.Instance.Controller.NotesDownWithOffset)
                 {
+                    // Debug.Log("note down");
                     //Debug.Log("Adding " + note.Note + " note in buffer");
                     var noteToAdd = note;
 
@@ -114,6 +135,8 @@ public class GameInputManager : MonoBehaviour
                         firstNotes.ForEach(x => x.ShowBadGuess());
                         guessValue = false;
 
+                        bounceTimeLeft = 0.25f;
+
                     }
                     else if (_noteBuffer.Count == maxNoteCount) // Else if buffer in full -> good guess
                     {
@@ -147,6 +170,10 @@ public class GameInputManager : MonoBehaviour
                         Guess?.Invoke(this, new GuessEventArgs(guessValue.Value, controllersList));
                         _noteBuffer.Clear();// Clear buffer for next note(s)
                     }
+                } 
+                else if(_noteBuffer.Count > maxNoteCount)
+                {
+                    _noteBuffer.Clear();
                 }
 
                 // For testing
@@ -154,6 +181,8 @@ public class GameInputManager : MonoBehaviour
                 {
                     Guess?.Invoke(this, new GuessEventArgs(true, new List<ControllerType>() { ControllerType.Keyboard }));
                 }
+
+                GameController.Instance.Controller.ResetInputs();
             }
         }
     }

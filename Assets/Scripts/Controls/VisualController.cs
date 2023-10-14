@@ -611,4 +611,10 @@ public class VisualController : MonoBehaviour, IControllerWithUI
             // Debug.Log("FIN TEST");
         }
     }
+
+    public void ResetInputs()
+    {
+        //_notesDown.Clear();
+        //_notesUp.Clear();
+    }
 }

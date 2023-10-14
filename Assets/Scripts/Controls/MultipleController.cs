@@ -113,6 +113,8 @@ public class MultipleController : MonoBehaviour, IControllerWithUI
 
     private void Update()
     {
+        //Debug.Log("Update MultipleController " + Time.frameCount);
+
         _notesDown.Clear();
         _notesUp.Clear();
         _notes.Clear();
@@ -267,6 +269,14 @@ public class MultipleController : MonoBehaviour, IControllerWithUI
                 Label += ", ";
 
             Label += controller.Label;
+        }
+    }
+
+    public void ResetInputs()
+    {
+        foreach(var controller in _controllers.Where(x => x.IsEnabled))
+        {
+            controller.ResetInputs();
         }
     }
 }

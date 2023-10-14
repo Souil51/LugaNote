@@ -40,6 +40,8 @@ namespace Assets.MidiJack
 
         protected override void Update()
         {
+            //Debug.Log("Update UnityMidiDriver " + Time.frameCount);
+
             base.Update();
 
             // Process the message queue.
@@ -62,8 +64,11 @@ namespace Assets.MidiJack
                     var velocity = 1.0f / 127 * message.data2 + 1;
                     _channelArray[channelNumber]._noteArray[message.data1] = velocity;
                     _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = velocity;
+                    // Debug.Log("note down Midi Driver");
                     if (noteOnDelegate != null)
+                    {
                         noteOnDelegate((MidiChannel)channelNumber, message.data1, velocity - 1);
+                    }
                 }
 
                 // Note off message?

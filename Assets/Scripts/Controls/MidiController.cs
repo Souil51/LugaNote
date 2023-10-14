@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MidiController : MonoBehaviour, IController
@@ -112,33 +113,72 @@ public class MidiController : MonoBehaviour, IController
             _notesWithOffset = _notesWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.MIDI)).ToList();
             _notesDownWithOffset = _notesDownWithOffset.Select(x => new ControllerNote(x.Note + C4Offset, IsReplacementModeForced, ControllerType.MIDI)).ToList();
         }
+
+        MidiMaster.noteOnDelegate += NoteOn;
+        MidiMaster.noteOffDelegate += NoteOff;
+    }
+
+    void NoteOn(MidiChannel channel, int note, float velocity)
+    {
+        //Debug.Log("NoteOn: " + channel + "," + note + "," + velocity + ", " + Time.frameCount);
+        //Debug.Break();
+
+        var pianoNote = (PianoNote)(note - A0StartingMidiNote);
+
+        var noteHandle = _notesDown.Where(x => x.Note == pianoNote).FirstOrDefault();
+
+        if (noteHandle == null)
+        {
+            _notesDown.Add(new ControllerNote(pianoNote, IsReplacementModeForced, ControllerType.MIDI));
+            _notes.Add(new ControllerNote(pianoNote, IsReplacementModeForced, ControllerType.MIDI));
+        }
+    }
+
+    void NoteOff(MidiChannel channel, int note)
+    {
+        // Debug.Log("NoteOff: " + channel + "," + note);
+
+        var pianoNote = (PianoNote)(note - A0StartingMidiNote);
+
+        _notesUp.Add(new ControllerNote((PianoNote)note - A0StartingMidiNote, IsReplacementModeForced, ControllerType.MIDI));
+
+        var noteHandle = _notes.Where(x => x.Note == pianoNote).FirstOrDefault();
+        if (noteHandle != null)
+            _notes.Remove(noteHandle);
+
+        noteHandle = _notesDown.Where(x => x.Note == pianoNote).FirstOrDefault();
+        if (noteHandle != null)
+            _notesDown.Remove(noteHandle);
     }
 
     // Update is called once per frame
     void Update()
     {
-        _notesDown.Clear();
-        _notesUp.Clear();
-        _notes.Clear();
+        //Debug.Log("Update MidiController " + Time.frameCount);
 
-        for(int i = A0StartingMidiNote; i < A0StartingMidiNote + StaticResource.PIANO_KEY_COUNT; i++)
-        {
-            if (MidiMaster.GetKeyDown(i))
-            {
-                // SoundManager.PlayNote((PianoNote)(i - A0StartingMidiNote));
-                _notesDown.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
-            }
+        //_notesDown.Clear();
+        //_notesUp.Clear();
+        //_notes.Clear();
 
-            if (MidiMaster.GetKeyUp(i))
-            {
-                _notesUp.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
-            }
+        //for(int i = A0StartingMidiNote; i < A0StartingMidiNote + StaticResource.PIANO_KEY_COUNT; i++)
+        //{
+        //    if (MidiMaster.GetKeyDown(i))
+        //    {
+        //        // Debug.Log("Note down from controller");
+        //        // SoundManager.PlayNote((PianoNote)(i - A0StartingMidiNote));
+        //        _notesDown.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
+        //    }
 
-            if (MidiMaster.GetKey(i) > 0)
-            {
-                _notes.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
-            }
-        }
+        //    if (MidiMaster.GetKeyUp(i))
+        //    {
+        //        _notesUp.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
+        //    }
+
+        //    if (MidiMaster.GetKey(i) > 0)
+        //    {
+        //        _notes.Add(new ControllerNote((PianoNote)(i - A0StartingMidiNote), IsReplacementModeForced, ControllerType.MIDI));
+        //    }
+        //}
 
         if (_notesDown.Count > 0)
             NoteDown?.Invoke(this, new ControllerNoteEventArgs(_notesDown[0]));
@@ -221,5 +261,12 @@ public class MidiController : MonoBehaviour, IController
         {
             Label = await LocalizationHelper.GetStringAsync(StaticResource.LOCALIZATION_MENU_MIDI_CUSTOM_TOUCHES, new List<string>() { LowerNote.ToString(), HigherNote.ToString() });
         }
+    }
+
+    public void ResetInputs()
+    {
+        _notesDown.Clear();
+        _notesUp.Clear();
+        _notes.Clear();
     }
 }
