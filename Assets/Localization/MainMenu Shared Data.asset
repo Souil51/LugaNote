@@ -136,7 +136,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 16765523992576
-    m_Key: cancel
+    m_Key: menu_close
     m_Metadata:
       m_Items: []
   - m_Id: 16808557551616
@@ -213,6 +213,46 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 7682081159708672
     m_Key: menu_quit_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22196010442432512
+    m_Key: menu_close_info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22209935854673920
+    m_Key: info_game_modes_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22210046362001408
+    m_Key: info_game_modes_content
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22210583220330496
+    m_Key: info_options_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22210678242287616
+    m_Key: info_options_content
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22212608863641600
+    m_Key: info_midi_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22212639238791168
+    m_Key: info_midi_content
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22212670939340800
+    m_Key: info_contact_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22212697426370560
+    m_Key: info_contact_content
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22562372645953536
+    m_Key: info_title
     m_Metadata:
       m_Items: []
   m_Metadata:

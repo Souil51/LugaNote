@@ -10,9 +10,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
 using static MenuViewModel;
 
 public class MenuViewModel : ViewModelBase
@@ -25,6 +30,7 @@ public class MenuViewModel : ViewModelBase
     [SerializeField] private ToggleSwitch InversionSwitch;
     [SerializeField] private ToggleSwitch GuessNameSwitch;
     [SerializeField] private ToggleSwitch ReplacementSwitch;
+    [SerializeField] private TMP_Dropdown LanguageDropDown;
 
     public delegate void GenericEventHandler<T>(object sender, T e);
 
@@ -116,6 +122,13 @@ public class MenuViewModel : ViewModelBase
         private set => SetProperty(ref _menuQuitVisible, value);
     }
 
+    private bool _menuInfoVisible;
+    public bool MenuInfoVisible
+    {
+        get => _menuInfoVisible;
+        private set => SetProperty(ref _menuInfoVisible, value);
+    }
+
     public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
     public bool IsGuessNameModeVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note;
     public bool IsGuessNameCompatibilityVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note && IsMIDIDeviceConnected;
@@ -202,6 +215,9 @@ public class MenuViewModel : ViewModelBase
 
     public void InitializeViewModel()
     {
+        int localizeKey = PlayerPrefs.GetInt(StaticResource.LOCALIZATION_PLAYERPREFS_LOCALIZEKEY);
+        UpdateUILanguage(localizeKey);
+
         InitialiserNotifyPropertyChanged();
         IsMidiConfigurationVisible = MenuController.Instance.IsMidiConfigurationVisible;
     }
@@ -324,15 +340,34 @@ public class MenuViewModel : ViewModelBase
         }
         else if(e.PropertyName == nameof(IsMidiConfigurationVisible))
         {
-            IsMidiConfigurationVisible = true; // MenuController.Instance.IsMidiConfigurationVisible;
+            IsMidiConfigurationVisible = MenuController.Instance.IsMidiConfigurationVisible;
         }
     }
 
     public void UI_OpenMenuClick() => MenuQuitVisible = true;
 
+    public void UI_OpenInfoMenuClick() => MenuInfoVisible = true;
+
     public void UI_Quit() => QuitClicked?.Invoke(this, EventArgs.Empty);
 
     public void UI_CancelQuit() => MenuQuitVisible = false;
+
+    public void UI_CloseInfoMenu() => MenuInfoVisible = false;
+
+    public void UI_LanguageChange(int _)
+    {
+        var selectedValue = LanguageDropDown.value;
+
+        UpdateUILanguage(selectedValue);
+    }
+
+    public void UpdateUILanguage(int localizeKey)
+    {
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localizeKey];
+        LanguageDropDown.value = localizeKey;
+
+        PlayerPrefs.SetInt(StaticResource.LOCALIZATION_PLAYERPREFS_LOCALIZEKEY, localizeKey);
+    }
 
     protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
     {

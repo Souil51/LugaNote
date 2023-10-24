@@ -56,6 +56,8 @@ public static class StaticResource
 
     public static string LOCALIZATION_CONTROLLER_LABEL_VISUAL => "MainMenu/controller_label_visual";
 
+    public static string LOCALIZATION_PLAYERPREFS_LOCALIZEKEY => "LocalizeKey";
+
     /// <summary>
     /// Useful values
     /// </summary>
