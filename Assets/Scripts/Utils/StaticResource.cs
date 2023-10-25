@@ -39,7 +39,7 @@ public static class StaticResource
     public static string RESOURCES_SOUND_NOTE_BASE => "sounds/notes/key_";
 
     public static string RESOURCES_SOUND_BAD_GUESS => "bad_guess";
-    public static string RESOURCES_SOUND_CLICK => "click_2";
+    public static string RESOURCES_SOUND_CLICK => "click_2_silenced";
 
     public static string LOCALIZATION_MIDI_CONFIGURATION_TITLE => "MainMenu/title_midi_configuration";
     public static string LOCALIZATION_MIDI_CONFIGURATION_NEW_TITLE => "MainMenu/title_midi_configuration_new";

@@ -86,6 +86,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
     private List<PianoNote> _lastUpdateButtonsNoteDown = new List<PianoNote>();
     private List<PianoNote> _buttonsNoteDown = new List<PianoNote>();
 
+    private float _ratioModifier = 1f;
+
     public event NoteDownEventHandler NoteDown;
     public event ConfigurationEventHandled Configuration;
     public event ConfigurationDestroyedEventHandled ConfigurationDestroyed;
@@ -96,6 +98,11 @@ public class VisualController : MonoBehaviour, IControllerWithUI
         ConfigurationDestroyed?.Invoke(this, new GameObjectEventArgs(null));
 
         return null;
+    }
+
+    void Start()
+    {
+        _ratioModifier = ScreenManager.ScreenHeight < 1080 ? 0.66f : 1f;
     }
 
     // Update is called once per frame
@@ -200,6 +207,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
         var btnPanel = goCanvas.transform.GetChild(0);
         btnPanel.gameObject.transform.localPosition += new Vector3(0, -25f, 0);
 
+        btnPanel.transform.localScale = btnPanel.transform.localScale * _ratioModifier;
+
         // 2 prefabs to calculate the center position of the buttons
         var goTmpButton = Instantiate(Resources.Load("NoteButton")) as GameObject;
         var rectTmpButton = goTmpButton.GetComponent<RectTransform>();
@@ -234,6 +243,9 @@ public class VisualController : MonoBehaviour, IControllerWithUI
             string prefabName = MusicHelper.IsNatural(note) ? StaticResource.PREFAB_NOTE_BUTTON : StaticResource.PREFAB_NOTE_BUTTON_SHARP;
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             _notesList.Add(note);
+
+            goButtonNote.transform.localScale = goButtonNote.transform.localScale * _ratioModifier;
+
             goButtonNote.transform.SetParent(btnPanel);
 
             var buttonTransform = goButtonNote.GetComponent<RectTransform>();
@@ -290,6 +302,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
         var btnPanel = goCanvas.transform.GetChild(0);
         btnPanel.gameObject.transform.localPosition += new Vector3(0, -25f, 0);
 
+        btnPanel.transform.localScale = btnPanel.transform.localScale * _ratioModifier;
+
         // 2 prefabs to calculate the center position of the buttons
         var goTmpButton = Instantiate(Resources.Load("NoteButton")) as GameObject;
         var rectTmpButton = goTmpButton.GetComponent<RectTransform>();
@@ -326,6 +340,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
             GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
             _intervalsList.Add(new List<PianoNote>() { baseNote, intervalNote });
             goButtonNote.transform.SetParent(btnPanel);
+
+            goButtonNote.transform.localScale = goButtonNote.transform.localScale * _ratioModifier;
 
             var buttonTransform = goButtonNote.GetComponent<RectTransform>();
             buttonTransform.localPosition = new Vector3(currentX, startingY, 0f);
@@ -393,6 +409,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
         var btnPanel = goCanvas.transform.GetChild(0);
         btnPanel.gameObject.transform.localPosition += new Vector3(0, -20, 0);
 
+        btnPanel.transform.localScale = btnPanel.transform.localScale * _ratioModifier;
+
         // 2 prefabs to calculate the center position of the buttons
         var goTmpButton = Instantiate(Resources.Load(StaticResource.PREFAB_NOTE_BUTTON_SMALL)) as GameObject;
         var rectTmpButton = goTmpButton.GetComponent<RectTransform>();
@@ -456,6 +474,8 @@ public class VisualController : MonoBehaviour, IControllerWithUI
                 GameObject goButtonNote = Instantiate(Resources.Load(prefabName)) as GameObject;
                 _chordsList.Add(chord);
                 goButtonNote.transform.SetParent(btnPanel);
+
+                goButtonNote.transform.localScale = goButtonNote.transform.localScale * _ratioModifier;
 
                 var buttonTransform = goButtonNote.GetComponent<RectTransform>();
                 buttonTransform.localPosition = new Vector3(currentX, currentY, 0f);
