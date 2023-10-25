@@ -141,6 +141,11 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
         HigherPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_LIGHT_GRAY);
     }
 
+    void Update()
+    {
+        _controller.ResetInputs();
+    }
+
     public void Initialize(IController controller, bool newDevice = false)
     {
         _controller = controller;

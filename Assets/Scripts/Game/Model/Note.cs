@@ -15,6 +15,7 @@ using Color = UnityEngine.Color;
 /// </summary>
 public class Note : MonoBehaviour
 {
+    [SerializeField] private GameObject NoteSprite;
     [SerializeField] private SpriteRenderer SpriteGoodGuess;
     [SerializeField] private SpriteRenderer SpriteBadGuess;
 
@@ -67,7 +68,7 @@ public class Note : MonoBehaviour
 
     private void Awake()
     {
-        _sprtRenderer = GetComponent<SpriteRenderer>();
+        _sprtRenderer = NoteSprite.GetComponent<SpriteRenderer>();
         _baseColor = _sprtRenderer.color;
     }
 
@@ -163,13 +164,13 @@ public class Note : MonoBehaviour
     {
         _isPressed = true;
         _sprtRenderer.color = Color.blue;
-        transform.localScale *= 1.2f;
+        NoteSprite.transform.localScale *= 1.2f;
     }
 
     public void Release()
     {
         _isPressed = false;
         _sprtRenderer.color = _baseColor;
-        transform.localScale = Vector3.one;
+        NoteSprite.transform.localScale = Vector3.one;
     }
 }
