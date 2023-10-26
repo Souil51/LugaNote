@@ -314,7 +314,7 @@ public class MenuViewModel : ViewModelBase
 
     public void UpdateMidiConnection()
     {
-        IsMIDIDeviceConnected = MenuController.Instance.Controller.IsConfigurable && MenuController.Instance.IsMidiConnected();
+        IsMIDIDeviceConnected = (MenuController.Instance.Controller.IsConfigurable && MenuController.Instance.IsMidiConnected()) || !MenuController.Instance.IsMidiConfigurationVisible;
         OnPropertyChanged(nameof(IsMIDIDeviceConnected));
         OnPropertyChanged(nameof(IsGuessNameModeVisible));
         OnPropertyChanged(nameof(IsReplacementModeVisible));

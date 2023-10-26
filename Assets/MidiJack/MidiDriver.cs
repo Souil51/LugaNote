@@ -242,7 +242,8 @@ namespace MidiJack
             string jsonString = "";
             if (!File.Exists(_persistentPermissionFilePath))
             {
-                File.Create(_persistentPermissionFilePath);
+                using (FileStream fs = File.Create(_persistentPermissionFilePath)) { }
+
                 jsonString = JsonConvert.SerializeObject(new List<string>());
 
                 using (StreamWriter sw = new StreamWriter(_persistentPermissionFilePath))

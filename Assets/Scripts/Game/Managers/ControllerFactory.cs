@@ -16,6 +16,13 @@ namespace Assets.Scripts.Game
 
         public static ControllerFactory Instance { get; private set; }
 
+        private void Start()
+        {
+#if UNITY_WEBGL
+            Type = ControllerType.KeyboardAndVisual;
+#endif
+        }
+
         private void OnEnable()
         {
             if (Instance != null && Instance != this)
