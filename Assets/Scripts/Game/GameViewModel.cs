@@ -123,6 +123,11 @@ public class GameViewModel : ViewModelBase
             Slider.transform.localScale = new Vector3(Slider.transform.localScale.x, Slider.transform.localScale.y * 0.5f, Slider.transform.localScale.z);
             Slider.transform.localPosition += new Vector3(0, 22f, 0);
         }
+
+#if UNITY_WEBGL
+        Slider.transform.localScale = new Vector3(Slider.transform.localScale.x, Slider.transform.localScale.y * 0.5f, Slider.transform.localScale.z);
+        Slider.transform.localPosition += new Vector3(0, 22f, 0);
+#endif
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

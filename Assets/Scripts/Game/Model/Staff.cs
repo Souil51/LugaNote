@@ -53,6 +53,10 @@ public class Staff : MonoBehaviour
             transform.localScale *= 0.66f;
         }
 
+#if UNITY_WEBGL
+        transform.localScale *= 0.75f;
+#endif
+
         InitializeClef();
 
         var firstLine = Lines[0];

@@ -204,9 +204,14 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
                 if (ScreenManager.ScreenHeight < 1080)
                 {
-                    tempYFirstStaff -= 0.33f;
-                    tempYSecondStaff += 0.33f;
+                    tempYFirstStaff -= 0.40f;
+                    tempYSecondStaff += 0.40f;
                 }
+
+#if UNITY_WEBGL
+                tempYFirstStaff -= 0.40f;
+                tempYSecondStaff += 0.40f;
+#endif
 
                 staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? tempYFirstStaff : tempYSecondStaff, staff.transform.position.z);
 
