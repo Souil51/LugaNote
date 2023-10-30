@@ -199,7 +199,16 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
 
             if (GameMode.GameModeType == GameModeType.TrebleBass)
             {
-                staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? YPositionFirstStaff : YPositionSecondStaff, staff.transform.position.z);
+                float tempYFirstStaff = YPositionFirstStaff;
+                float tempYSecondStaff = YPositionSecondStaff;
+
+                if (ScreenManager.ScreenHeight < 1080)
+                {
+                    tempYFirstStaff -= 0.33f;
+                    tempYSecondStaff += 0.33f;
+                }
+
+                staff.transform.position = new Vector3(staff.transform.position.x, i == 0 ? tempYFirstStaff : tempYSecondStaff, staff.transform.position.z);
 
                 var go = Instantiate(Resources.Load(StaticResource.PREFAB_DOTTED_LINE)) as GameObject;
                 go.transform.position = new Vector3(0, StaffSeparatorYPosition, 0);
@@ -211,9 +220,11 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
                 if (GameMode.GameModeType == GameModeType.Treble && staff.StaffClef == Clef.Bass || GameMode.GameModeType == GameModeType.Bass && staff.StaffClef == Clef.Treble)
                     staff.gameObject.SetActive(false);
             }
-            
-            if(staff.gameObject.activeSelf)
+
+            if (staff.gameObject.activeSelf)
+            {
                 staff.InitializeStaff();
+            }
         }
 
         ViewModel.InitializeViewModel();

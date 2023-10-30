@@ -47,6 +47,20 @@ namespace Assets.MidiJack
         {
             base.Update();
 
+            foreach(var item in _listNoteOn)
+            {
+                if (noteOnDelegate != null)
+                    noteOnDelegate(item.Item1, item.Item2, item.Item3);
+            }
+
+            foreach(var item in _listNoteOff)
+            {
+                if (noteOnDelegate != null)
+                    noteOffDelegate(item.Item1, item.Item2);
+            }
+
+            _listNoteOn.Clear();
+            _listNoteOff.Clear();
         }
 
         protected override void DeviceCallback()
@@ -96,9 +110,11 @@ namespace Assets.MidiJack
             }
         }
 
+        private List<Tuple<MidiChannel, byte, float>> _listNoteOn = new List<Tuple<MidiChannel, byte, float>>();
+        private List<Tuple<MidiChannel, byte>> _listNoteOff = new List<Tuple<MidiChannel, byte>>();
+
         private void HandleMidiMessage(object sender, MidiMessage message)
         {
-            Debug.Log("HandleMidiMessage");
             // Split the first byte.
             var statusCode = message.status >> 4;
             var channelNumber = message.status & 0xf;
@@ -110,8 +126,10 @@ namespace Assets.MidiJack
                 var velocity = 1.0f / 127 * message.data2 + 1;
                 _channelArray[channelNumber]._noteArray[message.data1] = velocity;
                 _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = velocity;
-                if (noteOnDelegate != null)
-                    noteOnDelegate((MidiChannel)channelNumber, message.data1, velocity - 1);
+                //if (noteOnDelegate != null)
+                //    noteOnDelegate((MidiChannel)channelNumber, message.data1, velocity - 1);
+
+                _listNoteOn.Add(new Tuple<MidiChannel, byte, float>((MidiChannel)channelNumber, message.data1, velocity - 1));
             }
 
             // Note off message?
@@ -120,8 +138,10 @@ namespace Assets.MidiJack
                 Debug.LogFormat("Getting {0} Off", message.data1);
                 _channelArray[channelNumber]._noteArray[message.data1] = -1;
                 _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = -1;
-                if (noteOffDelegate != null)
-                    noteOffDelegate((MidiChannel)channelNumber, message.data1);
+                //if (noteOffDelegate != null)
+                //    noteOffDelegate((MidiChannel)channelNumber, message.data1);
+
+                _listNoteOff.Add(new Tuple<MidiChannel, byte>((MidiChannel)channelNumber, message.data1));
             }
 
             // CC message?

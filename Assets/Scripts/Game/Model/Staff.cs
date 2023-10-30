@@ -48,13 +48,18 @@ public class Staff : MonoBehaviour
 
     public void InitializeStaff()
     {
+        if (ScreenManager.ScreenHeight < 1080)
+        {
+            transform.localScale *= 0.66f;
+        }
+
         InitializeClef();
 
         var firstLine = Lines[0];
         _startingPointPosition =  firstLine.Width / 2;
         _disappearPointPosition = -(firstLine.Width / 2f);
         _endingPointPosition = _disappearPointPosition + SpriteWidth;
-        Sprite.transform.position = transform.position; // + new Vector3(-2f, 0f, 0f);
+        // Sprite.transform.position = transform.position; // + new Vector3(-2f, 0f, 0f);
     }
 
     /// <summary>
@@ -89,6 +94,10 @@ public class Staff : MonoBehaviour
 
             var staffLine = goLine.GetComponent<StaffLine>();
             staffLine.InitializeLine(this, currentNote, i >= 7 && i <= 15, i % 2 == 0);
+
+            // CLef sprite position from the start of the lines
+            if(i == 0)
+                Sprite.transform.position = new Vector3(staffLine.transform.position.x + 0.5f - staffLine.Width / 2, Sprite.transform.position.y, Sprite.transform.position.z);
 
             Lines.Add(staffLine);
 

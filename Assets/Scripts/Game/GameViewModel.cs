@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Splines.Interpolators;
+using UnityEngine.UI;
 
 public class GameViewModel : ViewModelBase
 {
     [SerializeField] private Color SliderStartColor;
     [SerializeField] private Color SliderEndColor;
+    [SerializeField] private Slider Slider;
 
     public event EventHandler PlayAgain;
     public event EventHandler NavigateToMenu;
@@ -115,6 +117,12 @@ public class GameViewModel : ViewModelBase
         InitialiserNotifyPropertyChanged();
 
         UIButtonVisible = GameController.Instance.HasControllerUI;
+
+        if(ScreenManager.ScreenHeight < 1080)
+        {
+            Slider.transform.localScale = new Vector3(Slider.transform.localScale.x, Slider.transform.localScale.y * 0.5f, Slider.transform.localScale.z);
+            Slider.transform.localPosition += new Vector3(0, 22f, 0);
+        }
     }
 
     private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

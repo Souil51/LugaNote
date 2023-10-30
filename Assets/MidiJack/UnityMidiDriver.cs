@@ -66,9 +66,7 @@ namespace Assets.MidiJack
                     _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = velocity;
                     // Debug.Log("note down Midi Driver");
                     if (noteOnDelegate != null)
-                    {
                         noteOnDelegate((MidiChannel)channelNumber, message.data1, velocity - 1);
-                    }
                 }
 
                 // Note off message?

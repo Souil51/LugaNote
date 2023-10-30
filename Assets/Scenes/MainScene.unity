@@ -3781,6 +3781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SliderStartColor: {r: 0.4745098, g: 0.7764706, b: 1, a: 1}
   SliderEndColor: {r: 1, g: 0.2783019, b: 0.2783019, a: 1}
+  Slider: {fileID: 531247003}
 --- !u!1 &822852948
 GameObject:
   m_ObjectHideFlags: 0
