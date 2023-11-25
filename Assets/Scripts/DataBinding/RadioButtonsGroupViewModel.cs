@@ -1,5 +1,6 @@
 using Assets.Scripts.Utils;
 using DataBinding.Core;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ public class RadioButtonsGroupViewModel : ViewModelBase
     [SerializeField] private Color NeutralTextColor;
     [SerializeField] private Sprite SelectedSprite;
     [SerializeField] private Sprite NeutralSprite;
+    [SerializeField] private float SelectedScale;
+    [SerializeField] private float NeutralScale;
 
     [SerializeField] private List<Color> SelectedColorsList;
     [SerializeField] private List<Color> NeutralColorsList;
@@ -28,6 +31,8 @@ public class RadioButtonsGroupViewModel : ViewModelBase
     [SerializeField] private List<Color> NeutralTextColorsList;
     [SerializeField] private List<Sprite> SelectedSpritesList;
     [SerializeField] private List<Sprite> NeutralSpritesList;
+
+    private List<Tween> _buttonScaleTweens = new List<Tween>();
 
     private int _selectedIndex = 0;
     public int SelectedIndex => _selectedIndex;
@@ -83,7 +88,6 @@ public class RadioButtonsGroupViewModel : ViewModelBase
 
         InitialiserNotifyPropertyChanged();
 
-
         UpdateButtons();
     }
 
@@ -100,6 +104,8 @@ public class RadioButtonsGroupViewModel : ViewModelBase
             ButtonsSecondaryColor.Add(NeutralSecondaryColor);
             ButtonsTextColor.Add(NeutralTextColor);
             ButtonsSprite.Add(NeutralSprite);
+
+            _buttonScaleTweens.Add(null);
         }
     }
 
@@ -144,6 +150,23 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                 {
                     ButtonsSprite[i] = SelectedSprite;
                 }
+
+                if(NeutralScale != SelectedScale)
+                {
+                    if (_buttonScaleTweens[i] != null)
+                    {
+                        _buttonScaleTweens[i].Kill();
+                    }
+
+                    if (Buttons[i].transform.localScale.x != SelectedScale)
+                    {
+                        Buttons[i].transform.DOScale(SelectedScale, 0.25f);
+
+                        var animator = Buttons[i].GetComponent<Animator>();
+                        if(animator != null)
+                            animator.enabled = false;
+                    }
+                }
             }
             else
             {
@@ -181,6 +204,23 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                 else
                 {
                     ButtonsSprite[i] = NeutralSprite;
+                }
+
+                if(NeutralScale != SelectedScale)
+                {
+                    if (_buttonScaleTweens[i] != null)
+                    {
+                        _buttonScaleTweens[i].Kill();
+                    }
+
+                    if (Buttons[i].transform.localScale.x != NeutralScale)
+                    {
+                        Buttons[i].transform.DOScale(NeutralScale, 0.25f);
+
+                        var animator = Buttons[i].GetComponent<Animator>();
+                        if (animator != null)
+                            animator.enabled = true;
+                    }
                 }
             }
 
