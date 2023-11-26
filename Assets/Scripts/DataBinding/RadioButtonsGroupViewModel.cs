@@ -25,6 +25,7 @@ public class RadioButtonsGroupViewModel : ViewModelBase
     [SerializeField] private float SelectedScale;
     [SerializeField] private float NeutralScale;
     [SerializeField] private string BackAnimationObjectName;
+    [SerializeField] private bool InstantBackAnimationTransition;
 
     [SerializeField] private List<Color> SelectedColorsList;
     [SerializeField] private List<Color> NeutralColorsList;
@@ -174,8 +175,11 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                     if(child != null)
                     {
                         child.gameObject.SetActive(true);
-                        child.localScale *= 0.5f;
-                        child.DOScale(1f, 0.25f);
+                        if(!InstantBackAnimationTransition)
+                        {
+                            child.localScale *= 0.5f;
+                            child.DOScale(1f, 0.25f);
+                        }
                     }
                 }
             }
@@ -237,7 +241,10 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                     if (child != null)
                     {
                         child.gameObject.SetActive(false);
-                        child.DOScale(1f, 0.15f);
+                        if (!InstantBackAnimationTransition)
+                        {
+                            child.DOScale(1f, 0.15f);
+                        }
                     }
                 }
             }

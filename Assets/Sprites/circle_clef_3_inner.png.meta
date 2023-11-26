@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f8169025d1baa77439eb9fd516bd51fa
+guid: bcab7b9abd4369240b337661c4182df1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8673032023072884251
-    second: circle_clef_1_0
+      213: 6096445025726420144
+    second: circle_clef_3_inner_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: circle_clef_1_0
+      name: circle_clef_3_inner_0
       rect:
         serializedVersion: 2
         x: 0
@@ -140,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5e93723a35333a780800000000000000
-      internalID: -8673032023072884251
+      spriteID: 0b4de17537cea9450800000000000000
+      internalID: 6096445025726420144
       vertices: []
       indices: 
       edges: []
