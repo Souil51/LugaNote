@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class RadioButtonsGroupViewModel : ViewModelBase
 {
@@ -22,6 +24,7 @@ public class RadioButtonsGroupViewModel : ViewModelBase
     [SerializeField] private Sprite NeutralSprite;
     [SerializeField] private float SelectedScale;
     [SerializeField] private float NeutralScale;
+    [SerializeField] private string BackAnimationObjectName;
 
     [SerializeField] private List<Color> SelectedColorsList;
     [SerializeField] private List<Color> NeutralColorsList;
@@ -161,10 +164,18 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                     if (Buttons[i].transform.localScale.x != SelectedScale)
                     {
                         Buttons[i].transform.DOScale(SelectedScale, 0.25f);
+                        Buttons[i].GetComponent<Button>().interactable = false;
+                    }
+                }
 
-                        var animator = Buttons[i].GetComponent<Animator>();
-                        if(animator != null)
-                            animator.enabled = false;
+                if (!String.IsNullOrEmpty(BackAnimationObjectName))
+                {
+                    var child = Buttons[i].transform.Find(BackAnimationObjectName);
+                    if(child != null)
+                    {
+                        child.gameObject.SetActive(true);
+                        child.localScale *= 0.5f;
+                        child.DOScale(1f, 0.25f);
                     }
                 }
             }
@@ -216,10 +227,17 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                     if (Buttons[i].transform.localScale.x != NeutralScale)
                     {
                         Buttons[i].transform.DOScale(NeutralScale, 0.25f);
+                        Buttons[i].GetComponent<Button>().interactable = true;
+                    }
+                }
 
-                        var animator = Buttons[i].GetComponent<Animator>();
-                        if (animator != null)
-                            animator.enabled = true;
+                if (!String.IsNullOrEmpty(BackAnimationObjectName))
+                {
+                    var child = Buttons[i].transform.Find(BackAnimationObjectName);
+                    if (child != null)
+                    {
+                        child.gameObject.SetActive(false);
+                        child.DOScale(1f, 0.15f);
                     }
                 }
             }
