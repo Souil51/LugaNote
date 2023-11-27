@@ -44,15 +44,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1536069083136
-    m_Localized: 'Accidentals : '
+    m_Localized: 'Accidentals '
     m_Metadata:
       m_Items: []
   - m_Id: 1586199404544
-    m_Localized: 'Replacement : '
+    m_Localized: Replacement
     m_Metadata:
       m_Items: []
   - m_Id: 1676616015872
-    m_Localized: 'Guess name : '
+    m_Localized: Guess name
     m_Metadata:
       m_Items: []
   - m_Id: 1927930322944
@@ -108,7 +108,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3332002947072
-    m_Localized: 'Inversions : '
+    m_Localized: Inversions
     m_Metadata:
       m_Items: []
   - m_Id: 3463502766080
