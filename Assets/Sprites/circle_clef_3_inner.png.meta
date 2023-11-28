@@ -156,7 +156,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      circle_clef_3_inner_0: 6096445025726420144
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -156,7 +156,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      cirlce_clef_1_gray_0: 8143516199303289455
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
