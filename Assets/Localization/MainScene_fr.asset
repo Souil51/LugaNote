@@ -47,6 +47,10 @@ MonoBehaviour:
     m_Localized: 'Votre score est : '
     m_Metadata:
       m_Items: []
+  - m_Id: 72144034035539968
+    m_Localized: Jeu en pause
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

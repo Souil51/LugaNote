@@ -105,6 +105,20 @@ public class GameViewModel : ViewModelBase
         set => SetProperty(ref _uiSliderColor, value);
     }
 
+    private bool _menuPausedGame;
+    public bool MenuPausedGame
+    {
+        get { return _menuPausedGame; }
+        set => SetProperty(ref _menuPausedGame, value);
+    }
+
+    private bool _menuEndGame;
+    public bool MenuEndGame
+    {
+        get { return _menuEndGame; }
+        set => SetProperty(ref _menuEndGame, value);
+    }
+
     #endregion
 
     private void Awake()
@@ -157,6 +171,17 @@ public class GameViewModel : ViewModelBase
             {
                 if (!EndPanelVisible)
                     panelVisible = true;
+            }
+
+            if(GameController.Instance.State == GameState.Ended)
+            {
+                MenuEndGame = true;
+                MenuPausedGame = false;
+            }
+            else if(GameController.Instance.State == GameState.Paused)
+            {
+                MenuEndGame = false;
+                MenuPausedGame = true;
             }
 
             IsPaused = GameController.Instance.State == GameState.Paused;

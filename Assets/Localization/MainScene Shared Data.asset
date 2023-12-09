@@ -43,6 +43,10 @@ MonoBehaviour:
     m_Key: menu_score
     m_Metadata:
       m_Items: []
+  - m_Id: 72144034035539968
+    m_Key: game_paused
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
