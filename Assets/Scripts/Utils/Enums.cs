@@ -161,27 +161,27 @@ public enum FlatPianoNote
 {
     [Description("La")]
     La = 0,
-    [Description("Sib")]
+    [Description("Si b")]
     LaFlat,
     [Description("Si")]
     Si,
     [Description("Do")]
     Do,
-    [Description("RÈb")]
+    [Description("RÈ b")]
     DoFlat,
     [Description("RÈ")]
     RÈ,
-    [Description("Mib")]
+    [Description("Mi b")]
     RÈFlat,
     [Description("Mi")]
     Mi,
     [Description("Fa")]
     Fa,
-    [Description("Solb")]
+    [Description("Sol b")]
     FaFlat,
     [Description("Sol")]
     Sol,
-    [Description("Lab")]
+    [Description("La b")]
     SolFlat
 }
 

@@ -176,7 +176,7 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         // For testing
         if (GameMode == null)
         {
-            _gameMode = new GameMode(1, GameModeType.TrebleBass, IntervalMode.Chord, Level.C4, true, false, false);
+            _gameMode = new GameMode(1, GameModeType.Treble, IntervalMode.Note, Level.C4, true, false, false);
 
             if (Controller is MultipleController multipleController)
             {
@@ -328,7 +328,8 @@ public class GameController : MonoBehaviour, INotifyPropertyChanged
         }
         else if(newState == GameState.Navigating)
         {
-            TimeScaleManager.UnpauseGame();
+            // TimeScaleManager.UnpauseGame();
+            TimeScaleManager.ResetTimeScale();
         }
 
         if (changed)

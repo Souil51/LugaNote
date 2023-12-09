@@ -256,7 +256,14 @@ public class VisualController : MonoBehaviour, IControllerWithUI
 
             // Update the text of the button
             var buttonTMP = goButtonNote.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            if (altered)
+                buttonTMP.fontSize -= 3;
+
             buttonTMP.text = MusicHelper.GetNoteCommonName(note);
+
+            if (altered)
+                buttonTMP.text += "\r\n" + MusicHelper.GetNoteCommonName(note, true);
 
             // Add the button down and button up event here because UI Button only have Click event
             // But we want to know when button is up or held

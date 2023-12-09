@@ -79,4 +79,11 @@ public class TimeScaleManager : MonoBehaviour
     {
         _pauseTimeLeft = seconds;
     }
+
+    public void ResetTimeScale()
+    {
+        _pauseTimeLeft = 0f;
+        Time.timeScale = 1f;
+        _isPaused = false;
+    }
 }

@@ -1395,7 +1395,7 @@ GameObject:
   - component: {fileID: 33635348}
   - component: {fileID: 33635347}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: UI V3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56125,7 +56125,7 @@ GameObject:
   - component: {fileID: 1580836050}
   - component: {fileID: 1580836049}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: UI V2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
