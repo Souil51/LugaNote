@@ -185,7 +185,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 44320645849088
-    m_Localized: 'MIDI aadevice changed to : {first} touches ({second} to {third})'
+    m_Localized: 'MIDI device changed to : {first} touches ({second} to {third})'
     m_Metadata:
       m_Items:
       - rid: 8439659353169461250
@@ -230,15 +230,18 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 22210046362001408
-    m_Localized: '- Select the Clef on the top tabs
+    m_Localized: '- Select the Clef with the top buttons
 
-      - Select the mode (notes,
-      intervals, chords) on the left tabs
+      - Select the mode
+      (notes, intervals, chords) with the bottom buttons
 
-      - Select your options on the central
-      part
+      - Select the note
+      range with the left buttons
 
-      - See your scores on the right
+      - Select your options on the central part
+
+      -
+      See your scores on the right
 
 
 '
@@ -249,14 +252,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 22210678242287616
-    m_Localized: "Level : select the range of the notes. That affects \xABNotes\xBB
-      mode but also intervals and chords modes (every notes of intervals or chords
-      will be in the range)\n\nAccidentals : Use or not accidentals notes (sharp/flat
-      notes)\n\nGuess name : Only available for \xABIntervals\xBB or \xABChords\xBB
-      modes. You will have to guess the name of the interval or chord instead of
-      the notes that compose this interval or chord.\nNot available for MIDI devices\n\nReplacement
-      : Only for MIDI devices. It allows you to press a note of any octaves to count
-      as the note you pressed. \nFor example : press a C4 (C note on the 4th octave)
+    m_Localized: "Accidentals : Use or not accidentals notes (sharp/flat notes)\n\nGuess
+      name : Only available for \xABIntervals\xBB or \xABChords\xBB modes. You will
+      have to guess the name of the interval or chord instead of the notes that compose
+      this interval or chord.\nNot available for MIDI devices\n\nReplacement : Only
+      for MIDI devices. It allows you to press a note of any octaves to count as
+      the note you pressed. \nFor example : press a C4 (C note on the 4th octave)
       for any C note. If you have to guess a C4 note, you can press C5 or C6...\n\n"
     m_Metadata:
       m_Items: []

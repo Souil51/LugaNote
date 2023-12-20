@@ -132,6 +132,7 @@ namespace Assets.MidiJack
                 var boundDevice = allDevicesBound.Where(x => x.Name == allDevices[(int)i]).FirstOrDefault();
                 if (boundDevice != null && !boundDevice.IsBound)
                 {
+                    CloseDevices();
                     OpenDevice(i);
 
                     // int indexToOpen = _instance.midiDroid.IndexOfDeviceNamed(allDevices[(int)i]);

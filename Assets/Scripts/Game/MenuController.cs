@@ -272,6 +272,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     private void MidiMaster_DeviceConnected(string deviceName)
     {
+        Debug.Log("MidiMaster_DeviceConnected");
         if(Controller is MultipleController multipleCtrl)
         {
             multipleCtrl.EnableMIDI();

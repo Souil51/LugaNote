@@ -231,9 +231,10 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 22210046362001408
-    m_Localized: "- S\xE9lectionner la Clef avec les onglets en haut\n- S\xE9lectionner
-      le mode avec les onglets \xE0 gauche (notes, intervalles, accords)\n- S\xE9lectionner
-      les options dans la partie centrale\n- Voir les scores \xE0 droite\n\n"
+    m_Localized: "- S\xE9lectionner la Clef avec boutons en haut\n- S\xE9lectionner
+      le mode avec les boutons en bas (notes, intervalles, accords)\n- S\xE9lectionner
+      la plage de notes avec les boutons \xE0 gauche\n- S\xE9lectionner les options
+      dans la partie centrale\n- Voir les scores \xE0 droite\n\n"
     m_Metadata:
       m_Items: []
   - m_Id: 22210583220330496
@@ -241,17 +242,14 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 22210678242287616
-    m_Localized: "Niveau : S\xE9lectionner la plage de note \xE0 deviner. Cela affecte
-      le mode \xABNote\xBB mais aussi les autres modes de jeu (chaque notes de l'interval
-      ou de l'accord sera compris dans l'ensemble correspondant au niveau)\n\nAlt\xE9rations
-      : Utiliser ou non les alt\xE9rations (di\xE8se ou b\xE9mol)\n\nDeviner le nom
-      : Disponible uniquement pour les modes \xABIntervalles\xBB et \xABAccords\xBB.
-      Il faut deviner le nom de l'intervalle ou de l'accords au lieu des notes qui
-      composent cet intervalle ou cet accord.\n\nMode \xABRemplacement\xBB : Uniquement
-      disponible avec les appareils MIDI. Cela permet de remplacer une note d'une
-      octave par la m\xEAme note d'une autre octave. \nPar exemple : une note C4
-      (Do de la 4\xE8me octave) peut \xEAtre utilis\xE9e si une note C5 (Do de la
-      5\xE8me octave) doit \xEAtre devin\xE9e.\n\n"
+    m_Localized: "Alt\xE9rations : Utiliser ou non les alt\xE9rations (di\xE8se ou
+      b\xE9mol)\n\nDeviner le nom : Disponible uniquement pour les modes \xABIntervalles\xBB
+      et \xABAccords\xBB. Il faut deviner le nom de l'intervalle ou de l'accords
+      au lieu des notes qui composent cet intervalle ou cet accord.\n\nMode \xABRemplacement\xBB
+      : Uniquement disponible avec les appareils MIDI. Cela permet de remplacer une
+      note d'une octave par la m\xEAme note d'une autre octave. \nPar exemple : une
+      note C4 (Do de la 4\xE8me octave) peut \xEAtre utilis\xE9e si une note C5 (Do
+      de la 5\xE8me octave) doit \xEAtre devin\xE9e.\n\n"
     m_Metadata:
       m_Items: []
   - m_Id: 22212608863641600

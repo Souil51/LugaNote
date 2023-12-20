@@ -129,6 +129,13 @@ public class MenuViewModel : ViewModelBase
         private set => SetProperty(ref _menuInfoVisible, value);
     }
 
+    private bool _configButtonVisible;
+    public bool ConfigButtonVisible
+    {
+        get => _configButtonVisible;
+        private set => SetProperty(ref _configButtonVisible, value);
+    }
+
     public bool IsInversionModeVisible => IntervalButtons.SelectedIndex == (int)IntervalMode.Chord;
     public bool IsGuessNameModeVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note;
     public bool IsGuessNameCompatibilityVisible => IntervalButtons.SelectedIndex != (int)IntervalMode.Note && IsMIDIDeviceConnected;
@@ -154,6 +161,12 @@ public class MenuViewModel : ViewModelBase
         IntervalButtons.SelectedButtonChanged += IntervalButtons_SelectedButtonChanged;
         KeyButtons.SelectedButtonChanged += KeyButtons_SelectedButtonChanged;
         GuessNameSwitch.ValueChanged += GuessNameSwitch_ValueChanged;
+
+        ConfigButtonVisible = true;
+
+#if UNITY_WEBGL
+        ConfigButtonVisible = false;
+#endif
 
         OnPropertyChanged(nameof(IsInversionModeVisible));
         OnPropertyChanged(nameof(IsGuessNameModeVisible));

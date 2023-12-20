@@ -81,7 +81,7 @@ build FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o: CXX_COM
   DEFINES = -DEXTERNAL_FRAME_PACING_CODE -Dswappywrapper_EXPORTS
   DEP_FILE = FramePacing\CMakeFiles\swappywrapper.dir\UnitySwappyWrapper.cpp.o.d
   FLAGS = -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security -fexceptions -frtti -stdlib=libc++ -Wall -Wextra -pedantic -Werror -O2 -g -DNDEBUG -fPIC
-  INCLUDES = -IC:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/FramePacing -isystem C:/Users/wesh-/.gradle/caches/transforms-3/3f4c5dd9f3b16b166b25d4c523b2fcc1/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/include
+  INCLUDES = -IC:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/FramePacing -isystem C:/Users/Maxence/.gradle/caches/transforms-3/3f4c5dd9f3b16b166b25d4c523b2fcc1/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/include
   OBJECT_DIR = FramePacing\CMakeFiles\swappywrapper.dir
   OBJECT_FILE_DIR = FramePacing\CMakeFiles\swappywrapper.dir
 
@@ -93,10 +93,10 @@ build FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o: CXX_COM
 #############################################
 # Link the shared library C:\dev\LugaNote\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\20s65ri5\obj\armeabi-v7a\libswappywrapper.so
 
-build C$:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so: CXX_SHARED_LIBRARY_LINKER__swappywrapper_RelWithDebInfo FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o | C$:/Users/wesh-/.gradle/caches/transforms-3/3f4c5dd9f3b16b166b25d4c523b2fcc1/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/libs/android.armeabi-v7a_API23_NDK23_cpp_shared_Release/libswappy.a
+build C$:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so: CXX_SHARED_LIBRARY_LINKER__swappywrapper_RelWithDebInfo FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o | C$:/Users/Maxence/.gradle/caches/transforms-3/3f4c5dd9f3b16b166b25d4c523b2fcc1/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/libs/android.armeabi-v7a_API23_NDK23_cpp_shared_Release/libswappy.a
   LANGUAGE_COMPILE_FLAGS = -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security -fexceptions -frtti -stdlib=libc++ -Wall -Wextra -pedantic -Werror -O2 -g -DNDEBUG
   LINK_FLAGS = -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Qunused-arguments -Wl,--no-undefined -Wl,--wrap=__android_log_print
-  LINK_LIBRARIES = -landroid  C:/Users/wesh-/.gradle/caches/transforms-3/3f4c5dd9f3b16b166b25d4c523b2fcc1/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/libs/android.armeabi-v7a_API23_NDK23_cpp_shared_Release/libswappy.a  -llog   -latomic -lm
+  LINK_LIBRARIES = -landroid  C:/Users/Maxence/.gradle/caches/transforms-3/3f4c5dd9f3b16b166b25d4c523b2fcc1/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/libs/android.armeabi-v7a_API23_NDK23_cpp_shared_Release/libswappy.a  -llog   -latomic -lm
   OBJECT_DIR = FramePacing\CMakeFiles\swappywrapper.dir
   POST_BUILD = cmd.exe /C "cd /D C:\dev\LugaNote\.utmp\RelWithDebInfo\20s65ri5\armeabi-v7a\FramePacing && "C:\Program Files\Unity\Hub\Editor\2023.2.1f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.22.1\bin\cmake.exe" -E copy C:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so C:\dev\LugaNote\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary/symbols/armeabi-v7a/libswappywrapper.so"
   PRE_LINK = cd .
