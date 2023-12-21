@@ -35,7 +35,7 @@ namespace Assets.MidiJack
 
         public UnityMidiDriver() : base()
         {
-
+            
         }
 
         protected override void Update()

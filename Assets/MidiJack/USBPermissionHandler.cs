@@ -22,7 +22,7 @@ public class USBPermissionHandler : MonoBehaviour
 
         if(androidUtils == null)
             androidUtils = new AndroidJavaObject("com.helagos.androidutilspermission.USBPermissionManager");
-
+        Debug.Log("ANDROID UTILS INSTANCE " + androidUtils);
         // androidUtils.Call("registerUSBReceiver"); // called in requestUSBPermission the first time
         androidUtils.Call("requestUSBPermission", deviceName);
     }

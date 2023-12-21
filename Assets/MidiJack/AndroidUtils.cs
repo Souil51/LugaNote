@@ -45,7 +45,7 @@ public class AndroidUtils : MonoBehaviour
             deviceName = split[0];
         if (split.Length > 1)
             androidDeviceName = split[1];
-        
+
         if (OnDenyCallback != null)
             OnDenyCallback(deviceName, androidDeviceName);
     }

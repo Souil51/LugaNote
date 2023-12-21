@@ -23,8 +23,12 @@ public class RadioButtonsGroupViewModel : ViewModelBase
     [SerializeField] private Sprite NeutralSprite;
     [SerializeField] private float SelectedScale;
     [SerializeField] private float NeutralScale;
+    [SerializeField] private float ScaleDuration;
+    [SerializeField] private float UnscaleDuration;
     [SerializeField] private string BackAnimationObjectName;
     [SerializeField] private bool InstantBackAnimationTransition;
+    [SerializeField] private float SelectedBackAnimationDuration;
+    [SerializeField] private float UnselectedBackAnimationDuration;
 
     [SerializeField] private List<Color> SelectedColorsList;
     [SerializeField] private List<Color> NeutralColorsList;
@@ -163,7 +167,7 @@ public class RadioButtonsGroupViewModel : ViewModelBase
 
                     if (Buttons[i].transform.localScale.x != SelectedScale)
                     {
-                        Buttons[i].transform.DOScale(SelectedScale, 0.25f);
+                        Buttons[i].transform.DOScale(SelectedScale, ScaleDuration);
                         Buttons[i].GetComponent<Button>().interactable = false;
                     }
                 }
@@ -177,7 +181,7 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                         if(!InstantBackAnimationTransition)
                         {
                             child.localScale *= 0.5f;
-                            child.DOScale(1f, 0.25f);
+                            child.DOScale(1f, SelectedBackAnimationDuration);
                         }
                     }
                 }
@@ -229,7 +233,7 @@ public class RadioButtonsGroupViewModel : ViewModelBase
 
                     if (Buttons[i].transform.localScale.x != NeutralScale)
                     {
-                        Buttons[i].transform.DOScale(NeutralScale, 0.25f);
+                        Buttons[i].transform.DOScale(NeutralScale, UnscaleDuration);
                         Buttons[i].GetComponent<Button>().interactable = true;
                     }
                 }
@@ -242,7 +246,7 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                         child.gameObject.SetActive(false);
                         if (!InstantBackAnimationTransition)
                         {
-                            child.DOScale(1f, 0.15f);
+                            child.DOScale(1f, UnselectedBackAnimationDuration);
                         }
                     }
                 }

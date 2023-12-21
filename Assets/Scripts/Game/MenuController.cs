@@ -72,6 +72,10 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     #region Unity methods
     private void Awake()
     {
+        Debug.Log("AWAKE");
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+
         if (MenuController.Instance == null)
             MenuController._instance = this;
 
