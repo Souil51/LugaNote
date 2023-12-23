@@ -15,7 +15,7 @@ public class AndroidUtils : MonoBehaviour
     //this function will be called when the permission has been approved
     public void OnAllow(string value)
     {
-        Debug.Log("AndroidsUtils OnAllow " + value);
+        //Debug.Log("AndroidsUtils OnAllow " + value);
 
         string deviceName = "";
         string androidDeviceName = "";
@@ -34,7 +34,7 @@ public class AndroidUtils : MonoBehaviour
     //this function will be called when the permission has been denied
     public void OnDeny(string value)
     {
-        Debug.Log("AndroidsUtils OnDeny " + value);
+        //Debug.Log("AndroidsUtils OnDeny " + value);
 
         string deviceName = "";
         string androidDeviceName = "";

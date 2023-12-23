@@ -14,7 +14,12 @@ public class OneShotSound : MonoBehaviour
 
     public void PlayClip(AudioClip clip, float volume = 1f)
     {
-        StartCoroutine(Co_PlayClip(clip, volume)); 
+        StartCoroutine(Co_PlayClip(clip, volume));
+    }
+
+    public void PlayClipAndroid(AudioClip clip, string basePath, float volume = 1f)
+    {
+        StartCoroutine(Co_PlayClipAndroid(clip, basePath, volume));
     }
 
     private IEnumerator Co_PlayClip(AudioClip clip, float volume = 1f)
@@ -23,6 +28,17 @@ public class OneShotSound : MonoBehaviour
         _audioSource.clip = clip;
         _audioSource.volume = volume;
         _audioSource.Play();
+
+        yield return new WaitForSecondsRealtime(clip.length + 0.1f);
+
+        Destroy(this.gameObject);
+    }
+
+    private IEnumerator Co_PlayClipAndroid(AudioClip clip, string basePath, float volume = 1f)
+    {
+        //Debug.Log("PLAY SOUND ANDROID");
+        int fileId = AndroidNativeAudio.load(basePath + "/" + clip.name + ".wav");
+        AndroidNativeAudio.play(fileId);
 
         yield return new WaitForSecondsRealtime(clip.length + 0.1f);
 

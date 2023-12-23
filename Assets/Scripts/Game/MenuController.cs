@@ -72,7 +72,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
     #region Unity methods
     private void Awake()
     {
-        Debug.Log("AWAKE");
+        //Debug.Log("AWAKE");
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
@@ -276,7 +276,7 @@ public class MenuController : MonoBehaviour, INotifyPropertyChanged
 
     private void MidiMaster_DeviceConnected(string deviceName)
     {
-        Debug.Log("MidiMaster_DeviceConnected");
+        //Debug.Log("MidiMaster_DeviceConnected");
         if(Controller is MultipleController multipleCtrl)
         {
             multipleCtrl.EnableMIDI();

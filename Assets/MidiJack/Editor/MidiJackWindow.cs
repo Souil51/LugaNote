@@ -114,12 +114,12 @@ namespace MidiJack
                         {
                             if (newValue)
                             {
-                                Debug.LogFormat("Trying to open {0}", name);
+                                //Debug.LogFormat("Trying to open {0}", name);
                                 OpenDevice(i);
                             }
                             else
                             {
-                                Debug.LogFormat("Trying to close {0}", name);
+                                //Debug.LogFormat("Trying to close {0}", name);
                                 CloseDevice(i);
                             }
 

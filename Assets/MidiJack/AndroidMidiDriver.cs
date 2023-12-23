@@ -27,7 +27,7 @@ namespace Assets.MidiJack
         {
             base.Init();
 
-            Debug.Log("ANDROID");
+            //Debug.Log("ANDROID");
             midiDroid = new MidiDroid();
             midiDroid.Start();
             midiDroid.callback.DroidMidiEvent += HandleMidiMessage;
@@ -37,6 +37,8 @@ namespace Assets.MidiJack
             var permissionsGranted = GetPersistentPermissions();
             foreach (string device in permissionsGranted)
             {
+                //Debug.Log("Device already known : " + device);
+
                 var boundDevice = new BoundDevice(device);
                 boundDevice.AndroidPermissionRequested = true;
                 allDevicesBound.Add(boundDevice);
@@ -75,7 +77,7 @@ namespace Assets.MidiJack
                 if (!allDevices.Contains(allDevicesBound[i].Name)
                     && allDevicesBound[i].IsBound)
                 {
-                    Debug.Log("Unplug detection " + allDevicesBound[i].Name);
+                    //Debug.Log("Unplug detection " + allDevicesBound[i].Name);
 
                     if (deviceDisconnectedDelegate != null)
                         deviceDisconnectedDelegate(allDevicesBound[i].Name);
@@ -101,7 +103,7 @@ namespace Assets.MidiJack
                     else
                     {
                         midiDroid.FindADevice();
-                        Debug.Log("Open android device " + allDevices[(int)i]);
+                        //Debug.Log("Open android device " + allDevices[(int)i]);
 
                         if (deviceConnectedDelegate != null)
                             deviceConnectedDelegate(allDevices[(int)i]);
@@ -122,7 +124,7 @@ namespace Assets.MidiJack
             // Note on message?
             if (statusCode == 9)
             {
-                Debug.LogFormat("Getting {0} On", message.data1);
+                //Debug.LogFormat("Getting {0} On", message.data1);
                 var velocity = 1.0f / 127 * message.data2 + 1;
                 _channelArray[channelNumber]._noteArray[message.data1] = velocity;
                 _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = velocity;
@@ -135,7 +137,7 @@ namespace Assets.MidiJack
             // Note off message?
             if (statusCode == 8 || (statusCode == 9 && message.data2 == 0))
             {
-                Debug.LogFormat("Getting {0} Off", message.data1);
+                //Debug.LogFormat("Getting {0} Off", message.data1);
                 _channelArray[channelNumber]._noteArray[message.data1] = -1;
                 _channelArray[(int)MidiChannel.All]._noteArray[message.data1] = -1;
                 //if (noteOffDelegate != null)
@@ -165,7 +167,7 @@ namespace Assets.MidiJack
             allDevices = midiDroid.getDeviceList();
             foreach (string deviceName in allDevices)
             {
-                Debug.Log(deviceName);
+                //Debug.Log(deviceName);
                 if (!allDevicesBound.Any(x => x.Name == deviceName))
                 {
                     allDevicesBound.Add(new BoundDevice(deviceName));
@@ -180,7 +182,7 @@ namespace Assets.MidiJack
 
         public void OnAndroidAllowUSB(string deviceName, string androidDeviceName)
         {
-            Debug.Log("MidiDriver OnAndroidAllowUSB " + deviceName + " " + androidDeviceName);
+            //Debug.Log("MidiDriver OnAndroidAllowUSB " + deviceName + " " + androidDeviceName);
             midiDroid.FindADevice();
 
             var deviceFound = allDevices.Where(x => x == deviceName).FirstOrDefault();
@@ -197,7 +199,7 @@ namespace Assets.MidiJack
             boundDeviceFound.AndroidPermissionRequested = true;
             AddAndSavePersistentPermissions(deviceName);
 
-            Debug.Log("Open android device " + deviceFound);
+            //Debug.Log("Open android device " + deviceFound);
 
             if (deviceConnectedDelegate != null)
                 deviceConnectedDelegate(deviceFound);
@@ -211,7 +213,7 @@ namespace Assets.MidiJack
                 //boundDevice.AndroidPermissionRequested = true;
             }
 
-            Debug.Log("MidiDriver OnAndroidDenyUSB " + deviceName + " " + androidDeviceName);
+            //Debug.Log("MidiDriver OnAndroidDenyUSB " + deviceName + " " + androidDeviceName);
         }
     }
 }

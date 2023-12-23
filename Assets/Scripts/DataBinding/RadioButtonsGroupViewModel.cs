@@ -165,11 +165,11 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                         _buttonScaleTweens[i].Kill();
                     }
 
-                    if (Buttons[i].transform.localScale.x != SelectedScale)
-                    {
+                    //if (true || Buttons[i].transform.localScale.x != SelectedScale)
+                    //{
                         Buttons[i].transform.DOScale(SelectedScale, ScaleDuration);
                         Buttons[i].GetComponent<Button>().interactable = false;
-                    }
+                    //}
                 }
 
                 if (!String.IsNullOrEmpty(BackAnimationObjectName))
@@ -231,11 +231,11 @@ public class RadioButtonsGroupViewModel : ViewModelBase
                         _buttonScaleTweens[i].Kill();
                     }
 
-                    if (Buttons[i].transform.localScale.x != NeutralScale)
-                    {
+                    //if (true || Buttons[i].transform.localScale.x != NeutralScale)
+                    //{
                         Buttons[i].transform.DOScale(NeutralScale, UnscaleDuration);
                         Buttons[i].GetComponent<Button>().interactable = true;
-                    }
+                    //}
                 }
 
                 if (!String.IsNullOrEmpty(BackAnimationObjectName))

@@ -246,12 +246,12 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 
             SoundManager.PlaySound(StaticResource.RESOURCES_SOUND_CLICK);
 
-            Debug.Log("Lower note configured : " + _lowerNote);
+            //Debug.Log("Lower note configured : " + _lowerNote);
             stateChanged = true;
         }
         else if (_currentState == ConfigurationState.WaitingHigherNote && newState == ConfigurationState.Ended)
         {
-            Debug.Log("Higher note configured : " + _higherNote);
+            //Debug.Log("Higher note configured : " + _higherNote);
 
             IsHigherNoteComplete = true;
             HigherPanelColor = UIHelper.GetColorFromHEX(StaticResource.COLOR_HEX_DARKGREEN);
@@ -284,7 +284,7 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 
         if (stateChanged)
         {
-            Debug.Log("Change state from " + _currentState + " to " + newState);
+            //Debug.Log("Change state from " + _currentState + " to " + newState);
             _currentState = newState;
         }
 
@@ -298,7 +298,7 @@ public class MidiConfigurationHelper : ViewModelBase, IInstantiableUIElement
 
     private void EndConfiguration()
     {
-        Debug.Log("Configuration is complete. Lower note = " + _lowerNote + ", higher note = " + _higherNote);
+        //Debug.Log("Configuration is complete. Lower note = " + _lowerNote + ", higher note = " + _higherNote);
 
         if (_lowerNote > _higherNote) // if the user reverse the two notes
         {
