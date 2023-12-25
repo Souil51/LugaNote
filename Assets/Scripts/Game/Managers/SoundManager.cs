@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -14,6 +15,7 @@ public class SoundManager : MonoBehaviour
 
     public static void LoadAllSounds()
     {
+        Debug.Log("LOAD ALL SOUNDS");
 #if UNITY_ANDROID && !UNITY_EDITOR
         if (_allNotesAudioClip == null && _commonSoundAudioClip == null)
             AndroidNativeAudio.makePool();
@@ -27,15 +29,19 @@ public class SoundManager : MonoBehaviour
         LoadAllNotes();
 
         var commonSoundsList = Resources.LoadAll("sounds/common", typeof(AudioClip));
+        // var commonSoundsList = Resources.LoadAll("sounds/common/ogg", typeof(AudioClip));
         foreach(var clip in commonSoundsList)
         {
             if(clip is AudioClip audioClip)
             {
-                _commonSoundAudioClip.Add(audioClip.name, audioClip);
+                if(!_commonSoundAudioClip.ContainsKey(audioClip.name))
+                    _commonSoundAudioClip.Add(audioClip.name, audioClip);
 
-                int fileID = AndroidNativeAudio.load("common/" + clip.name + ".wav");
 #if UNITY_ANDROID && !UNITY_EDITOR
-                _androidCommonSoundAudioClip.Add(audioClip.name, fileID);
+                // int fileID = AndroidNativeAudio.load("common/" + clip.name + ".wav");
+                int fileID = AndroidNativeAudio.load("common/ogg/" + clip.name + ".ogg");
+                if(!_androidCommonSoundAudioClip.ContainsKey(audioClip.name))
+                    _androidCommonSoundAudioClip.Add(audioClip.name, fileID);
 #endif
             }
         }
@@ -43,6 +49,7 @@ public class SoundManager : MonoBehaviour
 
     public static void LoadAllNotes()
     {
+        Debug.Log("LOAD ALL NOTES");
 #if UNITY_ANDROID && !UNITY_EDITOR
         if (_allNotesAudioClip == null && _commonSoundAudioClip == null)
             AndroidNativeAudio.makePool();
@@ -56,11 +63,15 @@ public class SoundManager : MonoBehaviour
         for (int i = (int)MusicHelper.LowerNote; i < (int)MusicHelper.HigherNote; i++)
         {
             var clip = (AudioClip)Resources.Load(StaticResource.RESOURCES_SOUND_NOTE_BASE + (i + 1));
-            _allNotesAudioClip.Add((PianoNote)i, clip);
+            // var clip = (AudioClip)Resources.Load(StaticResource.RESOURCES_SOUND_NOTE_BASE_OGG + (i + 1));
+            if (!_allNotesAudioClip.ContainsKey((PianoNote)i))
+                _allNotesAudioClip.Add((PianoNote)i, clip);
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-            int fileID = AndroidNativeAudio.load("note/" + clip.name + ".wav");
-            _androidAllNotesAudioClip.Add((PianoNote)i, fileID);
+             // int fileID = AndroidNativeAudio.load("note/" + clip.name + ".wav");
+             int fileID = AndroidNativeAudio.load("note/ogg/" + clip.name + ".ogg");
+             if (!_androidAllNotesAudioClip.ContainsKey((PianoNote)i))
+                _androidAllNotesAudioClip.Add((PianoNote)i, fileID);
 #endif
         }
     }
@@ -70,7 +81,14 @@ public class SoundManager : MonoBehaviour
         if (_allNotesAudioClip == null) LoadAllNotes();
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        PlaySound(GetNoteFileID(note), 1f);
+        // PlaySoundAndroid(GetNoteFileID(note), 1f);
+        PlaySound(GetNoteClip(note), 1f);
+
+        //Thread thread = new Thread(() =>
+        //{
+        //    PlaySoundAndroid(GetNoteFileID(note), 1f);
+        //});
+        //thread.Start();
 #else
         PlaySound(GetNoteClip(note), 1f);
 #endif
@@ -83,7 +101,8 @@ public class SoundManager : MonoBehaviour
         if (_commonSoundAudioClip.ContainsKey(audioClip))
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            PlaySound(_androidCommonSoundAudioClip[audioClip], volume);
+            // PlaySoundAndroid(_androidCommonSoundAudioClip[audioClip], volume);
+            PlaySound(_commonSoundAudioClip[audioClip], volume);
 #else
             PlaySound(_commonSoundAudioClip[audioClip], volume);
 #endif
@@ -91,11 +110,11 @@ public class SoundManager : MonoBehaviour
     }
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-    private static void PlaySound(int fileID, float volume)
+    private static void PlaySoundAndroid(int fileID, float volume)
     {
         AndroidNativeAudio.play(fileID);
     }
-#else
+#endif
     private static void PlaySound(AudioClip audioClip, float volume = 1f)
     {
         // Use custom One Shot Sound because PlayClipAtPoint stops working when spamming
@@ -107,7 +126,7 @@ public class SoundManager : MonoBehaviour
         oneShotSound.InitializeAudioSource(audioSource);
         oneShotSound.PlayClip(audioClip, volume);
     }
-#endif
+// #endif
 
     public static AudioClip GetNoteClip(PianoNote note)
     {

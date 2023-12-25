@@ -1,5 +1,5 @@
 # ninja log v5
-0	135	7250437548264527	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ca8aec8d70d9c0fa
-135	504	7250437551049467	C:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so	fced1aaf5a4275d7
-3	125	7250490787337756	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ca8aec8d70d9c0fa
-125	391	7250490789110677	C:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so	fced1aaf5a4275d7
+154	476	7252316468569683	C:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so	fced1aaf5a4275d7
+2	153	7252316466191894	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ca8aec8d70d9c0fa
+2	129	7252322897958477	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ca8aec8d70d9c0fa
+130	405	7252322899624024	C:/dev/LugaNote/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/20s65ri5/obj/armeabi-v7a/libswappywrapper.so	fced1aaf5a4275d7
